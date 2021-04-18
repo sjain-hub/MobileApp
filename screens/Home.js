@@ -3,13 +3,18 @@ import {
     View,
     Text,
     Image,
-    TouchableOpacity
+    TouchableOpacity,
+    Dimensions,
+    StyleSheet
 } from "react-native";
+const { width, height } = Dimensions.get("window");
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import KitPin from '../assets/icons/hamburger.png'
 import UserPin from '../assets/icons/map-pin.png'
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import config from '../config.json'; 
+import Geocoder from 'react-native-geocoding';
 
 const Home = ({ route, navigation }) => {
 
@@ -24,7 +29,7 @@ const Home = ({ route, navigation }) => {
         fetchKitchens()
 
         const watchId = Geolocation.watchPosition(pos => {
-            alert(pos.coords.latitude)
+            // alert(pos.coords.latitude)
             updateUserLocation(pos)
         },
             error => console.log(error),
@@ -47,11 +52,23 @@ const Home = ({ route, navigation }) => {
             }
             setRegion(mapRegion)
             AsyncStorage.setItem('region', JSON.stringify(mapRegion))
+            // setAddress(pos.coords.latitude, pos.coords.longitude)
         })
     }
 
+    async function setAddress(lat, lon) {
+        Geocoder.init(config.GMapAPIKey);
+        Geocoder.from(lat, lon)
+		.then(json => {
+            console.log(json, "adddress")
+        		var addressComponent = json.results[0].address_components[0];
+			console.log(addressComponent);
+		})
+		.catch(error => console.warn(error));
+    }
+
     const fetchKitchens = async () => {
-        fetch('http://192.168.0.100:8000/kitapi/', {
+        fetch(config.url+'/userapi/', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -59,7 +76,7 @@ const Home = ({ route, navigation }) => {
             }
         }).then((response) => response.json())
             .then((json) => {
-                console.log(json, "kitchens data")
+                // console.log(json, "kitchens data")
                 setKitchensData(json)
             }).catch((error) => {
                 console.error(error);
@@ -68,8 +85,8 @@ const Home = ({ route, navigation }) => {
 
     function updateUserLocation(loc) {
         let newRegion = {
-            latitude: loc.latitude,
-            longitude: loc.longitude,
+            latitude: loc.coords.latitude,
+            longitude: loc.coords.longitude,
             latitudeDelta: 0.0025,
             longitudeDelta: 0.0025
         }
@@ -134,7 +151,7 @@ const Home = ({ route, navigation }) => {
                                     }}>
                                         <Text style={{ fontSize: 16 }}>{kitchen.kitName}</Text>
                                         <Text style={{alignItems:'center'}}><Image 
-                                            source={{ uri: 'http://192.168.0.100:8000' + kitchen.dp }} 
+                                            source={{ uri: config.url + kitchen.dp }} 
                                             style={{ width: 220, height: 150 }} 
                                             resizeMode="cover"
                                         /></Text>
@@ -165,6 +182,48 @@ const Home = ({ route, navigation }) => {
         )
     }
 
+    function renderLocationHeader() {
+        return (
+            <View
+                style={{
+                    position: 'absolute',
+                    top: 50,
+                    left: 0,
+                    right: 0,
+                    height: 50,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        width: width * 0.9,
+                        paddingVertical: 10,
+                        paddingHorizontal: 10 * 2,
+                        borderRadius: 30,
+                        backgroundColor: "white",
+                        ...styles.shadow
+                    }}
+                >
+                    <Image
+                        source={UserPin}
+                        style={{
+                            width: 20,
+                            height: 20,
+                            marginRight: 10
+                        }}
+                    />
+
+                    <View style={{ flex: 1 }}>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, lineHeight: 22 }}>abcd</Text>
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
     function renderButton() {
         return (
             <View
@@ -188,14 +247,15 @@ const Home = ({ route, navigation }) => {
                             height: 50,
                             marginRight: 40,
                             marginLeft: 40,
-                            backgroundColor: 'red',
+                            backgroundColor: '#FC6D3F',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            borderRadius: 25
+                            borderRadius: 25,
+                            ...styles.shadow
                         }}
-                        onPress={() =>  navigation.navigate("Home")}
+                        onPress={() =>  navigation.navigate("Tabs")}
                     >
-                        <Text style={{ color: 'white', fontSize: 20 }}>Order Now</Text>
+                        <Text style={{ color: 'white', fontSize: 20 }}>Explore Kitchens</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -206,6 +266,7 @@ const Home = ({ route, navigation }) => {
     return (
         <View style={{ flex: 1 }}>
             {renderMap()}
+            {renderLocationHeader()}
             {renderButton()}
         </View>
     )
@@ -213,3 +274,16 @@ const Home = ({ route, navigation }) => {
 }
 
 export default Home;
+
+const styles = StyleSheet.create({
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.8,
+        shadowRadius: 3,
+        elevation: 5,
+    }
+})

@@ -3,8 +3,8 @@ import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native'
 
-import { Home, Test } from './screens'
-// import Tabs from './navigation/tabs'
+import { Home, Kitchens, Menu, Test } from './screens'
+import Tabs from './navigation/tabs'
 
 const Stack = createStackNavigator();
 
@@ -18,6 +18,9 @@ const App = () => {
                 initialRouteName={'Home'}
             >
                 <Stack.Screen name="Home" component={Home} />
+                <Stack.Screen name="Tabs" component={Tabs} />
+                <Stack.Screen name="Kitchens" component={Kitchens} />
+                <Stack.Screen name="Menu" component={Menu} />
                 <Stack.Screen name="test" component={Test} />
             </Stack.Navigator>
         </NavigationContainer>

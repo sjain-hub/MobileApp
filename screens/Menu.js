@@ -1,0 +1,671 @@
+import React from "react";
+import {
+    StyleSheet,
+    SafeAreaView,
+    View,
+    Text,
+    TouchableOpacity,
+    Image,
+    Animated,
+    Dimensions,
+    FlatList,
+    Button,
+    Pressable
+} from "react-native";
+import Modal from 'react-native-modal';
+const { width, height } = Dimensions.get("window");
+import { isIphoneX } from 'react-native-iphone-x-helper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import back from "../assets/icons/back.png";
+import list from "../assets/icons/list.png";
+import veg from "../assets/icons/veg.png";
+import nonveg from "../assets/icons/nonveg.png";
+import config from '../config.json';
+
+
+const Menu = ({ route, navigation }) => {
+
+    const [kitchen, setKitchen] = React.useState(null);
+    const [cartKitchenId, setCartKitchenId] = React.useState(null);
+    const [categories, setCategories] = React.useState(null);
+    const [menu, setMenu] = React.useState([]);
+    const [reviews, setReviews] = React.useState(null);
+    const [avgRating, setAvgRating] = React.useState(null);
+    const [orderItems, setOrderItems] = React.useState([]);
+    const [modalVisible, setModalVisible] = React.useState(false);
+    const [subItemsModal, setSubItemsModal] = React.useState(false);
+    const [minOrderError, setMinOrderError] = React.useState(false);
+    const [tempSelectedItem, setTempSelectedItem] = React.useState([]);
+
+    React.useEffect(() => {
+        let { item } = route.params;
+
+        AsyncStorage.getItem("kitchen").then((value) => {
+            setCartKitchenId(value)
+        });
+
+        AsyncStorage.getItem("orderItems").then((value) => {
+            if (value != null) {
+                setOrderItems(JSON.parse(value))
+            }
+        });
+
+        fetchMenu(item)
+        setKitchen(item)
+    }, [])
+
+    async function removeItemValue(key) {
+        try {
+            await AsyncStorage.removeItem(key);
+            return true;
+        }
+        catch (exception) {
+            return false;
+        }
+    }
+
+    function checkCart(action, itemId) {
+        let selectedItem = menu.filter(b => b.id == itemId)
+        setTempSelectedItem(selectedItem[0])
+        if (cartKitchenId == null) {
+            setCartKitchenId(kitchen.id)
+            AsyncStorage.setItem('kitchen', '' + kitchen.id)
+            if (selectedItem[0].subitems.length > 0) {
+                setSubItemsModal(true)
+            } else {
+                editOrder(action, itemId)
+            }
+        } else {
+            if (cartKitchenId == kitchen.id) {
+                if (selectedItem[0].subitems.length > 0) {
+                    setSubItemsModal(true)
+                } else {
+                    editOrder(action, itemId)
+                }
+            } else {
+                setModalVisible(true)
+            }
+        }
+    }
+
+    function editOrder(action, itemId) {
+        let orderItemId = 0
+        if (typeof itemId == 'string') {
+            orderItemId = parseInt(itemId.split('-')[0])
+        } else {
+            orderItemId = itemId
+        }
+        setMinOrderError(false)
+        let orderList = orderItems.slice()
+        let orderitem = orderList.filter(a => a.itemId == itemId)
+        let menuitem = menu.filter(b => b.id == orderItemId)[0]
+        if (action == "+") {
+            if (orderitem.length > 0) {
+                let newQty = 0
+                if (menuitem.minOrder > 0 && orderitem[0].qty == 0 && menuitem.subitems.length == 0) {
+                    newQty = orderitem[0].qty + menuitem.minOrder
+                } else {
+                    newQty = orderitem[0].qty + 1
+                }
+                orderitem[0].qty = newQty
+            } else {
+                const newItem = {
+                    itemId: itemId,
+                    qty: menuitem.minOrder > 0 && menuitem.subitems.length == 0 ? menuitem.minOrder : 1,
+                }
+                orderList.push(newItem)
+            }
+            setOrderItems(orderList)
+            AsyncStorage.setItem('orderItems', JSON.stringify(orderList))
+        } else {
+            if (orderitem.length > 0) {
+                if (orderitem[0]?.qty > 0) {
+                    let newQty = 0
+                    if (menuitem.minOrder > 0 && orderitem[0].qty == menuitem.minOrder && menuitem.subitems.length == 0) {
+                        newQty = 0
+                    } else {
+                        newQty = orderitem[0].qty - 1
+                    }
+                    orderitem[0].qty = newQty
+                }
+            }
+
+            setOrderItems(orderList)
+            AsyncStorage.setItem('orderItems', JSON.stringify(orderList))
+        }
+    }
+
+    async function editOrderAfterKitchenChange() {
+        setCartKitchenId(kitchen.id)
+        AsyncStorage.setItem('kitchen', '' + kitchen.id)
+        let orderList = []
+        if (tempSelectedItem.subitems.length > 0) {
+            setSubItemsModal(true)
+        } else {
+            const newItem = {
+                itemId: tempSelectedItem.id,
+                qty: tempSelectedItem.minOrder > 0 ? tempSelectedItem.minOrder : 1,
+            }
+            orderList.push(newItem)
+        }
+        setOrderItems(orderList)
+        AsyncStorage.setItem('orderItems', JSON.stringify(orderList))
+    }
+
+    function checkMinQty() {
+        let qty = getOrderQty(tempSelectedItem.id + '-')
+        if (qty < tempSelectedItem.minOrder && qty != 0) {
+            setMinOrderError(true)
+        } else {
+            setMinOrderError(false)
+            setSubItemsModal(!subItemsModal)
+        }
+    }
+
+    function getOrderQty(itemId) {
+        let orderItem = []
+        if (typeof itemId == 'string') {
+            orderItem = orderItems.filter(a => {
+                if (typeof a.itemId == 'string' && (a.itemId == itemId || a.itemId.includes(itemId))) {
+                    return true;
+                } else {
+                    return false;
+                }
+            })
+        } else {
+            orderItem = orderItems.filter(a => a.itemId == itemId)
+        }
+
+        if (orderItem.length > 0) {
+            let qty = 0
+            orderItem.map((item) => {
+                qty = qty + item.qty
+            })
+            return qty
+        }
+        return 0
+
+
+        // let orderItem = orderItems.filter(a => a.itemId == itemId)
+        // if (orderItem.length > 0) {
+        //     return orderItem[0].qty
+        // }
+        // return 0
+    }
+
+    function fetchMenu(item) {
+        fetch(config.url + '/userapi/menu', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "kitId": item.id
+            })
+        }).then((response) => response.json())
+            .then((json) => {
+                setCategories(json.categories)
+                setMenu(json.menuitems)
+                setReviews(json.reviews)
+                setAvgRating(json.avgrating)
+            }).catch((error) => {
+                console.error(error);
+            });
+    }
+
+    function renderHeader() {
+        return (
+            <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity
+                    style={{
+                        width: 50,
+                        paddingLeft: 20,
+                        justifyContent: 'center'
+                    }}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Image
+                        source={back}
+                        resizeMode="contain"
+                        style={{
+                            width: 25,
+                            height: 25
+                        }}
+                    />
+                </TouchableOpacity>
+
+                <View
+                    style={{
+                        flex: 1,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}
+                >
+                    <View
+                        style={{
+                            height: 50,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            paddingHorizontal: 30,
+                            borderRadius: 30,
+                            backgroundColor: "#EFEFF1"
+                        }}
+                    >
+                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 20, lineHeight: 22 }}>{kitchen?.kitName}</Text>
+                    </View>
+                </View>
+
+                <TouchableOpacity
+                    style={{
+                        width: 50,
+                        paddingRight: 20,
+                        justifyContent: 'center'
+                    }}
+                >
+                    <Image
+                        source={list}
+                        resizeMode="contain"
+                        style={{
+                            width: 25,
+                            height: 25
+                        }}
+                    />
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    function renderMenu() {
+        const renderItem = ({ item }) => (
+            <View>
+                <View style={{ marginBottom: 30, marginTop: 20, flexDirection: 'row', width: width }}>
+                    <View style={{ width: width * 0.6, justifyContent: 'center' }}>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginBottom: 5 }}>{item.name}</Text>
+                        {item.type == "veg" ?
+                            <Image
+                                source={veg}
+                                style={{
+                                    width: 19,
+                                    height: 19,
+                                }}
+                            /> :
+                            <Image
+                                source={nonveg}
+                                style={{
+                                    width: 20,
+                                    height: 20,
+                                }}
+                            />}
+
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: "#C0C0C0" }}>{item.desc}</Text>
+
+                        {item.minOrder > 0 ?
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: "#C0C0C0" }}>Minimum Order: {item.minOrder}</Text>
+                            : null}
+
+                        {item.condition ?
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: "red" }}>{item.condition}</Text>
+                            : null}
+
+                        {item.offer > 0 ?
+                            <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold' }}>{'\u20B9'} {item.discountrate}</Text>
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: 'gray', textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 10 }}>{'\u20B9'} {item.price}</Text>
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', marginLeft: 5 }}>({item.offer}% off)</Text>
+                            </View>
+                            : <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginTop: 10 }}>{'\u20B9'} {item.price}</Text>
+                        }
+
+                        {item.out_of_stock ?
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: "red" }}>OUT OF STOCK</Text>
+                            : null}
+
+                    </View>
+                    <View style={{ height: 130 }}>
+                        <Image
+                            source={{ uri: config.url + item.image }}
+                            resizeMode="cover"
+                            style={item.out_of_stock ? {
+                                width: 120,
+                                height: 120,
+                                borderRadius: 100,
+                                opacity: 0.3
+                            } : {
+                                width: 120,
+                                height: 120,
+                                borderRadius: 100,
+                            }}
+                        />
+
+                        <View
+                            style={{
+                                position: 'absolute',
+                                bottom: - 5,
+                                width: width * 0.3,
+                                height: 35,
+                                justifyContent: 'center',
+                                flexDirection: 'row',
+                            }}
+                        >
+                            <TouchableOpacity
+                                style={{
+                                    width: 35,
+                                    backgroundColor: 'white',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderTopLeftRadius: 25,
+                                    borderBottomLeftRadius: 25,
+                                    ...styles.shadow
+                                }}
+                                activeOpacity={0.9}
+                                disabled={item.out_of_stock || getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id) == 0}
+                                onPress={() => checkCart("-", item.id)}
+                            >
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 30, lineHeight: 32, color: item.out_of_stock ? 'gray' : 'green' }}>-</Text>
+                            </TouchableOpacity>
+
+                            <View
+                                style={{
+                                    width: 35,
+                                    backgroundColor: 'white',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    ...styles.shadow
+                                }}
+                            >
+                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, lineHeight: 25, color: item.out_of_stock ? 'gray' : 'green' }}>{getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id)}</Text>
+                            </View>
+
+                            <TouchableOpacity
+                                style={{
+                                    width: 35,
+                                    backgroundColor: 'white',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    borderTopRightRadius: 25,
+                                    borderBottomRightRadius: 25,
+                                    ...styles.shadow
+                                }}
+                                activeOpacity={0.9}
+                                disabled={item.out_of_stock}
+                                onPress={() => checkCart("+", item.id)}
+                            >
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, lineHeight: 25, color: item.out_of_stock ? 'gray' : 'green' }}>+</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
+            </View >
+        )
+
+        const separator = () => {
+            return (<View style={{
+                borderStyle: 'dotted',
+                borderWidth: 1,
+                borderRadius: 1,
+                borderColor: '#F5F5F6',
+            }}></View>)
+        }
+
+        const header = () => {
+            return (
+                <View>
+                    <Text>srfugiuygui</Text>
+                </View>
+            )
+        }
+
+        return (
+            <FlatList
+                data={menu}
+                keyExtractor={item => `${item.id}`}
+                renderItem={renderItem}
+                ItemSeparatorComponent={separator}
+                refreshing={true}
+                ListHeaderComponent={header}
+                contentContainerStyle={{
+                    paddingHorizontal: 20,
+                    paddingBottom: 30
+                }}
+            />
+        )
+    }
+
+    function renderKitSwitchModal() {
+        return (
+            <Modal
+                isVisible={modalVisible}
+                style={{
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+            >
+                <View style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}>
+                    <View style={{
+                        backgroundColor: "white",
+                        borderRadius: 20,
+                        padding: 35,
+                        alignItems: "center",
+                    }}>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Items already in the cart will be removed. Do you wish to continue?</Text>
+                        <View style={{ flexDirection: 'row' }}>
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => setModalVisible(!modalVisible)}
+                            >
+                                <Text style={styles.textStyle}>No</Text>
+                            </Pressable>
+                            <Pressable
+                                style={[styles.button, styles.buttonClose]}
+                                onPress={() => {
+                                    setModalVisible(!modalVisible)
+                                    editOrderAfterKitchenChange()
+                                }}
+                            >
+                                <Text style={styles.textStyle}>Yes</Text>
+                            </Pressable>
+                        </View>
+                    </View>
+                </View>
+            </Modal>
+        )
+    }
+
+    function renderSubItemsModal() {
+        return (
+            <Modal
+                isVisible={subItemsModal}
+                onBackdropPress={() => {
+                    tempSelectedItem.minOrder > 0 ? checkMinQty() : setSubItemsModal(!subItemsModal)
+                }}
+                style={{
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+            >
+                <View style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                }}>
+                    <View style={{
+                        backgroundColor: "white",
+                        borderRadius: 20,
+                        paddingLeft: 35,
+                        paddingRight: 35,
+                        paddingTop: 30,
+                        alignItems: "center",
+                    }}>
+                        <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+                            {tempSelectedItem.type == "veg" ?
+                                <Image
+                                    source={veg}
+                                    style={{
+                                        width: 18,
+                                        height: 18,
+                                    }}
+                                /> :
+                                <Image
+                                    source={nonveg}
+                                    style={{
+                                        width: 19,
+                                        height: 19,
+                                    }}
+                                />}
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, marginLeft: 10, lineHeight: 20 }}>{tempSelectedItem.name}</Text>
+                        </View>
+
+                        {minOrderError ?
+                            <View style={{ marginBottom: 20 }}>
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'red' }}>* Minimum Order Quantity : {tempSelectedItem.minOrder}</Text>
+                            </View>
+                            : null}
+
+                        {tempSelectedItem.subitems?.map((subitem) => {
+                            return (
+                                <View key={subitem.id} style={{ marginBottom: 20 }}>
+                                    <View style={{ flexDirection: 'row', width: width * 0.7, marginBottom: 20, justifyContent: 'center' }}>
+                                        <View style={{ alignItems: 'flex-start', width: '70%', justifyContent: 'center' }}>
+                                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>{subitem.name}</Text>
+                                            {tempSelectedItem.offer > 0 ?
+                                                <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold' }}>{'\u20B9'} {subitem.discountrate}</Text>
+                                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 10 }}>{'\u20B9'} {subitem.price}</Text>
+                                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', marginLeft: 5 }}>({tempSelectedItem.offer}% off)</Text>
+                                                </View>
+                                                : <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginTop: 10 }}>{'\u20B9'} {subitem.price}</Text>
+                                            }
+                                        </View>
+                                        <View
+                                            style={{
+                                                width: width * 0.3,
+                                                height: 35,
+                                                justifyContent: 'center',
+                                                flexDirection: 'row',
+                                            }}
+                                        >
+                                            <TouchableOpacity
+                                                style={{
+                                                    width: 35,
+                                                    backgroundColor: 'white',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    borderTopLeftRadius: 25,
+                                                    borderBottomLeftRadius: 25,
+                                                    ...styles.shadow
+                                                }}
+                                                activeOpacity={0.5}
+                                                onPress={() => editOrder("-", tempSelectedItem.id + '-' + subitem.id)}
+                                            >
+                                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 30, lineHeight: 32, color: 'green' }}>-</Text>
+                                            </TouchableOpacity>
+
+                                            <View
+                                                style={{
+                                                    width: 35,
+                                                    backgroundColor: 'white',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    ...styles.shadow
+                                                }}
+                                            >
+                                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, lineHeight: 25, color: 'green' }}>{getOrderQty(tempSelectedItem?.id + '-' + subitem.id)}</Text>
+                                            </View>
+
+                                            <TouchableOpacity
+                                                style={{
+                                                    width: 35,
+                                                    backgroundColor: 'white',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    borderTopRightRadius: 25,
+                                                    borderBottomRightRadius: 25,
+                                                    ...styles.shadow
+                                                }}
+                                                activeOpacity={0.5}
+                                                onPress={() => editOrder("+", tempSelectedItem.id + '-' + subitem.id)}
+                                            >
+                                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, lineHeight: 25, color: 'green' }}>+</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                    <View style={{
+                                        borderStyle: 'dotted',
+                                        borderWidth: 1,
+                                        borderRadius: 1,
+                                        borderColor: '#F5F5F6',
+                                    }}>
+                                    </View>
+                                </View>
+                            )
+                        })}
+
+                        <TouchableOpacity
+                            style={{
+                                width: width * 0.4,
+                                height: 40,
+                                backgroundColor: minOrderError ? 'lightgray' : 'green',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginBottom: 20,
+                                borderRadius: 30,
+                                activeOpacity: 0.5,
+                                ...styles.shadow
+                            }}
+                            disabled={minOrderError}
+                            onPress={() => tempSelectedItem.minOrder > 0 ? checkMinQty() : setSubItemsModal(!subItemsModal)}
+                        >
+                            <Text style={{ color: "white", fontWeight: "bold", textAlign: "center", fontSize: 16 }}>OK</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+        )
+    }
+
+    return (
+        <SafeAreaView style={styles.container}>
+            {renderHeader()}
+            {renderMenu()}
+            {renderKitSwitchModal()}
+            {renderSubItemsModal()}
+        </SafeAreaView>
+    )
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "white"
+    },
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    button: {
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2
+    },
+    buttonClose: {
+        backgroundColor: "#2196F3",
+    },
+    textStyle: {
+        color: "white",
+        fontWeight: "bold",
+        textAlign: "center"
+    }
+})
+
+export default Menu;
