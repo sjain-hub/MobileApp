@@ -130,7 +130,7 @@ const kitchens = ({ route, navigation }) => {
 
     function renderHeader() {
         return (
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', borderBottomWidth: 0.8, borderColor: 'lightgray' }}>
                 <TouchableOpacity
                     style={{
                         width: 50,
@@ -143,8 +143,8 @@ const kitchens = ({ route, navigation }) => {
                         source={UserPin}
                         resizeMode="contain"
                         style={{
-                            width: 30,
-                            height: 30
+                            width: 25,
+                            height: 25
                         }}
                     />
                 </TouchableOpacity>
@@ -153,12 +153,14 @@ const kitchens = ({ route, navigation }) => {
                     style={{
                         flex: 1,
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        height: 50
                     }}
                 >
                     <View
                         style={{
-                            height: 50,
+                            height: 30,
+                            width: width*0.7,
                             alignItems: 'center',
                             justifyContent: 'center',
                             paddingHorizontal: 30,
@@ -200,7 +202,6 @@ const kitchens = ({ route, navigation }) => {
                         paddingBottom: 10 * 2,
                         backgroundColor: (selectedCategory?.id == item.id) ? "#FC6D3F" : "white",
                         borderRadius: 30,
-
                         marginRight: 10,
                         ...styles.shadow
                     }}
@@ -243,8 +244,8 @@ const kitchens = ({ route, navigation }) => {
         }
 
         return (
-            <View style={{ paddingLeft: 20, paddingRight: 20 }}>
-                <Text style={{ fontFamily: "Roboto-Black", fontSize: 30, lineHeight: 36 }}>Popular Categories</Text>
+            <View style={{ paddingLeft: 20, paddingRight: 20, borderBottomWidth: 5, borderColor: '#F6F6F7' }}>
+                <Text style={{ fontFamily: "Roboto-Black", fontSize: 25, lineHeight: 36 }}>Popular Categories</Text>
 
                 <FlatList
                     data={categories}
@@ -252,7 +253,7 @@ const kitchens = ({ route, navigation }) => {
                     showsHorizontalScrollIndicator={false}
                     keyExtractor={item => `${item.id}`}
                     renderItem={renderItem}
-                    contentContainerStyle={{ paddingVertical: 20 }}
+                    contentContainerStyle={{ paddingVertical: 10 }}
                 />
             </View>
         )
@@ -298,7 +299,7 @@ const kitchens = ({ route, navigation }) => {
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
 
                     {item.catdesc != "" ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, color: "#C0C0C0", marginBottom: 5 }}>{item.catdesc}</Text>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "#C0C0C0", marginBottom: 5 }}>{item.catdesc}</Text>
                     : null}
 
                     <View
@@ -349,6 +350,7 @@ const kitchens = ({ route, navigation }) => {
                 keyExtractor={item => `${item.id}`}
                 renderItem={renderItem}
                 contentContainerStyle={{
+                    paddingTop: 20,
                     paddingHorizontal: 20,
                     paddingBottom: 30
                 }}

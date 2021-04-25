@@ -93,6 +93,7 @@ const Home = ({ route, navigation }) => {
 
         setRegion(newRegion)
         AsyncStorage.setItem('region', JSON.stringify(newRegion))
+        // console.log(mapView)
         mapView.current.animateToRegion(newRegion, 200)
     }
 
