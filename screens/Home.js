@@ -47,8 +47,8 @@ const Home = ({ route, navigation }) => {
             let mapRegion = {
                 latitude: pos.coords.latitude,
                 longitude: pos.coords.longitude,
-                latitudeDelta: 0.0025,
-                longitudeDelta: 0.0025
+                latitudeDelta: 0.025,
+                longitudeDelta: 0.025
             }
             setRegion(mapRegion)
             AsyncStorage.setItem('region', JSON.stringify(mapRegion))

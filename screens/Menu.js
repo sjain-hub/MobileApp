@@ -39,7 +39,6 @@ const Menu = ({ route, navigation }) => {
     const [menu, setMenu] = React.useState([]);
     const [sectionListData, setSectionListData] = React.useState([]);
     const [reviews, setReviews] = React.useState(null);
-    const [avgRating, setAvgRating] = React.useState(null);
     const [orderItems, setOrderItems] = React.useState([]);
     const [modalVisible, setModalVisible] = React.useState(false);
     const [searchPressed, setSearchPressed] = React.useState(false);
@@ -461,13 +460,20 @@ const Menu = ({ route, navigation }) => {
                             }}
                         >
                             <View style={{ flexDirection: 'row' }}>
-                                <TouchableOpacity style={{ marginBottom: 5, width: '85%'}} activeOpacity={0.5} onPress={() =>  navigation.navigate("KitchenDetails")}>
+                                <TouchableOpacity 
+                                    style={{ marginBottom: 5, width: '85%'}} 
+                                    activeOpacity={0.5} 
+                                    onPress={() => navigation.navigate("KitchenDetails", {
+                                        kitchen: kitchen,
+                                        reviews: reviews
+                                    })}
+                                >
                                     <Text style={{ fontFamily: "Roboto-Bold", fontSize: 22, fontWeight: 'bold' }}>{kitchen?.kitName} <AntIcon name="right" size={22} /></Text>
                                 </TouchableOpacity>
                                 <AntIcon name="hearto" size={22} color="red" />
                             </View>
                             <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.catdesc}</Text>
-                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.address}</Text>
+                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.landmark}</Text>
                             <View
                                 style={{
                                     flexDirection: 'row',
