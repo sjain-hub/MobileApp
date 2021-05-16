@@ -4,6 +4,7 @@ import Kitchens from './Kitchens'
 import Menu from './Menu'
 import KitchenDetails from './KitchenDetails'
 import VideoPlayer from './VideoPlayer'
+import Cart from './Cart'
 
 export {
     Home,
@@ -11,5 +12,6 @@ export {
     Menu,
     KitchenDetails,
     VideoPlayer,
+    Cart,
     Test
 }

@@ -9,7 +9,8 @@ import {
     Image,
     Animated,
     Dimensions,
-    FlatList
+    FlatList,
+    ScrollView
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserPin from '../assets/icons/nearby.png';
@@ -25,6 +26,7 @@ import sindian from '../assets/icons/sindian.png';
 import all from '../assets/icons/all.png';
 import search from "../assets/icons/search.png";
 import config from '../config.json';
+import FAIcon5 from 'react-native-vector-icons/FontAwesome5';
 
 
 const kitchens = ({ route, navigation }) => {
@@ -87,7 +89,7 @@ const kitchens = ({ route, navigation }) => {
 
         AsyncStorage.getItem("region").then((value) => JSON.parse(value))
             .then((json) => {
-                fetch(config.url + '/userapi/nearbyKitchens', {
+                fetch(config.url + '/userapi/appnearbyKitchens', {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
@@ -262,7 +264,7 @@ const kitchens = ({ route, navigation }) => {
     function renderRestaurantList() {
         const renderItem = ({ item }) => (
             <TouchableOpacity
-                style={{ marginBottom: 20, flexDirection: 'row', width: width, marginVertical: 10 }}
+                style={{ marginBottom: 20, flexDirection: 'row', width: width, marginVertical: 10, paddingHorizontal: 20 }}
                 onPress={() => navigation.navigate("Menu", {
                     item,
                 })}
@@ -271,7 +273,7 @@ const kitchens = ({ route, navigation }) => {
                     source={{ uri: config.url + item.dp }}
                     resizeMode="cover"
                     style={{
-                        width: "30%",
+                        width: width*0.3,
                         height: 130,
                         borderRadius: 30,
                         marginRight: 20
@@ -289,18 +291,21 @@ const kitchens = ({ route, navigation }) => {
                         borderBottomLeftRadius: 30,
                         alignItems: 'center',
                         justifyContent: 'center',
+                        marginLeft: 20,
                         ...styles.shadow
                     }}
                 >
                     <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, lineHeight: 22 }}>{item.deliveryTime} min</Text>
                 </View> */}
 
-                <View style={{ maxWidth: width * 0.5, justifyContent: 'center' }}>
+                <View style={{ maxWidth: width * 0.56, justifyContent: 'center' }}>
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
 
                     {item.catdesc != "" ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "#C0C0C0", marginBottom: 5 }}>{item.catdesc}</Text>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "#C0C0C0", marginBottom: 3 }}>{item.catdesc}</Text>
                     : null}
+
+                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "#C0C0C0", marginBottom: 5 }}>{item.landmark}</Text>
 
                     <View
                         style={{
@@ -318,7 +323,7 @@ const kitchens = ({ route, navigation }) => {
                                         marginTop: 2,
                                         height: 12,
                                         width: 12,
-                                        tintColor: (item.ratings__avg >= 4) ? "green" : (item.ratings__avg >= 3) ? "mustard" : "red",
+                                        tintColor: (item.ratings__avg >= 4) ? "green" : (item.ratings__avg >= 3) ? "gold" : "red",
                                     }}
                                 />
                                 <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}> {item.ratings__avg}  |  </Text>
@@ -331,13 +336,14 @@ const kitchens = ({ route, navigation }) => {
                     <View
                         style={{
                             marginTop: 5,
-                            borderBottomColor: 'lightgray',
+                            marginBottom: 5,
+                            borderBottomColor: '#F5F5F6',
                             borderBottomWidth: 1,
                         }}
                     />
 
                     {item.acceptAdvcOrders ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, color: 'gray' }}>Accepts Advance Orders upto 2 Days.</Text>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, color: 'gray' }}><FAIcon5 name="info-circle" size={12} color="skyblue" /> Accepts Advance Orders upto 2 Days.</Text>
                     : null}
 
                 </View>
@@ -349,9 +355,9 @@ const kitchens = ({ route, navigation }) => {
                 data={filteredKitchens}
                 keyExtractor={item => `${item.id}`}
                 renderItem={renderItem}
+                ListHeaderComponent={renderMainCategories}
                 contentContainerStyle={{
                     paddingTop: 20,
-                    paddingHorizontal: 20,
                     paddingBottom: 30
                 }}
             />
@@ -362,7 +368,10 @@ const kitchens = ({ route, navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
-            {renderMainCategories()}
+            {/* <ScrollView>
+                {renderMainCategories()}
+                {renderRestaurantList()}
+            </ScrollView> */}
             {renderRestaurantList()}
         </SafeAreaView>
     )

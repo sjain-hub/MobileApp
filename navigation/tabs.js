@@ -3,17 +3,19 @@ import {
     View,
     Image,
     TouchableOpacity,
-    StyleSheet
+    StyleSheet,
+    Text
 } from 'react-native';
 import { createBottomTabNavigator, BottomTabBar } from "@react-navigation/bottom-tabs"
 import Svg, { Path } from 'react-native-svg';
 import { isIphoneX } from 'react-native-iphone-x-helper';
 
-import { Home, Kitchens, Test } from "../screens"
+import { Home, Kitchens, Cart, Test } from "../screens"
 import Cutlery from "../assets/icons/cutlery.png";
 import Search from "../assets/icons/search.png";
-import Cart from "../assets/icons/shopping-basket.png";
+import ShoppingCart from "../assets/icons/shopping-basket.png";
 import User from "../assets/icons/user.png";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Tab = createBottomTabNavigator();
@@ -103,7 +105,32 @@ const CustomTabBar = (props) => {
 
 }
 
-const Tabs = () => {
+const Tabs = ({ route, navigation }) => {
+
+    const [totalCartItems, setTotalCartItems] = React.useState(0);
+
+    React.useEffect(() => {
+        // Subscribe for the focus Listener
+        const unsubscribe = navigation.addListener('focus', () => {
+            AsyncStorage.getItem("orderItems").then((value) => {
+                if (value != null) {
+                    countOrderItems(JSON.parse(value))
+                }
+            });
+        });
+
+        // Unsubscribe for the focus Listener
+        unsubscribe;
+    }, [])
+
+    function countOrderItems(items) {
+        let count = 0
+        items.map(item => {
+            count = count + item.qty
+        })
+        setTotalCartItems(count)
+    }
+
     return (
         <Tab.Navigator
             tabBarOptions={{
@@ -133,8 +160,8 @@ const Tabs = () => {
                             source={Cutlery}
                             resizeMode="contain"
                             style={{
-                                width: 20,
-                                height: 20,
+                                width: 22,
+                                height: 22,
                                 tintColor: focused ? '#FC6D3F' : 'gray'
                             }}
                         />
@@ -156,8 +183,8 @@ const Tabs = () => {
                             source={Search}
                             resizeMode="contain"
                             style={{
-                                width: 20,
-                                height: 20,
+                                width: 22,
+                                height: 22,
                                 tintColor: focused ? '#FC6D3F' : 'gray'
                             }}
                         />
@@ -172,18 +199,27 @@ const Tabs = () => {
 
             <Tab.Screen
                 name="Cart"
-                component={Kitchens}
+                component={Cart}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Image
-                            source={Cart}
-                            resizeMode="contain"
-                            style={{
-                                width: 20,
-                                height: 20,
-                                tintColor: focused ? '#FC6D3F' : 'gray'
-                            }}
-                        />
+                        <View style={{ flexDirection: 'row' }}>
+                            <Image
+                                source={ShoppingCart}
+                                resizeMode="contain"
+                                style={{
+                                    width: 22,
+                                    height: 22,
+                                    tintColor: focused ? '#FC6D3F' : 'gray'
+                                }}
+                            />
+                            {totalCartItems > 0 && !focused ?
+                                <View style={{ width: 18, height: 18, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center', marginLeft: -5, marginTop: -5 }}>
+                                    <Text style={{ color: 'white', fontSize: 12 }}>{totalCartItems}</Text>
+                                </View>
+                                :
+                                null}
+
+                        </View>
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
@@ -202,8 +238,8 @@ const Tabs = () => {
                             source={User}
                             resizeMode="contain"
                             style={{
-                                width: 20,
-                                height: 20,
+                                width: 22,
+                                height: 22,
                                 tintColor: focused ? '#FC6D3F' : 'gray'
                             }}
                         />

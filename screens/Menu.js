@@ -29,6 +29,7 @@ import Star from '../assets/icons/star.png';
 import search from "../assets/icons/search.png";
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FAIcon from 'react-native-vector-icons/FontAwesome5';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 
 const Menu = ({ route, navigation }) => {
@@ -48,6 +49,7 @@ const Menu = ({ route, navigation }) => {
     const [tempSelectedItem, setTempSelectedItem] = React.useState([]);
     const [vegSelected, setVegSelected] = React.useState(false);
     const [sectionListRef, setSectionListRef] = React.useState();
+    const [totalCartItems, setTotalCartItems] = React.useState(0);
 
     const scrollY = new Animated.Value(0)
     const translateY = scrollY.interpolate({
@@ -64,6 +66,7 @@ const Menu = ({ route, navigation }) => {
 
         AsyncStorage.getItem("orderItems").then((value) => {
             if (value != null) {
+                countOrderItems(JSON.parse(value))
                 setOrderItems(JSON.parse(value))
             }
         });
@@ -71,6 +74,14 @@ const Menu = ({ route, navigation }) => {
         fetchMenu(item)
         setKitchen(item)
     }, [])
+
+    function countOrderItems(items) {
+        let count = 0
+        items.map(item => {
+            count = count + item.qty
+        })
+        setTotalCartItems(count)
+    }
 
     async function removeItemValue(key) {
         try {
@@ -125,12 +136,14 @@ const Menu = ({ route, navigation }) => {
                 } else {
                     newQty = orderitem[0].qty + 1
                 }
+                setTotalCartItems(totalCartItems - orderitem[0].qty + newQty)
                 orderitem[0].qty = newQty
             } else {
                 const newItem = {
                     itemId: itemId,
                     qty: menuitem.minOrder > 0 && menuitem.subitems.length == 0 ? menuitem.minOrder : 1,
                 }
+                setTotalCartItems(totalCartItems + newItem.qty)
                 orderList.push(newItem)
             }
             setOrderItems(orderList)
@@ -143,6 +156,11 @@ const Menu = ({ route, navigation }) => {
                         newQty = 0
                     } else {
                         newQty = orderitem[0].qty - 1
+                    }
+                    setTotalCartItems(totalCartItems - orderitem[0].qty + newQty)
+                    if (totalCartItems - orderitem[0].qty + newQty == 0) {
+                        removeItemValue('orderItems')
+                        removeItemValue('kitchen')
                     }
                     orderitem[0].qty = newQty
                 }
@@ -158,12 +176,14 @@ const Menu = ({ route, navigation }) => {
         AsyncStorage.setItem('kitchen', '' + kitchen.id)
         let orderList = []
         if (tempSelectedItem.subitems.length > 0) {
+            setTotalCartItems(0)
             setSubItemsModal(true)
         } else {
             const newItem = {
                 itemId: tempSelectedItem.id,
                 qty: tempSelectedItem.minOrder > 0 ? tempSelectedItem.minOrder : 1,
             }
+            setTotalCartItems(newItem.qty)
             orderList.push(newItem)
         }
         setOrderItems(orderList)
@@ -212,7 +232,7 @@ const Menu = ({ route, navigation }) => {
     }
 
     function fetchMenu(item) {
-        fetch(config.url + '/userapi/menu', {
+        fetch(config.url + '/userapi/appmenu', {
             method: 'POST',
             headers: {
                 Accept: 'application/json',
@@ -321,14 +341,7 @@ const Menu = ({ route, navigation }) => {
                         }}
                         onPress={() => setCategoryModal(true)}
                     >
-                        <Image
-                            source={list}
-                            resizeMode="contain"
-                            style={{
-                                width: 20,
-                                height: 20
-                            }}
-                        />
+                        <Entypo name="menu" size={26} />
                     </TouchableOpacity>
                 </View>
         )
@@ -490,7 +503,7 @@ const Menu = ({ route, navigation }) => {
                                                 marginTop: 2,
                                                 height: 16,
                                                 width: 16,
-                                                tintColor: (kitchen?.ratings__avg >= 4) ? "green" : (kitchen?.ratings__avg >= 3) ? "mustard" : "red",
+                                                tintColor: (kitchen?.ratings__avg >= 4) ? "green" : (kitchen?.ratings__avg >= 3) ? "gold" : "red",
                                             }}
                                         />
                                         <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}> {kitchen?.ratings__avg}  <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
@@ -681,7 +694,7 @@ const Menu = ({ route, navigation }) => {
 
         const separator = () => (
             <View style={{
-                borderStyle: 'dotted',
+                borderStyle: 'solid',
                 borderWidth: 1,
                 borderRadius: 1,
                 borderColor: '#F5F5F6',
@@ -705,7 +718,7 @@ const Menu = ({ route, navigation }) => {
                             width: 50,
                             paddingLeft: 20,
                             justifyContent: 'center',
-                            marginRight: width * 0.68
+                            marginRight: width * 0.67
                         }}
                         onPress={() => navigation.goBack()}
                     >
@@ -743,14 +756,7 @@ const Menu = ({ route, navigation }) => {
                         }}
                         onPress={() => setCategoryModal(true)}
                     >
-                        <Image
-                            source={list}
-                            resizeMode="contain"
-                            style={{
-                                width: 20,
-                                height: 20
-                            }}
-                        />
+                        <Entypo name="menu" size={26} />
                     </TouchableOpacity>
 
                 </View>
@@ -965,6 +971,7 @@ const Menu = ({ route, navigation }) => {
                                                 height: 35,
                                                 justifyContent: 'center',
                                                 flexDirection: 'row',
+                                                alignSelf: 'center'
                                             }}
                                         >
                                             <TouchableOpacity
@@ -1046,6 +1053,24 @@ const Menu = ({ route, navigation }) => {
         )
     }
 
+    function renderCart() {
+        return (
+            totalCartItems>0?
+            <View style={{ top: '90%', alignSelf: 'center', position: 'absolute' }}>
+                <TouchableOpacity 
+                    style={{width: width*0.4, height: 50, borderRadius: 30, backgroundColor: 'lightgreen', ...styles.shadow, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}
+                    onPress={() => navigation.navigate("Cart")}
+                >
+                    <FAIcon name="shopping-cart" size={22} color="green" />
+                    <View style={{width: 22, height: 22, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center'}}>
+                        <Text style={{color: 'white'}}>{totalCartItems}</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+            :null
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
@@ -1054,6 +1079,7 @@ const Menu = ({ route, navigation }) => {
             {renderKitSwitchModal()}
             {renderSubItemsModal()}
             {renderCategoryModal()}
+            {renderCart()}
         </SafeAreaView>
     )
 }

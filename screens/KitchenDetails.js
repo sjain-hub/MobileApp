@@ -84,13 +84,13 @@ const KitchenDetails = ({ route, navigation }) => {
         return (
             <View style={{ alignItems: 'center' }}>
                 <TouchableOpacity 
-                    style={{ height: 200, borderRadius: 200, borderWidth: 2, ...styles.shadow, borderColor: 'white' }}
+                    style={{ height: 200, borderRadius: 200, borderWidth: 2, ...styles.shadow, borderColor: 'white', marginTop: 10 }}
                     onPress={() => navigation.navigate("VideoPlayer", {
                         kitchenVideo: kitchen.video,
                     })}
                 >
                     <Image
-                        source={{ uri: config.url + kitchen?.dp }}
+                        source={{ uri: config.url + kitchen?.chefDp }}
                         resizeMode="cover"
                         style={{
                             width: 200,
@@ -165,11 +165,11 @@ const KitchenDetails = ({ route, navigation }) => {
             <View>
                 <View style={{ padding: 40 }}>
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, marginBottom: 10 }}>Reviews By YouTube Page ABCD :</Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', fontStyle: 'italic', marginBottom: 5 }}>On her way she met a copy. The copy warned the Little Blind Text, that where it came from it would have been rewritten a thousand times and everything that was left from its origin would be the word "and" and the Little Blind Text should turn around and return to its own, safe country. A small river named Duden flows by their place and supplies it with the necessary regelialia. It is a paradisematic country, in which roasted parts of sentences fly into your mouth.</Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', fontStyle: 'italic', marginBottom: 5 }}>Excited to see the Interview Video? Checkout the Link:</Text>
+                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', fontStyle: 'italic', marginBottom: 5 }}>{kitchen.youTubeReview}</Text>
+                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', marginBottom: 5 }}>Excited to see the Interview Video? Checkout the Link:</Text>
                     <Text style={{ color: 'blue' }}
-                        onPress={() => Linking.openURL('https://www.youtube.com/watch?v=7KnRY9beGQI')}>
-                        https://www.youtube.com/watch?v=7KnRY9beGQI
+                        onPress={() => Linking.openURL(kitchen.youTubeLink)}>
+                        {kitchen.youTubeLink}
                 </Text>
                 </View>
                 <View style={{
@@ -188,7 +188,7 @@ const KitchenDetails = ({ route, navigation }) => {
             <View style={{padding: 20}}>
                 <View style={{flexDirection: 'row', width: width*0.9, borderWidth: 1, borderRadius: 20, borderColor: 'white', padding: 10, alignSelf: 'center', ...styles.shadow, backgroundColor: 'white', marginBottom: 30 }}>
                     <View style={{width: "45%", alignItems: 'center'}}>
-                        <FAIcon name="star" size={70} color="gold" />
+                        <FAIcon name="star" size={65} color="gold" />
                         <Text>Average Ratings</Text>
                         <Text style={{fontSize: 12}}>(Based on {reviews?.length} ratings)</Text>
                     </View>
@@ -205,7 +205,7 @@ const KitchenDetails = ({ route, navigation }) => {
                         <View key={review.id} style={{padding: 20}}>
                             <View style={{flexDirection: 'row'}}>
                                 <FAIcon name="user-circle" size={25} color="gray" />
-                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 18, marginLeft: 20, fontWeight: 'bold' }}>{review?.user.first_name} {review?.user.last_name}</Text>
+                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 18, marginLeft: 10, fontWeight: 'bold' }}>{review?.user.first_name} {review?.user.last_name}</Text>
                             </View>
                             <View style={{flexDirection: 'row', marginTop: 10}}>
                                 {review.ratings >= 1 ?
@@ -235,8 +235,7 @@ const KitchenDetails = ({ route, navigation }) => {
                                 }
                             </View>
                             <View>
-                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>{review.reviews} jshkfg jq gfuiqwegu wgtiu gwqeuitgq kwjfreytg qwueytweurgewrkuytweugqkuyfgwrekf tekigfekuft iew
-                                weriufyerl fhweriyk uwery wethwerliutyl ierht o87y</Text>
+                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>{review.reviews}</Text>
                             </View>
                         </View>
                     )
