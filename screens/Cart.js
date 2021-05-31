@@ -6,13 +6,9 @@ import {
     Text,
     Image,
     ScrollView,
-    Animated,
     Dimensions,
     FlatList,
-    Button,
     Pressable,
-    Switch,
-    SectionList,
     TouchableOpacity,
     TextInput,
 } from "react-native";
@@ -26,12 +22,16 @@ import nonveg from "../assets/icons/nonveg.png";
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { RadioButton } from 'react-native-paper';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const Cart = ({ route, navigation }) => {
 
     const [kitchen, setKitchen] = React.useState(null);
     const [cartItems, setCartItems] = React.useState(null);
+    const [cartEmpty, setCartEmpty] = React.useState(false);
     const [ASItems, setASItems] = React.useState([]);
+    const [totalItems, setTotalItems] = React.useState();
     const [addresses, setAddresses] = React.useState(null);
     const [coupons, setCoupons] = React.useState(null);
     const [removeItemModal, setRemoveItemModal] = React.useState(false);
@@ -44,14 +44,73 @@ const Cart = ({ route, navigation }) => {
     const [couponDiscount, setCouponDiscount] = React.useState(0);
     const [toPay, setToPay] = React.useState(0);
     const [mode, setMode] = React.useState("PickUp");
+    const [loggedIn, setLoggedIn] = React.useState(false);
+    const [selectedAddress, setSelectedAddress] = React.useState();
+    const [dateTimePicker, setDateTimePicker] = React.useState(false);
+    const [advanceOrder, setAdvanceOrder] = React.useState(false);
+    const [selectedDate, setSelectedDate] = React.useState();
+    const [dateMode, setDateMode] = React.useState('date');
+    const [minDate, setMinDate] = React.useState();
+    const [maxDate, setMaxDate] = React.useState();
+    const [orderButtonRaise, setOrderButtonRaise] = React.useState();
 
     React.useEffect(() => {
-        AsyncStorage.getItem("kitchen").then((value) => {
-            fetchCartData(value)
-        });
-    }, [])
+        const unsubscribe = navigation.addListener('focus', () => {
+            let { raiseButton } = route.params;
+            setOrderButtonRaise(raiseButton)
+            AsyncStorage.getItem("authToken").then((token) => {
+                if (token) {
+                    setLoggedIn(true)
+                    AsyncStorage.getItem("kitchen").then((kitId) => {
+                        if (kitId) {
+                            fetchCartData(kitId, token)
+                        } else {
+                            setCartEmpty(true)
+                        }
+                    });
+                }
+                else {
+                    AsyncStorage.getItem("kitchen").then((kitId) => {
+                        if (kitId) {
+                            fetchCartData(kitId,)
+                        } else {
+                            setCartEmpty(true)
+                        }
+                    });
+                }
+            });
 
-    function fetchCartData(kitId) {
+            setDates()
+        });
+        return unsubscribe;
+    }, [navigation]);
+
+    function setDates() {
+        let a = new Date()
+        setMinDate(a)
+
+        let b = new Date()
+        b.setDate(a.getDate() + 2)
+        // b.setHours(23)
+        // b.setMinutes(59)
+        setMaxDate(b)
+
+        c = new Date()
+        c.setHours(c.getHours() + 2)
+        setSelectedDate(c)
+    }
+
+    async function removeItemValue(key) {
+        try {
+            await AsyncStorage.removeItem(key);
+            return true;
+        }
+        catch (exception) {
+            return false;
+        }
+    }
+
+    function fetchCartData(kitId, token) {
         AsyncStorage.getItem("orderItems").then((value) => JSON.parse(value))
             .then((items) => {
                 setASItems(items)
@@ -59,7 +118,8 @@ const Cart = ({ route, navigation }) => {
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        Authorization: token? 'Token ' + token : ''
                     },
                     body: JSON.stringify({
                         "kitId": kitId,
@@ -67,11 +127,17 @@ const Cart = ({ route, navigation }) => {
                     })
                 }).then((response) => response.json())
                     .then((json) => {
-                        setKitchen(json.kitchen)
-                        setCartItems(json.items)
-                        setAddresses(json.addresses)
-                        setCoupons(json.kitCoupons)
-                        calcBill(json.items, items, couponApplied, mode)
+                        if (json.items.length != 0) {
+                            setKitchen(json.kitchen)
+                            setCartItems(json.items)
+                            setAddresses(json.addresses)
+                            setSelectedAddress(json.addresses[0])
+                            setCoupons(json.kitCoupons)
+                            calcBill(json.items, items, couponApplied, mode)
+                        }
+                        else {
+                            setCartEmpty(true)
+                        }
                     }).catch((error) => {
                         console.error(error);
                     });
@@ -83,11 +149,13 @@ const Cart = ({ route, navigation }) => {
         let kitdiscount = 0
         let coupondisc = 0
         let total = 0
+        let totalItems = 0
         asitems?.map(item => {
             let cartitem = cartitems?.filter(a => a.id == item.itemId)[0]
             if (cartitem) {
                 subtotal = subtotal + (cartitem.price * item.qty)
                 kitdiscount = kitdiscount + ((cartitem.offer / 100 * cartitem.price) * item.qty)
+                totalItems = totalItems + item.qty
             }
         })
         if (coupon) {
@@ -97,13 +165,18 @@ const Cart = ({ route, navigation }) => {
             }
         }
         total = subtotal - kitdiscount - coupondisc
-        if (mode == "Delivery") {
+        if (mode == "Delivery" && total!=0) {
             total = total + kitchen.deliveryCharge
         }
         setSubTotal(subtotal);
         setKitDiscount(kitdiscount);
         setCouponDiscount(coupondisc);
         setToPay(Math.round(total));
+        setTotalItems(totalItems)
+        if (totalItems == 0) {
+            setCartEmpty(true)
+            removeItemValue('kitchen')
+        }
     }
 
     function renderHeader() {
@@ -136,7 +209,7 @@ const Cart = ({ route, navigation }) => {
                 style={{
                     position: 'absolute',
                     height: 120,
-                    bottom: 0,
+                    bottom: orderButtonRaise ? 50 : 0,
                     left: 0,
                     right: 0,
                     alignItems: 'center',
@@ -145,20 +218,43 @@ const Cart = ({ route, navigation }) => {
                     backgroundColor: 'white'
                 }}
             >
-                <TouchableOpacity
-                    style={{
-                        height: 50,
-                        width: width * 0.9,
-                        backgroundColor: '#FC6D3F',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 10,
-                        marginVertical: 10
-                    }}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Text style={{ color: 'white', fontSize: 16 }}>Place Order</Text>
-                </TouchableOpacity>
+                {loggedIn ?
+                    <TouchableOpacity
+                        style={{
+                            height: 50,
+                            width: width * 0.9,
+                            backgroundColor: '#FC6D3F',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 10,
+                            marginVertical: 10
+                        }}
+                        onPress={() => navigation.goBack()}
+                    >
+                        <Text style={{ color: 'white', fontSize: 16 }}>Proceed To Pay</Text>
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity
+                        style={{
+                            height: 50,
+                            width: width * 0.9,
+                            backgroundColor: '#FC6D3F',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 10,
+                            marginVertical: 10
+                        }}
+                        onPress={() => {
+                            setCouponApplied()
+                            navigation.navigate("Account", {
+                                cameFromCart: true
+                            })
+                        }}
+                    >
+                        <Text style={{ color: 'white', fontSize: 16 }}>Login</Text>
+                    </TouchableOpacity>
+                }
+
             </View>
         )
     }
@@ -250,34 +346,28 @@ const Cart = ({ route, navigation }) => {
                 }}
             >
                 <View style={{
-                    flex: 1,
                     justifyContent: "center",
                     alignItems: "center",
+                    backgroundColor: "white",
+                    borderRadius: 20,
+                    padding: 35,
                 }}>
-                    <View style={{
-                        backgroundColor: "white",
-                        borderRadius: 20,
-                        padding: 35,
-                        alignItems: "center",
-                    }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Items already in the cart will be removed. Do you wish to continue?</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Pressable
-                                // style={[styles.button, styles.buttonClose]}
-                                onPress={() => setRemoveItemModal(!removeItemModal)}
-                            >
-                                <Text >No</Text>
-                            </Pressable>
-                            <Pressable
-                                // style={[styles.button, styles.buttonClose]}
-                                onPress={() => {
-                                    setRemoveItemModal(!removeItemModal)
-                                    subtractQty(tempSelectedItem, true)
-                                }}
-                            >
-                                <Text >Yes</Text>
-                            </Pressable>
-                        </View>
+                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Do you wish to remove this item?</Text>
+                    <View style={{ flexDirection: 'row', marginTop: 20 }}>
+                        <Pressable
+                            style={{ width: '40%' }}
+                            onPress={() => setRemoveItemModal(!removeItemModal)}
+                        >
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>No</Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={() => {
+                                setRemoveItemModal(!removeItemModal)
+                                subtractQty(tempSelectedItem, true)
+                            }}
+                        >
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
+                        </Pressable>
                     </View>
                 </View>
             </Modal>
@@ -320,6 +410,7 @@ const Cart = ({ route, navigation }) => {
                                                 style={{
                                                     width: 16,
                                                     height: 16,
+                                                    alignSelf: 'center'
                                                 }}
                                             /> :
                                             <Image
@@ -327,9 +418,10 @@ const Cart = ({ route, navigation }) => {
                                                 style={{
                                                     width: 17,
                                                     height: 17,
+                                                    alignSelf: 'center'
                                                 }}
                                             />}
-                                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginLeft: 5, lineHeight: 18 }}>{item.name}</Text>
+                                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 5, lineHeight: 18, width: '90%' }}>{item.name}</Text>
                                     </View>
                                     <View
                                         style={{
@@ -384,7 +476,7 @@ const Cart = ({ route, navigation }) => {
                                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, lineHeight: 25, color: 'green' }}>+</Text>
                                         </TouchableOpacity>
                                     </View>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', alignSelf: 'center', marginLeft: 10 }}>{'\u20B9'} {getTotalCost(item.price, getOrderQty(item.id))}</Text>
+                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold', alignSelf: 'center', marginLeft: 10 }}>{'\u20B9'}{getTotalCost(item.price, getOrderQty(item.id))}</Text>
                                 </View>
                                 <View style={{
                                     borderStyle: 'dotted',
@@ -446,7 +538,7 @@ const Cart = ({ route, navigation }) => {
     function renderCoupons() {
         return (
             couponApplied ?
-                <View style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}>
+                <View style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20 }}>
                     <View style={{ width: 50, alignItems: 'center', justifyContent: 'center' }}>
                         <MaterialIcons name="check-circle" size={30} color={'green'} />
                     </View>
@@ -466,7 +558,7 @@ const Cart = ({ route, navigation }) => {
                 </View>
                 :
                 <TouchableOpacity
-                    style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}
+                    style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20 }}
                     onPress={() =>
                         setCouponModal(true)}
                 >
@@ -474,7 +566,7 @@ const Cart = ({ route, navigation }) => {
                         <MaterialIcons name="local-offer" size={30} color={'gray'} />
                     </View>
                     <View style={{ width: width - 120, alignItems: 'flex-start', justifyContent: 'center' }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, paddingLeft: 10 }}>APPLY COUPON</Text>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, paddingLeft: 10 }}>APPLY COUPON</Text>
                     </View>
                     <View style={{ alignItems: 'center' }}>
                         <MaterialIcons name="arrow-right" size={30} color={'gray'} />
@@ -606,15 +698,15 @@ const Cart = ({ route, navigation }) => {
     function renderBillingDetails() {
         return (
             <View style={{ marginHorizontal: 20, marginVertical: 20 }}>
-                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold' }}>Billing Details</Text>
-                <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold' }}>Billing Details</Text>
+                <View style={{ flexDirection: 'row', marginTop: 20 }}>
                     <View style={{ width: width * 0.75 }}>
                         <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Sub-Total</Text>
                         {kitDiscount > 0 ?
                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Kitchen Discount</Text>
                             : null
                         }
-                        {couponDiscount > 0 ?
+                        {couponApplied ?
                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Coupon Discount</Text>
                             : null
                         }
@@ -631,7 +723,7 @@ const Cart = ({ route, navigation }) => {
                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'green' }}>- {'\u20B9'}{kitDiscount}</Text>
                             : null
                         }
-                        {couponDiscount > 0 ?
+                        {couponApplied ?
                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'green' }}>- {'\u20B9'}{couponDiscount}</Text>
                             : null
                         }
@@ -649,37 +741,153 @@ const Cart = ({ route, navigation }) => {
 
     function renderAddresses() {
         return (
-            <View style={{ marginHorizontal: 20, marginVertical: 20 }}>
-                <Text>sdfjgruikgt</Text>
+            <View style={{ marginHorizontal: 20, marginVertical: 20, width: width * 0.8 }}>
+                <View style={{flexDirection: 'row'}}>
+                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold', width: width*0.65 }}>Choose Your Address</Text>
+                    <Pressable style={{alignItems: 'center'}}>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: '#FC6D3F' }} >Add Address</Text>
+                    </Pressable>
+                </View>
+                <View style={{ marginTop: 10 }}>
+                    {addresses?.map((add) => {
+                        return (
+                            <View style={{ flexDirection: 'row', marginVertical: 5 }} key={add.id}>
+                                <RadioButton
+                                    color={'red'}
+                                    value={add.place}
+                                    status={selectedAddress?.id === add.id ? 'checked' : 'unchecked'}
+                                    onPress={() => {
+                                        setSelectedAddress(add)
+                                    }}
+                                />
+                                <View>
+                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10 }}>{add.place}</Text>
+                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10, color: 'gray' }}>{add.address}, Floor No: {add.floorNo}</Text>
+                                </View>
+                            </View>
+                        )
+                    })}
+                </View>
+            </View>
+        )
+    }
+
+    function renderAdvanceOrderCheckbox() {
+        const onChange = (event, selecteddate) => {
+            const d = selecteddate || selectedDate;
+            if(d < new Date()){
+                alert('Incorrect Time selected')
+            } else {
+                setDateTimePicker(false);
+                setSelectedDate(d);
+            }
+        };
+
+        const showDatepicker = () => {
+            setDateTimePicker(true);
+            setDateMode('date');
+        };
+
+        const showTimepicker = () => {
+            setDateTimePicker(true);
+            setDateMode('time');
+        };
+
+        return (
+            <View style={{ marginHorizontal: 30, marginVertical: 20 }}>
+                <View style={{ flexDirection: 'row' }}>
+                    <BouncyCheckbox
+                        size={25}
+                        fillColor="green"
+                        unfillColor="#FFFFFF"
+                        iconStyle={{ borderColor: "green" }}
+                        onPress={() => setAdvanceOrder(!advanceOrder)}
+                    />
+                    {advanceOrder ?
+                        <View style={{flexDirection: 'row'}}>
+                            <Pressable
+                                style={{ marginLeft: 30 }}
+                                onPress={showDatepicker}
+                            >
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: '#FC6D3F' }}>Select Date</Text>
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, alignSelf: 'center' }}>{selectedDate.getDate()}/{selectedDate.getMonth()}/{selectedDate.getFullYear()}</Text>
+                            </Pressable>
+                            <Pressable
+                                style={{ marginLeft: 30 }}
+                                onPress={showTimepicker}
+                            >
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: '#FC6D3F' }}>Select Time</Text>
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, alignSelf: 'center' }}>{selectedDate.getHours()}:{selectedDate.getMinutes()}</Text>
+                            </Pressable>
+                        </View>
+                        :
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10 }}>Schedule Order?</Text>
+                    }
+                </View>
+                {dateTimePicker && (
+                    <DateTimePicker
+                        testID="dateTimePicker"
+                        value={selectedDate}
+                        mode={dateMode}
+                        display="default"
+                        onChange={onChange}
+                        minimumDate={minDate}
+                        maximumDate={maxDate}
+                    />
+                )}
             </View>
         )
     }
 
     function renderFooter() {
         return (
-            <View style={{ borderStyle: 'solid', borderWidth: 80, borderColor: '#F5F5F6', width: width }}></View>
+            <View style={{ borderStyle: 'solid', borderWidth: orderButtonRaise? 110 : 80, borderColor: '#F5F5F6', width: width }}></View>
+        )
+    }
+
+    function renderEmptyCart() {
+        return (
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: width*0.8, alignSelf: 'center'}}>
+                <MaterialIcons name="fastfood" size={250} color={'lightgray'} />
+                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, color: 'lightgray', marginTop: 20 }}>Your cart is Empty</Text>
+                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, color: 'lightgray' }}>Add your favourite food to order.</Text>
+            </View>
         )
     }
 
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
-            <ScrollView>
-                {renderCartItems()}
-                {renderMessageTextbox()}
-                {renderGap()}
-                {renderCoupons()}
-                {renderGap()}
-                {renderModeSelect()}
-                {renderGap()}
-                {renderBillingDetails()}
-                {renderGap()}
-                {renderAddresses()}
-                {renderFooter()}
-            </ScrollView>
-            {renderOrderButton()}
-            {renderRemoveItemModal()}
-            {renderCouponModal()}
+            {cartEmpty ?
+                renderEmptyCart()
+                :
+                <View>
+                    <ScrollView>
+                        {renderCartItems()}
+                        {renderMessageTextbox()}
+                        {renderGap()}
+                        {renderCoupons()}
+                        {renderGap()}
+                        {renderModeSelect()}
+                        {renderGap()}
+                        {renderBillingDetails()}
+                        {renderGap()}
+                        {loggedIn ?
+                            <View>
+                                {renderAddresses()}
+                                {renderGap()}
+                            </View>
+                            :
+                            null
+                        }
+                        {renderAdvanceOrderCheckbox()}
+                        {renderFooter()}
+                    </ScrollView>
+                    {renderOrderButton()}
+                    {renderRemoveItemModal()}
+                    {renderCouponModal()}
+                </View>
+            }
         </SafeAreaView>
     )
 

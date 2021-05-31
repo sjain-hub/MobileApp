@@ -8,7 +8,6 @@ import {
     Animated,
     Dimensions,
     FlatList,
-    Button,
     Pressable,
     Switch,
     SectionList,
@@ -58,22 +57,25 @@ const Menu = ({ route, navigation }) => {
     })
 
     React.useEffect(() => {
-        let { item } = route.params;
+        const unsubscribe = navigation.addListener('focus', () => {
+            let { item } = route.params;
 
-        AsyncStorage.getItem("kitchen").then((value) => {
-            setCartKitchenId(value)
+            AsyncStorage.getItem("kitchen").then((value) => {
+                setCartKitchenId(value)
+            });
+
+            AsyncStorage.getItem("orderItems").then((value) => {
+                if (value != null) {
+                    countOrderItems(JSON.parse(value))
+                    setOrderItems(JSON.parse(value))
+                }
+            });
+
+            fetchMenu(item)
+            setKitchen(item)
         });
-
-        AsyncStorage.getItem("orderItems").then((value) => {
-            if (value != null) {
-                countOrderItems(JSON.parse(value))
-                setOrderItems(JSON.parse(value))
-            }
-        });
-
-        fetchMenu(item)
-        setKitchen(item)
-    }, [])
+        return unsubscribe;
+    }, [navigation]);
 
     function countOrderItems(items) {
         let count = 0
@@ -816,34 +818,28 @@ const Menu = ({ route, navigation }) => {
                 }}
             >
                 <View style={{
-                    flex: 1,
                     justifyContent: "center",
                     alignItems: "center",
+                    backgroundColor: "white",
+                    borderRadius: 20,
+                    padding: 35,
                 }}>
-                    <View style={{
-                        backgroundColor: "white",
-                        borderRadius: 20,
-                        padding: 35,
-                        alignItems: "center",
-                    }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Items already in the cart will be removed. Do you wish to continue?</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Pressable
-                                style={[styles.button, styles.buttonClose]}
-                                onPress={() => setModalVisible(!modalVisible)}
-                            >
-                                <Text style={styles.textStyle}>No</Text>
-                            </Pressable>
-                            <Pressable
-                                style={[styles.button, styles.buttonClose]}
-                                onPress={() => {
-                                    setModalVisible(!modalVisible)
-                                    editOrderAfterKitchenChange()
-                                }}
-                            >
-                                <Text style={styles.textStyle}>Yes</Text>
-                            </Pressable>
-                        </View>
+                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Items already in the cart will be removed. Do you wish to continue?</Text>
+                    <View style={{ flexDirection: 'row', marginTop: 20 }}>
+                        <Pressable
+                            style={{ width: '40%' }}
+                            onPress={() => setModalVisible(!modalVisible)}
+                        >
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>No</Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={() => {
+                                setModalVisible(!modalVisible)
+                                editOrderAfterKitchenChange()
+                            }}
+                        >
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
+                        </Pressable>
                     </View>
                 </View>
             </Modal>
@@ -1059,7 +1055,9 @@ const Menu = ({ route, navigation }) => {
             <View style={{ top: '90%', alignSelf: 'center', position: 'absolute' }}>
                 <TouchableOpacity 
                     style={{width: width*0.4, height: 50, borderRadius: 30, backgroundColor: 'lightgreen', ...styles.shadow, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}
-                    onPress={() => navigation.navigate("Cart")}
+                    onPress={() => navigation.navigate("Cart", {
+                        raiseButton : false
+                    })}
                 >
                     <FAIcon name="shopping-cart" size={22} color="green" />
                     <View style={{width: 22, height: 22, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center'}}>

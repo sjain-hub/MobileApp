@@ -10,9 +10,9 @@ import { createBottomTabNavigator, BottomTabBar } from "@react-navigation/bottom
 import Svg, { Path } from 'react-native-svg';
 import { isIphoneX } from 'react-native-iphone-x-helper';
 
-import { Home, Kitchens, Cart, Test } from "../screens"
+import { Home, Kitchens, Cart, Test, Account, Search } from "../screens"
 import Cutlery from "../assets/icons/cutlery.png";
-import Search from "../assets/icons/search.png";
+import search from "../assets/icons/search.png";
 import ShoppingCart from "../assets/icons/shopping-basket.png";
 import User from "../assets/icons/user.png";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -142,7 +142,7 @@ const Tabs = ({ route, navigation }) => {
                     right: 0,
                     borderTopWidth: 0,
                     backgroundColor: "transparent",
-                    elevation: 0
+                    elevation: 50
                 }
             }}
             tabBar={(props) => (
@@ -170,17 +170,18 @@ const Tabs = ({ route, navigation }) => {
                         <TabBarCustomButton
                             {...props}
                         />
-                    )
+                    ),
+                    unmountOnBlur: true
                 }}
             />
 
             <Tab.Screen
                 name="Search"
-                component={Kitchens}
+                component={Search}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Image
-                            source={Search}
+                            source={search}
                             resizeMode="contain"
                             style={{
                                 width: 22,
@@ -200,6 +201,7 @@ const Tabs = ({ route, navigation }) => {
             <Tab.Screen
                 name="Cart"
                 component={Cart}
+                initialParams={{raiseButton : true}}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={{ flexDirection: 'row' }}>
@@ -225,13 +227,15 @@ const Tabs = ({ route, navigation }) => {
                         <TabBarCustomButton
                             {...props}
                         />
-                    )
+                    ),
+                    unmountOnBlur: () => {true}
                 }}
             />
 
             <Tab.Screen
                 name="User"
-                component={Kitchens}
+                component={Account}
+                initialParams={{cameFromCart : false}}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Image
@@ -248,7 +252,8 @@ const Tabs = ({ route, navigation }) => {
                         <TabBarCustomButton
                             {...props}
                         />
-                    )
+                    ),
+                    unmountOnBlur: () => {true}
                 }}
             />
         </Tab.Navigator>
