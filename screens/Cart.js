@@ -743,15 +743,21 @@ const Cart = ({ route, navigation }) => {
         return (
             <View style={{ marginHorizontal: 20, marginVertical: 20, width: width * 0.8 }}>
                 <View style={{flexDirection: 'row'}}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold', width: width*0.65 }}>Choose Your Address</Text>
-                    <Pressable style={{alignItems: 'center'}}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: '#FC6D3F' }} >Add Address</Text>
+                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold', width: width*0.6 }}>Choose Your Address</Text>
+                    <Pressable 
+                        style={{alignItems: 'center'}}
+                        onPress={() =>  {
+                            removeItemValue("tempRegion")
+                            navigation.navigate("AddNewAddress")
+                        }}
+                    >
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: '#FC6D3F' }} >Add New Address</Text>
                     </Pressable>
                 </View>
                 <View style={{ marginTop: 10 }}>
                     {addresses?.map((add) => {
                         return (
-                            <View style={{ flexDirection: 'row', marginVertical: 5 }} key={add.id}>
+                            <View style={{ flexDirection: 'row', marginVertical: 10 }} key={add.id}>
                                 <RadioButton
                                     color={'red'}
                                     value={add.place}

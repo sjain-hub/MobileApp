@@ -46,6 +46,7 @@ const Profile = ({ route, navigation }) => {
                         setUser(json.user)
                         setPhoneNo(json.user.phone)
                         setEmail(json.user.email)
+                        setErrors()
                     }).catch((error) => {
                         console.error(error);
                     });
@@ -53,10 +54,9 @@ const Profile = ({ route, navigation }) => {
         });
     }
 
-    function checkUpdateForm(ph, em) {
-        setErrors(false)
+    function checkUpdateForm(ph, em, err) {
         if (ph && em) {
-            if (ph.length == 10 && (ph != user.phone || em != user.email)) {
+            if (ph.length == 10 && (ph != user.phone || em != user.email) && !err) {
                 setUpdateFormValid(true)
             } else {
                 setUpdateFormValid(false)
@@ -94,6 +94,7 @@ const Profile = ({ route, navigation }) => {
                             fetchUserAccDetails()
                         } else {
                             setErrors(json)
+                            checkUpdateForm(phoneNo, email, json)
                         }
                     }).catch((error) => {
                         console.error(error);
@@ -195,10 +196,19 @@ const Profile = ({ route, navigation }) => {
                                             value={phoneNo}
                                             onChangeText={(text) => {
                                                 setPhoneNo(text)
-                                                checkUpdateForm(text, email)
+                                                setErrors(errors?{
+                                                    'email': errors.email
+                                                }: null)
+                                                checkUpdateForm(text, email, errors?{
+                                                    'email': errors.email
+                                                }: null)
                                             }}
                                         >
                                         </TextInput>
+                                        {errors?.phone?
+                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'red' }}>{errors.phone}</Text>
+                                        : null
+                                        }
                                     </View>
                                     <View
                                         style={{
@@ -213,19 +223,27 @@ const Profile = ({ route, navigation }) => {
                                             value={email}
                                             onChangeText={(text) => {
                                                 setEmail(text)
-                                                checkUpdateForm(phoneNo, text)
+                                                setErrors(errors?{
+                                                    'phone': errors.phone,
+                                                }: null)
+                                                checkUpdateForm(phoneNo, text, errors?{
+                                                    'phone': errors.phone,
+                                                }: null)
                                             }}
                                         >
                                         </TextInput>
-                                        {errors?.detail?
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'red' }}>{errors.detail}</Text>
+                                        {errors?.email?
+                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'red' }}>{errors.email}</Text>
                                         : null
                                         }
                                     </View>
                                     <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'center' }}>
                                         <Pressable
                                             style={{ width: '60%' }}
-                                            onPress={() => setEditMode(false)}
+                                            onPress={() => {
+                                                setEditMode(false)
+                                                fetchUserAccDetails()
+                                            }}
                                         >
                                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Cancel</Text>
                                         </Pressable>

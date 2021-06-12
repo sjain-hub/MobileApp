@@ -5,7 +5,9 @@ import {
     Image,
     TouchableOpacity,
     Dimensions,
-    StyleSheet
+    StyleSheet,
+    SafeAreaView,
+    BackHandler,
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
@@ -13,34 +15,69 @@ import Geolocation from '@react-native-community/geolocation';
 import KitPin from '../assets/icons/hamburger.png'
 import UserPin from '../assets/icons/map-pin.png'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import config from '../config.json'; 
+import config from '../config.json';
 import Geocoder from 'react-native-geocoding';
 
 const Home = ({ route, navigation }) => {
 
     const mapView = React.useRef()
     const [region, setRegion] = React.useState(null)
+    const [userLocation, setUserLocation] = React.useState(null)
     const [kitchensData, setKitchensData] = React.useState([])
     const [marginBottom, setMarginBottom] = React.useState(1)
 
+    const backAction = () => {
+        removeItemValue("region")
+        BackHandler.exitApp()
+        return true;
+    };
+
     React.useEffect(() => {
+        BackHandler.addEventListener("hardwareBackPress", backAction);
 
-        currentLocation()
-        fetchKitchens()
+        return () =>
+            BackHandler.removeEventListener("hardwareBackPress", backAction);
+    }, []);
 
-        const watchId = Geolocation.watchPosition(pos => {
-            // alert(pos.coords.latitude)
-            updateUserLocation(pos)
-        },
-            error => console.log(error),
-            { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
-        )
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            AsyncStorage.getItem("region").then((value) => JSON.parse(value))
+                .then((reg) => {
+                    if (reg) {
+                        updateUserLocation(reg)
+                    } else {
+                        console.log("hehehe")
+                        currentLocation()
+                    }
+                });
 
-        setTimeout(() => {
-            setMarginBottom(0)
-        }, 100);
+            fetchKitchens()
 
-    }, [])
+            // const watchId = Geolocation.watchPosition(pos => {
+            //     // alert(pos.coords.latitude)
+            //     updateUserLocation(pos)
+            // },
+            //     error => console.log(error),
+            //     { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+            // )
+
+            setTimeout(() => {
+                setMarginBottom(0)
+            }, 100);
+        });
+        return unsubscribe;
+
+    }, [navigation])
+
+    async function removeItemValue(key) {
+        try {
+            await AsyncStorage.removeItem(key);
+            return true;
+        }
+        catch (exception) {
+            return false;
+        }
+    }
 
     function currentLocation() {
         Geolocation.getCurrentPosition(pos => {
@@ -52,23 +89,21 @@ const Home = ({ route, navigation }) => {
             }
             setRegion(mapRegion)
             AsyncStorage.setItem('region', JSON.stringify(mapRegion))
-            // setAddress(pos.coords.latitude, pos.coords.longitude)
+            findAddress(pos.coords.latitude, pos.coords.longitude)
         })
     }
 
-    async function setAddress(lat, lon) {
+    function findAddress(lat, lon) {
         Geocoder.init(config.GMapAPIKey);
         Geocoder.from(lat, lon)
-		.then(json => {
-            console.log(json, "adddress")
-        		var addressComponent = json.results[0].address_components[0];
-			console.log(addressComponent);
-		})
-		.catch(error => console.warn(error));
+            .then(json => {
+                setUserLocation(json.results[1].formatted_address);
+            })
+            .catch(error => console.warn(error));
     }
 
     const fetchKitchens = async () => {
-        fetch(config.url+'/userapi/', {
+        fetch(config.url + '/userapi/', {
             method: 'GET',
             headers: {
                 Accept: 'application/json',
@@ -83,23 +118,16 @@ const Home = ({ route, navigation }) => {
             });
     };
 
-    function updateUserLocation(loc) {
-        let newRegion = {
-            latitude: loc.coords.latitude,
-            longitude: loc.coords.longitude,
-            latitudeDelta: 0.0025,
-            longitudeDelta: 0.0025
-        }
-
-        setRegion(newRegion)
-        AsyncStorage.setItem('region', JSON.stringify(newRegion))
-        // console.log(mapView)
-        mapView.current.animateToRegion(newRegion, 200)
+    function updateUserLocation(reg) {
+        setRegion(reg)
+        findAddress(reg.latitude, reg.longitude)
+        mapView.current.animateToRegion(reg, 200)
     }
 
     function onRegionChange(region) {
         setRegion(region)
         AsyncStorage.setItem('region', JSON.stringify(region))
+        findAddress(region.latitude, region.longitude)
     }
 
     function renderMap() {
@@ -183,18 +211,21 @@ const Home = ({ route, navigation }) => {
         )
     }
 
-    function renderLocationHeader() {
+    function renderSearchLocation() {
         return (
-            <View
+            <TouchableOpacity
                 style={{
                     position: 'absolute',
-                    top: 50,
+                    top: 60,
                     left: 0,
                     right: 0,
                     height: 50,
                     alignItems: 'center',
                     justifyContent: 'center',
                 }}
+                onPress={() => navigation.navigate("SearchAddress", {
+                    fromScreen: "Home"
+                })}
             >
                 <View
                     style={{
@@ -218,10 +249,10 @@ const Home = ({ route, navigation }) => {
                     />
 
                     <View style={{ flex: 1 }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, lineHeight: 22 }}>abcd</Text>
+                        <Text numberOfLines={1} style={{ fontFamily: "Roboto-Regular", fontSize: 16, lineHeight: 22 }}>{userLocation}</Text>
                     </View>
                 </View>
-            </View>
+            </TouchableOpacity>
         )
     }
 
@@ -254,7 +285,7 @@ const Home = ({ route, navigation }) => {
                             borderRadius: 25,
                             ...styles.shadow
                         }}
-                        onPress={() =>  navigation.navigate("Tabs")}
+                        onPress={() => navigation.navigate("Tabs")}
                     >
                         <Text style={{ color: 'white', fontSize: 20 }}>Explore Kitchens</Text>
                     </TouchableOpacity>
@@ -265,11 +296,11 @@ const Home = ({ route, navigation }) => {
     }
 
     return (
-        <View style={{ flex: 1 }}>
+        <SafeAreaView style={styles.container}>
             {renderMap()}
-            {renderLocationHeader()}
+            {renderSearchLocation()}
             {renderButton()}
-        </View>
+        </SafeAreaView>
     )
 
 }
@@ -277,6 +308,10 @@ const Home = ({ route, navigation }) => {
 export default Home;
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "white"
+    },
     shadow: {
         shadowColor: "#000",
         shadowOffset: {

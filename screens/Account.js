@@ -401,7 +401,7 @@ const Account = ({ route, navigation }) => {
 
     function renderHeader() {
         return (
-            <View style={{ flexDirection: 'row', height: 50 }}>
+            <View style={{ flexDirection: 'row', height: 50, backgroundColor: 'white' }}>
                 <TouchableOpacity
                     style={{
                         width: 50,
@@ -500,7 +500,7 @@ const Account = ({ route, navigation }) => {
         return (
             <TouchableOpacity
                 style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}
-            // onPress={() => }
+                onPress={() => navigation.navigate("Addresses")}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Manage Addresses</Text>

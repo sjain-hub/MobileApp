@@ -1,24 +1,212 @@
-import React, { useRef } from "react";
+import React from "react";
 import {
     StyleSheet,
     SafeAreaView,
     View,
     Text,
     Image,
-    ScrollView,
+    FlatList,
     Dimensions,
     Pressable,
     TouchableOpacity,
-    TextInput,
 } from "react-native";
+import config from '../config.json';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get("window");
+import back from "../assets/icons/back.png";
 
 
 const Addresses = ({ route, navigation }) => {
 
+    const [addresses, setAddresses] = React.useState();
+
+    React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            fetchUserAddresses()
+        });
+        return unsubscribe;
+    }, [])
+
+    async function removeItemValue(key) {
+        try {
+            await AsyncStorage.removeItem(key);
+            return true;
+        }
+        catch (exception) {
+            return false;
+        }
+    }
+
+    function fetchUserAddresses() {
+        AsyncStorage.getItem("authToken").then((value) => {
+            if (value) {
+                fetch(config.url + '/userapi/appGetAddresses', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        Authorization: 'Token ' + value
+                    },
+                }).then((response) => response.json())
+                    .then((json) => {
+                        setAddresses(json.addresses)
+                    }).catch((error) => {
+                        console.error(error);
+                    });
+            }
+        });
+    }
+
+    function renderGap() {
+        return (
+            <View style={{
+                borderStyle: 'solid',
+                borderWidth: 10,
+                borderColor: '#F5F5F6',
+            }}></View>
+        )
+    }
+
+    function renderHeader() {
+        return (
+            <View style={{ flexDirection: 'row', height: 50 }}>
+                <TouchableOpacity
+                    style={{
+                        width: 50,
+                        paddingLeft: 20,
+                        justifyContent: 'center'
+                    }}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Image
+                        source={back}
+                        resizeMode="contain"
+                        style={{
+                            width: 20,
+                            height: 20
+                        }}
+                    />
+                </TouchableOpacity>
+                <View
+                    style={{
+                        alignItems: 'flex-start',
+                        justifyContent: 'center',
+                    }}
+                >
+                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>Manage Addresses</Text>
+                </View>
+            </View>
+        )
+    }
+
+    function deleteAddress(add) {
+        AsyncStorage.getItem("authToken").then((authToken) => {
+            if (authToken) {
+                fetch(config.url + '/userapi/appSaveAddress', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: 'Token ' + authToken
+                    },
+                    body: JSON.stringify({
+                        "action": "delete",
+                        "addid": add.id,
+                    })
+                }).then((response) => response.json())
+                    .then((json) => {
+                        fetchUserAddresses()
+                        console.log(json);
+                    }).catch((error) => {
+                        console.error(error);
+                    });
+            }
+        });
+    }
+
+    function renderAddressList() {
+        const separator = () => (
+            <View style={{
+                borderStyle: 'solid',
+                borderWidth: 2,
+                borderColor: '#F5F5F6',
+                width: width * 0.9,
+                alignSelf: 'center'
+            }}></View>
+        )
+
+        const renderItem = ({ item }) => (
+            <View style={{ marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}>
+                <View>
+                    <View style={{ width: width * 0.9 }}>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{item.place}</Text>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10, color: 'gray', marginTop: 10 }}>{item.address}, Floor No: {item.floorNo}</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', marginTop: 10 }}>
+                        <Pressable
+                            style={{ marginLeft: 10 }}
+                            onPress={() => {
+                                navigation.navigate("AddNewAddress", {
+                                    editAddress: item
+                                })
+                                removeItemValue("tempRegion")
+                            }}
+                        >
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: '#FC6D3F' }}>Edit</Text>
+                        </Pressable>
+                        <Pressable
+                            style={{ marginLeft: 30 }}
+                            onPress={() => {
+                                deleteAddress(item)
+                            }}
+                        >
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: '#FC6D3F' }}>Delete</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </View>
+        )
+
+        return (
+            <FlatList
+                data={addresses}
+                keyExtractor={item => `${item.id}`}
+                renderItem={renderItem}
+                ItemSeparatorComponent={separator}
+            />
+        )
+    }
+
+    function renderAddButton() {
+        return (
+            <View style={{ height: 60, backgroundColor: 'white', justifyContent: 'center' }}>
+                <TouchableOpacity
+                    style={{
+                        height: 40,
+                        marginRight: 40,
+                        marginLeft: 40,
+                        backgroundColor: '#FC6D3F',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 10,
+                        ...styles.shadow
+                    }}
+                    onPress={() => {
+                        removeItemValue("tempRegion")
+                        navigation.navigate("AddNewAddress")
+                    }}
+                >
+                    <Text style={{ color: 'white', fontSize: 20 }}>Add new Address</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-            <Text>jhgfjhfgjhfjf</Text>
+            {renderHeader()}
+            {renderGap()}
+            {renderAddressList()}
+            {renderAddButton()}
         </SafeAreaView>
     )
 }

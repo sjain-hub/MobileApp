@@ -3,7 +3,7 @@ import React from 'react';
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native'
 
-import { Home, Kitchens, Menu, KitchenDetails, VideoPlayer, Cart, Account, Profile, FavKitchens, Orders, Addresses, Search, Test } from './screens'
+import { Home, Kitchens, Menu, KitchenDetails, VideoPlayer, Cart, Account, Profile, FavKitchens, Orders, Addresses, Search, AddNewAddress, SearchAddress, Test } from './screens'
 import Tabs from './navigation/tabs'
 
 const Stack = createStackNavigator();
@@ -30,6 +30,8 @@ const App = () => {
                 <Stack.Screen name="Orders" component={Orders} />
                 <Stack.Screen name="Addresses" component={Addresses} />
                 <Stack.Screen name="Search" component={Search} />
+                <Stack.Screen name="AddNewAddress" component={AddNewAddress} />
+                <Stack.Screen name="SearchAddress" component={SearchAddress} />
                 <Stack.Screen name="test" component={Test} />
             </Stack.Navigator>
         </NavigationContainer>

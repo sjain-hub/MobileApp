@@ -13,6 +13,7 @@ import {
     ScrollView
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Geocoder from 'react-native-geocoding';
 import UserPin from '../assets/icons/nearby.png';
 import Star from '../assets/icons/star.png';
 import NorthIndian from '../assets/icons/nindian.png';
@@ -81,35 +82,47 @@ const kitchens = ({ route, navigation }) => {
     ]
 
     const [categories, setCategories] = React.useState(categoryData)
+    const [userLocation, setUserLocation] = React.useState(null)
     const [selectedCategory, setSelectedCategory] = React.useState({ "icon": 18, "id": 1, "name": "All" })
     const [kitchensData, setKitchensData] = React.useState([])
     const [filteredKitchens, setFilteredKitchens] = React.useState([])
 
     React.useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            AsyncStorage.getItem("region").then((value) => JSON.parse(value))
+                .then((json) => {
+                    findAddress(json.latitude, json.longitude)
+                    fetch(config.url + '/userapi/appnearbyKitchens', {
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            "lon": json.longitude,
+                            "lat": json.latitude
+                        })
+                    }).then((response) => response.json())
+                        .then((json) => {
+                            // console.log(json.kit_object, "kitchens data")
+                            setFilteredKitchens(json.kit_object)
+                            setKitchensData(json.kit_object)
+                        }).catch((error) => {
+                            console.error(error);
+                        });
+                });
+        });
+        return unsubscribe;
+    }, [navigation])
 
-        AsyncStorage.getItem("region").then((value) => JSON.parse(value))
-            .then((json) => {
-                fetch(config.url + '/userapi/appnearbyKitchens', {
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        "lon": json.longitude,
-                        "lat": json.latitude
-                    })
-                }).then((response) => response.json())
-                    .then((json) => {
-                        // console.log(json.kit_object, "kitchens data")
-                        setFilteredKitchens(json.kit_object)
-                        setKitchensData(json.kit_object)
-                    }).catch((error) => {
-                        console.error(error);
-                    });
-            });
-
-    }, [])
+    function findAddress(lat, lon) {
+        Geocoder.init(config.GMapAPIKey);
+        Geocoder.from(lat, lon)
+            .then(json => {
+                setUserLocation(json.results[1].formatted_address);
+            })
+            .catch(error => console.warn(error));
+    }
 
     function onSelectCategory(category) {
         if (category.name == "All") {
@@ -159,19 +172,22 @@ const kitchens = ({ route, navigation }) => {
                         height: 50
                     }}
                 >
-                    <View
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("SearchAddress", {
+                            fromScreen: "Kitchens"
+                        })}
                         style={{
-                            height: 30,
+                            height: 40,
                             width: width*0.7,
-                            alignItems: 'center',
+                            alignItems: 'flex-start',
                             justifyContent: 'center',
-                            paddingHorizontal: 30,
+                            paddingHorizontal: 10,
                             borderRadius: 30,
                             backgroundColor: "#EFEFF1"
                         }}
                     >
-                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 20, lineHeight: 22 }}>abcd</Text>
-                    </View>
+                        <Text numberOfLines={1} style={{ fontFamily: "Roboto-Bold", fontSize: 16, lineHeight: 22 }}>{userLocation}</Text>
+                    </TouchableOpacity>
                 </View>
 
                 <TouchableOpacity

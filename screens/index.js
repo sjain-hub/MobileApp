@@ -11,6 +11,8 @@ import FavKitchens from './FavKitchens'
 import Orders from './Orders'
 import Addresses from './Addresses'
 import Search from './Search'
+import AddNewAddress from './AddNewAddress'
+import SearchAddress from './SearchAddress'
 
 export {
     Home,
@@ -25,5 +27,7 @@ export {
     Orders,
     Addresses,
     Search,
+    AddNewAddress,
+    SearchAddress,
     Test
 }
