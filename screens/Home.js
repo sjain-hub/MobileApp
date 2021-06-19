@@ -46,7 +46,6 @@ const Home = ({ route, navigation }) => {
                     if (reg) {
                         updateUserLocation(reg)
                     } else {
-                        console.log("hehehe")
                         currentLocation()
                     }
                 });
@@ -111,7 +110,6 @@ const Home = ({ route, navigation }) => {
             }
         }).then((response) => response.json())
             .then((json) => {
-                // console.log(json, "kitchens data")
                 setKitchensData(json)
             }).catch((error) => {
                 console.error(error);

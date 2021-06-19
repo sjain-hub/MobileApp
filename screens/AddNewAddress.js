@@ -124,7 +124,7 @@ const AddNewAddresses = ({ route, navigation }) => {
                         justifyContent: 'center',
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>Add new Address</Text>
+                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{editAddress? "Edit Address" : "Add new Address"}</Text>
                 </View>
             </View>
         )
@@ -287,7 +287,7 @@ const AddNewAddresses = ({ route, navigation }) => {
                     }}
                     onPress={() => saveAddress()}
                 >
-                    <Text style={{ color: formValid ? 'white' : 'gray', fontSize: 20 }}>{editAddress? 'Update' : 'Add'}</Text>
+                    <Text style={{ color: formValid ? 'white' : 'gray', fontSize: 18 }}>{editAddress? 'Update' : 'Add'}</Text>
                 </TouchableOpacity>
             </View>
         )

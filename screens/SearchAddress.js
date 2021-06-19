@@ -90,8 +90,6 @@ const SearchAddress = ({ route, navigation }) => {
                     placeholder='Search location'
                     fetchDetails={true}
                     onPress={(data, details = null) => {
-                        // console.log(data);
-                        // console.log(details.geometry, "details");
                         setRegion(details.geometry.location)
                     }}
                     styles={{
@@ -153,7 +151,7 @@ const SearchAddress = ({ route, navigation }) => {
         const listHeader = () => (
             <View style={{
                 borderStyle: 'solid',
-                borderWidth: 10,
+                borderWidth: 5,
                 borderColor: '#F5F5F6',
                 width: width,
                 alignSelf: 'center'

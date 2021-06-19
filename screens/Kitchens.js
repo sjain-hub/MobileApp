@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geocoder from 'react-native-geocoding';
-import UserPin from '../assets/icons/nearby.png';
+import UserPin from '../assets/icons/map-pin.png';
 import Star from '../assets/icons/star.png';
 import NorthIndian from '../assets/icons/nindian.png';
 import noodle from '../assets/icons/noodle.png';
@@ -104,7 +104,6 @@ const kitchens = ({ route, navigation }) => {
                         })
                     }).then((response) => response.json())
                         .then((json) => {
-                            // console.log(json.kit_object, "kitchens data")
                             setFilteredKitchens(json.kit_object)
                             setKitchensData(json.kit_object)
                         }).catch((error) => {
@@ -149,8 +148,8 @@ const kitchens = ({ route, navigation }) => {
                 <TouchableOpacity
                     style={{
                         width: 50,
-                        paddingLeft: 20,
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        alignItems: 'center',
                     }}
                     onPress={() => navigation.navigate("Home")}
                 >
@@ -167,7 +166,7 @@ const kitchens = ({ route, navigation }) => {
                 <View
                     style={{
                         flex: 1,
-                        alignItems: 'center',
+                        alignItems: 'flex-start',
                         justifyContent: 'center',
                         height: 50
                     }}
@@ -178,7 +177,7 @@ const kitchens = ({ route, navigation }) => {
                         })}
                         style={{
                             height: 40,
-                            width: width*0.7,
+                            width: width*0.8,
                             alignItems: 'flex-start',
                             justifyContent: 'center',
                             paddingHorizontal: 10,
@@ -190,7 +189,7 @@ const kitchens = ({ route, navigation }) => {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={{
                         width: 50,
                         paddingRight: 20,
@@ -205,7 +204,7 @@ const kitchens = ({ route, navigation }) => {
                             height: 20
                         }}
                     />
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         )
     }
@@ -220,7 +219,7 @@ const kitchens = ({ route, navigation }) => {
                         paddingBottom: 10 * 2,
                         backgroundColor: (selectedCategory?.id == item.id) ? "#FC6D3F" : "white",
                         borderRadius: 30,
-                        marginRight: 10,
+                        marginHorizontal: 5,
                         ...styles.shadow
                     }}
                     onPress={() => onSelectCategory(item)}
@@ -262,17 +261,22 @@ const kitchens = ({ route, navigation }) => {
         }
 
         return (
-            <View style={{ paddingLeft: 20, paddingRight: 20, borderBottomWidth: 5, borderColor: '#F6F6F7' }}>
-                <Text style={{ fontFamily: "Roboto-Black", fontSize: 25, lineHeight: 36 }}>Popular Categories</Text>
-
+            <View style={{ marginBottom: 10, paddingLeft: 20, paddingRight: 20 }}>
                 <FlatList
                     data={categories}
                     horizontal
-                    showsHorizontalScrollIndicator={false}
+                    showsHorizontalScrollIndicator={true}
                     keyExtractor={item => `${item.id}`}
                     renderItem={renderItem}
-                    contentContainerStyle={{ paddingVertical: 10 }}
+                    contentContainerStyle={{ paddingVertical: 20 }}
                 />
+                <View style={{
+                    borderStyle: 'solid',
+                    borderWidth: 1,
+                    borderColor: '#F5F5F6',
+                    width: width*0.6,
+                    alignSelf: 'center'
+                }}></View>
             </View>
         )
     }
@@ -280,7 +284,7 @@ const kitchens = ({ route, navigation }) => {
     function renderRestaurantList() {
         const renderItem = ({ item }) => (
             <TouchableOpacity
-                style={{ marginBottom: 20, flexDirection: 'row', width: width, marginVertical: 10, paddingHorizontal: 20 }}
+                style={{  flexDirection: 'row', width: width, marginVertical: 14, paddingHorizontal: 20 }}
                 onPress={() => navigation.navigate("Menu", {
                     item,
                 })}
@@ -289,9 +293,9 @@ const kitchens = ({ route, navigation }) => {
                     source={{ uri: config.url + item.dp }}
                     resizeMode="cover"
                     style={{
-                        width: width*0.3,
-                        height: 130,
-                        borderRadius: 30,
+                        width: 110,
+                        height: 120,
+                        borderRadius: 10,
                         marginRight: 20
                     }}
                 />
@@ -373,8 +377,7 @@ const kitchens = ({ route, navigation }) => {
                 renderItem={renderItem}
                 ListHeaderComponent={renderMainCategories}
                 contentContainerStyle={{
-                    paddingTop: 20,
-                    paddingBottom: 30
+                    paddingBottom: 40
                 }}
             />
         )

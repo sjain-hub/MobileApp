@@ -59,6 +59,8 @@ const Menu = ({ route, navigation }) => {
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             let { item } = route.params;
+            fetchMenu(item)
+            setKitchen(item)
 
             AsyncStorage.getItem("kitchen").then((value) => {
                 setCartKitchenId(value)
@@ -70,9 +72,6 @@ const Menu = ({ route, navigation }) => {
                     setOrderItems(JSON.parse(value))
                 }
             });
-
-            fetchMenu(item)
-            setKitchen(item)
         });
         return unsubscribe;
     }, [navigation]);

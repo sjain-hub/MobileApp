@@ -9,6 +9,7 @@ import Tabs from './navigation/tabs'
 const Stack = createStackNavigator();
 
 const App = () => {
+
     return (
         <NavigationContainer>
             <Stack.Navigator

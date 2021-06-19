@@ -11,6 +11,8 @@ import Svg, { Path } from 'react-native-svg';
 import { isIphoneX } from 'react-native-iphone-x-helper';
 
 import { Home, Kitchens, Cart, Test, Account, Search } from "../screens"
+import FAIcon from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Cutlery from "../assets/icons/cutlery.png";
 import search from "../assets/icons/search.png";
 import ShoppingCart from "../assets/icons/shopping-basket.png";
@@ -156,15 +158,7 @@ const Tabs = ({ route, navigation }) => {
                 component={Kitchens}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Image
-                            source={Cutlery}
-                            resizeMode="contain"
-                            style={{
-                                width: 22,
-                                height: 22,
-                                tintColor: focused ? '#FC6D3F' : 'gray'
-                            }}
-                        />
+                        <MaterialIcons name="fastfood" size={28} color={focused ? '#FC6D3F' : 'gray'} />
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
@@ -205,15 +199,7 @@ const Tabs = ({ route, navigation }) => {
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={{ flexDirection: 'row' }}>
-                            <Image
-                                source={ShoppingCart}
-                                resizeMode="contain"
-                                style={{
-                                    width: 22,
-                                    height: 22,
-                                    tintColor: focused ? '#FC6D3F' : 'gray'
-                                }}
-                            />
+                            <FAIcon name="shopping-cart" size={22} color={focused ? '#FC6D3F' : 'gray'} />
                             {totalCartItems > 0 && !focused ?
                                 <View style={{ width: 18, height: 18, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center', marginLeft: -5, marginTop: -5 }}>
                                     <Text style={{ color: 'white', fontSize: 12 }}>{totalCartItems}</Text>
@@ -238,15 +224,7 @@ const Tabs = ({ route, navigation }) => {
                 initialParams={{cameFromCart : false}}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Image
-                            source={User}
-                            resizeMode="contain"
-                            style={{
-                                width: 22,
-                                height: 22,
-                                tintColor: focused ? '#FC6D3F' : 'gray'
-                            }}
-                        />
+                        <FAIcon name="user-alt" size={22} color={focused ? '#FC6D3F' : 'gray'} />
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton

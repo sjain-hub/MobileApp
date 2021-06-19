@@ -10,6 +10,7 @@ import {
     Pressable,
     TouchableOpacity,
 } from "react-native";
+import Modal from 'react-native-modal';
 import config from '../config.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get("window");
@@ -19,6 +20,8 @@ import back from "../assets/icons/back.png";
 const Addresses = ({ route, navigation }) => {
 
     const [addresses, setAddresses] = React.useState();
+    const [deleteAdd, setDeleteAdd] = React.useState();
+    const [addDelModal, setAddDelModal] = React.useState(false);
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -156,7 +159,8 @@ const Addresses = ({ route, navigation }) => {
                         <Pressable
                             style={{ marginLeft: 30 }}
                             onPress={() => {
-                                deleteAddress(item)
+                                setDeleteAdd(item)
+                                setAddDelModal(true)
                             }}
                         >
                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: '#FC6D3F' }}>Delete</Text>
@@ -195,9 +199,47 @@ const Addresses = ({ route, navigation }) => {
                         navigation.navigate("AddNewAddress")
                     }}
                 >
-                    <Text style={{ color: 'white', fontSize: 20 }}>Add new Address</Text>
+                    <Text style={{ color: 'white', fontSize: 18 }}>Add new Address</Text>
                 </TouchableOpacity>
             </View>
+        )
+    }
+
+    function renderDeleteAddressModal() {
+        return (
+            <Modal
+                isVisible={addDelModal}
+                style={{
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+            >
+                <View style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "white",
+                    borderRadius: 20,
+                    padding: 30,
+                }}>
+                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Are you sure you want to delete this address?</Text>
+                    <View style={{ flexDirection: 'row', marginTop: 20 }}>
+                        <Pressable
+                            style={{ width: '40%' }}
+                            onPress={() => setAddDelModal(false)}
+                        >
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>No</Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={() => {
+                                setAddDelModal(false)
+                                deleteAddress(deleteAdd)
+                            }}
+                        >
+                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
         )
     }
 
@@ -207,6 +249,7 @@ const Addresses = ({ route, navigation }) => {
             {renderGap()}
             {renderAddressList()}
             {renderAddButton()}
+            {renderDeleteAddressModal()}
         </SafeAreaView>
     )
 }
