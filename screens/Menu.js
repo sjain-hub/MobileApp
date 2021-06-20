@@ -49,6 +49,7 @@ const Menu = ({ route, navigation }) => {
     const [vegSelected, setVegSelected] = React.useState(false);
     const [sectionListRef, setSectionListRef] = React.useState();
     const [totalCartItems, setTotalCartItems] = React.useState(0);
+    const [favourite, setFavourite] = React.useState();
 
     const scrollY = new Animated.Value(0)
     const translateY = scrollY.interpolate({
@@ -58,9 +59,10 @@ const Menu = ({ route, navigation }) => {
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            let { item } = route.params;
-            fetchMenu(item)
-            setKitchen(item)
+            let { kitId } = route.params;
+            AsyncStorage.getItem("authToken").then((value) => {
+                getKitchen(kitId, value)
+            });
 
             AsyncStorage.getItem("kitchen").then((value) => {
                 setCartKitchenId(value)
@@ -75,6 +77,34 @@ const Menu = ({ route, navigation }) => {
         });
         return unsubscribe;
     }, [navigation]);
+
+    function getKitchen(kitId, token) {
+        AsyncStorage.getItem("region").then((value) => JSON.parse(value))
+        .then((json) => {
+            fetch(config.url + '/userapi/appgetKitchen', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                    Authorization: token? 'Token ' + token : ''
+                },
+                body: JSON.stringify({
+                    "lon": json.longitude,
+                    "lat": json.latitude,
+                    "kitId": kitId
+                })
+            }).then((response) => response.json())
+                .then((json) => {
+                    if(json.kit_object){
+                        fetchMenu(json.kit_object)
+                        setKitchen(json.kit_object)
+                        setFavourite(json.kit_object.favourite)
+                    }
+                }).catch((error) => {
+                    console.error(error);
+                });
+        });
+    }
 
     function countOrderItems(items) {
         let count = 0
@@ -484,7 +514,11 @@ const Menu = ({ route, navigation }) => {
                                 >
                                     <Text style={{ fontFamily: "Roboto-Bold", fontSize: 22, fontWeight: 'bold' }}>{kitchen?.kitName} <AntIcon name="right" size={22} /></Text>
                                 </TouchableOpacity>
-                                <AntIcon name="hearto" size={22} color="red" />
+                                <TouchableOpacity 
+                                    onPress={() => markFavourite(kitchen.id)}    
+                                >
+                                    <AntIcon name={favourite? "heart" : "hearto"} size={22} color="red" />
+                                </TouchableOpacity>
                             </View>
                             <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.catdesc}</Text>
                             <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.landmark}</Text>
@@ -535,6 +569,34 @@ const Menu = ({ route, navigation }) => {
                     </View>
                 </Animated.View>
         )
+    }
+
+    function markFavourite(kitId) {
+        AsyncStorage.getItem("authToken").then((value) => {
+            if (value) {
+                fetch(config.url + '/userapi/appaddToFavourite', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: 'Token ' + value
+                    },
+                    body: JSON.stringify({
+                        "kitId": kitId,
+                    })
+                }).then((response) => response.json())
+                    .then((json) => {
+                        setFavourite(!favourite)
+                    }).catch((error) => {
+                        console.error(error);
+                    });
+            }
+            else {
+                navigation.navigate("Account", {
+                    cameFrom: true
+                })
+            }
+        });
     }
 
     function renderMenu() {

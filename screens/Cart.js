@@ -248,7 +248,7 @@ const Cart = ({ route, navigation }) => {
                         onPress={() => {
                             setCouponApplied()
                             navigation.navigate("Account", {
-                                cameFromCart: true
+                                cameFrom: true
                             })
                         }}
                     >

@@ -76,6 +76,9 @@ const Search = ({ route, navigation }) => {
                 )
                 setRecentSearchedKitchens(recentlysearcheditems)
             }
+            else {
+                setShowRecentSearches(false)
+            }
         });
     }
 
@@ -107,36 +110,10 @@ const Search = ({ route, navigation }) => {
 
     function onSuccess(data) {
         setShowScanner(false)
-        AsyncStorage.getItem("region").then((value) => JSON.parse(value))
-        .then((json) => {
-            fetch(config.url + '/userapi/appgetKitchen', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    "lon": json.longitude,
-                    "lat": json.latitude,
-                    "kitId": data.data
-                })
-            }).then((response) => response.json())
-                .then((json) => {
-                    if(json.kit_object){
-                        navigation.navigate("Menu", {
-                            "item": json.kit_object,
-                        })
-                    }
-                    else{
-                        alert("Wrong QR Code")
-                        setShowScanner(true)
-                    }
-                }).catch((error) => {
-                    // console.error(error);
-                    alert("Wrong QR Code")
-                    setShowScanner(true)
-                });
-        });
+        navigation.navigate("Menu", {
+            "kitId": data.data,
+        })
+       
     }
 
     function checkLength(text) {
@@ -175,10 +152,10 @@ const Search = ({ route, navigation }) => {
     function renderSearchResults() {
         const renderItem = ({ item }) => (
             <TouchableOpacity
-                style={{  flexDirection: 'row', width: width, marginVertical: 10, paddingHorizontal: 20 }}
+                style={{  flexDirection: 'row', width: width, marginVertical: 10 }}
                 onPress={() => {
                     navigation.navigate("Menu", {
-                        item,
+                        "kitId": item.id,
                     })
                     var temparray = recentSearchedIds? recentSearchedIds : []
                     if(!temparray.includes(item.id)) {
@@ -239,7 +216,7 @@ const Search = ({ route, navigation }) => {
                 keyExtractor={item => `${item.id}`}
                 renderItem={renderItem}
                 contentContainerStyle={{
-                    marginTop: 40,
+                    marginTop: 20,
                     marginHorizontal: 20
                 }}
             />
@@ -252,7 +229,7 @@ const Search = ({ route, navigation }) => {
                 style={{ width: 100, marginRight: 10, alignItems: 'center' }}
                 onPress={() => {
                     navigation.navigate("Menu", {
-                        item,
+                        "kitId": item.id,
                     })
                 }}
             >

@@ -89,30 +89,34 @@ const kitchens = ({ route, navigation }) => {
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            AsyncStorage.getItem("region").then((value) => JSON.parse(value))
-                .then((json) => {
-                    findAddress(json.latitude, json.longitude)
-                    fetch(config.url + '/userapi/appnearbyKitchens', {
-                        method: 'POST',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            "lon": json.longitude,
-                            "lat": json.latitude
-                        })
-                    }).then((response) => response.json())
-                        .then((json) => {
-                            setFilteredKitchens(json.kit_object)
-                            setKitchensData(json.kit_object)
-                        }).catch((error) => {
-                            console.error(error);
-                        });
-                });
+            fetchNearbyKitchens()
         });
         return unsubscribe;
     }, [navigation])
+
+    function fetchNearbyKitchens() {
+        AsyncStorage.getItem("region").then((value) => JSON.parse(value))
+        .then((json) => {
+            findAddress(json.latitude, json.longitude)
+            fetch(config.url + '/userapi/appnearbyKitchens', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "lon": json.longitude,
+                    "lat": json.latitude
+                })
+            }).then((response) => response.json())
+                .then((json) => {
+                    setFilteredKitchens(json.kit_object)
+                    setKitchensData(json.kit_object)
+                }).catch((error) => {
+                    console.error(error);
+                });
+        });
+    }
 
     function findAddress(lat, lon) {
         Geocoder.init(config.GMapAPIKey);
@@ -286,7 +290,7 @@ const kitchens = ({ route, navigation }) => {
             <TouchableOpacity
                 style={{  flexDirection: 'row', width: width, marginVertical: 14, paddingHorizontal: 20 }}
                 onPress={() => navigation.navigate("Menu", {
-                    item,
+                    "kitId": item.id,
                 })}
             >
                 <Image

@@ -34,12 +34,12 @@ const Account = ({ route, navigation }) => {
     const [loggedIn, setLoggedIn] = React.useState(false);
     const [logoutModalVisible, setLogoutModalVisible] = React.useState(false);
     const [user, setUser] = React.useState();
-    const [cameFromCart, setCameFromCart] = React.useState(false);
+    const [cameFrom, setCameFrom] = React.useState(false);
     const [errors, setErrors] = React.useState();
 
     React.useEffect(() => {
-        let { cameFromCart } = route.params;
-        setCameFromCart(cameFromCart)
+        let { cameFrom } = route.params;
+        setCameFrom(cameFrom)
         AsyncStorage.getItem("authToken").then((value) => {
             if (value) {
                 fetchUserAccDetails(value)
@@ -125,7 +125,7 @@ const Account = ({ route, navigation }) => {
             .then((json) => {
                 if (json.token) {
                     AsyncStorage.setItem('authToken', json.token)
-                    if (cameFromCart) {
+                    if (cameFrom) {
                         navigation.goBack()
                     } else {
                         setLoggedIn(true)
@@ -160,7 +160,7 @@ const Account = ({ route, navigation }) => {
             .then((json) => {
                 if (json.token) {
                     AsyncStorage.setItem('authToken', json.token)
-                    if (cameFromCart) {
+                    if (cameFrom) {
                         navigation.goBack()
                     } else {
                         setRegisterUser(false)
@@ -468,7 +468,7 @@ const Account = ({ route, navigation }) => {
         return (
             <TouchableOpacity
                 style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}
-            // onPress={() => }
+                onPress={() =>  navigation.navigate("FavKitchens")}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Favourite Kitchens</Text>
