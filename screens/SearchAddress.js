@@ -44,7 +44,11 @@ const SearchAddress = ({ route, navigation }) => {
                     .then((json) => {
                         setAddresses(json.addresses)
                     }).catch((error) => {
-                        console.error(error);
+                         if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                     });
             }
         });

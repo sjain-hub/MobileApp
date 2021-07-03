@@ -53,7 +53,11 @@ const FavKitchens = ({ route, navigation }) => {
                 .then((json) => {
                     setFavKitchens(json.kit_object)
                 }).catch((error) => {
-                    console.error(error);
+                     if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                 });
         });
     }
@@ -94,7 +98,7 @@ const FavKitchens = ({ route, navigation }) => {
                         justifyContent: 'center',
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>Favourite Kitchens</Text>
+                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>FAVOURITE KITCHENS</Text>
                 </View>
             </View>
         )
@@ -171,19 +175,6 @@ const FavKitchens = ({ route, navigation }) => {
                         <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{item.dist} km  |  </Text>
                         <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{item.mode} ({item.deliveryTime} min)</Text>
                     </View>
-
-                    <View
-                        style={{
-                            marginTop: 5,
-                            marginBottom: 5,
-                            borderBottomColor: '#F5F5F6',
-                            borderBottomWidth: 1,
-                        }}
-                    />
-
-                    {item.acceptAdvcOrders ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, color: 'gray' }}><FAIcon5 name="info-circle" size={12} color="skyblue" /> Accepts Advance Orders upto 2 Days.</Text>
-                    : null}
 
                 </View>
             </TouchableOpacity>

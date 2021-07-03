@@ -61,7 +61,11 @@ const Search = ({ route, navigation }) => {
                     setAllKitchens(json.kit_object)
                     findRecentlySearchedKitchens(json.kit_object)
                 }).catch((error) => {
-                    console.error(error);
+                     if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                 });
         });
     }
@@ -80,32 +84,6 @@ const Search = ({ route, navigation }) => {
                 setShowRecentSearches(false)
             }
         });
-    }
-
-    function renderHeader() {
-        return (
-            <View style={{ flexDirection: 'row', height: 50 }}>
-                <TouchableOpacity
-                    style={{
-                        width: 50,
-                        paddingLeft: 20,
-                        justifyContent: 'center'
-                    }}
-                    onPress={() => {
-                        navigation.goBack()
-                    }}
-                >
-                    <Image
-                        source={back}
-                        resizeMode="contain"
-                        style={{
-                            width: 20,
-                            height: 20
-                        }}
-                    />
-                </TouchableOpacity>
-            </View>
-        )
     }
 
     function onSuccess(data) {
@@ -137,7 +115,7 @@ const Search = ({ route, navigation }) => {
 
     function renderSearchBox() {
         return (
-            <View style={{ alignItems: 'center', paddingBottom: 10 }}>
+            <View style={{ alignItems: 'center', paddingVertical: 20 }}>
                 <TextInput
                     placeholder={"Search Kitchen"}
                     value={searchText}
@@ -251,7 +229,7 @@ const Search = ({ route, navigation }) => {
 
         return (
             <View style={{paddingHorizontal: 20}}>
-                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginTop: 10 }}>Recents</Text>
+                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Recents</Text>
                 <FlatList
                     data={recentSearchedKitchens}
                     horizontal
@@ -267,14 +245,14 @@ const Search = ({ route, navigation }) => {
     function renderScanner() {
         const renderQRText = () => {
             return (
-                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, bottom: -height*0.48 }}>
+                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, bottom: -400 }}>
                     <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'white', paddingVertical: 4, fontStyle: 'italic', paddingHorizontal: 30 }}>Scan Kitchen's QR Code</Text>
                 </View>
             )
         }
 
         return (
-            <View style={{bottom: -height*0.1}}>
+            <View style={{bottom: -78}}>
                 <QRCodeScanner
                     onRead={onSuccess}
                     reactivate={true}
@@ -294,7 +272,6 @@ const Search = ({ route, navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {renderHeader()}
             {renderSearchBox()}
             {showRecentSearches ? renderRecentSearches() : null}
             {showScanner ? renderScanner() : null}

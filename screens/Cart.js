@@ -11,6 +11,7 @@ import {
     Pressable,
     TouchableOpacity,
     TextInput,
+    ActivityIndicator
 } from "react-native";
 import Modal from 'react-native-modal';
 const { width, height } = Dimensions.get("window");
@@ -54,6 +55,7 @@ const Cart = ({ route, navigation }) => {
     const [minDate, setMinDate] = React.useState();
     const [maxDate, setMaxDate] = React.useState();
     const [orderButtonRaise, setOrderButtonRaise] = React.useState();
+    const [loading, setLoading] = React.useState(true)
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -120,7 +122,7 @@ const Cart = ({ route, navigation }) => {
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
-                        Authorization: token? 'Token ' + token : ''
+                        Authorization: token ? 'Token ' + token : ''
                     },
                     body: JSON.stringify({
                         "kitId": kitId,
@@ -139,8 +141,13 @@ const Cart = ({ route, navigation }) => {
                         else {
                             setCartEmpty(true)
                         }
+                        setLoading(false)
                     }).catch((error) => {
-                        console.error(error);
+                        if (error == 'TypeError: Network request failed') {
+                            navigation.navigate("NoInternet")
+                        } else {
+                            console.error(error)
+                        }
                     });
             });
     }
@@ -182,24 +189,28 @@ const Cart = ({ route, navigation }) => {
 
     function renderHeader() {
         return (
-            <View style={{ flexDirection: 'row', height: 50 }}>
-                <TouchableOpacity
-                    style={{
-                        width: 50,
-                        paddingLeft: 20,
-                        justifyContent: 'center'
-                    }}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Image
-                        source={back}
-                        resizeMode="contain"
+            <View style={{ flexDirection: 'row', height: orderButtonRaise ? 10 : 50 }}>
+                {orderButtonRaise ?
+                    null
+                    :
+                    <TouchableOpacity
                         style={{
-                            width: 20,
-                            height: 20
+                            width: 50,
+                            paddingLeft: 20,
+                            justifyContent: 'center'
                         }}
-                    />
-                </TouchableOpacity>
+                        onPress={() => navigation.goBack()}
+                    >
+                        <Image
+                            source={back}
+                            resizeMode="contain"
+                            style={{
+                                width: 20,
+                                height: 20
+                            }}
+                        />
+                    </TouchableOpacity>
+                }
             </View>
         )
     }
@@ -210,7 +221,7 @@ const Cart = ({ route, navigation }) => {
                 style={{
                     position: 'absolute',
                     height: 120,
-                    bottom: orderButtonRaise ? 50 : 0,
+                    bottom: orderButtonRaise ? 10 : 0,
                     left: 0,
                     right: 0,
                     alignItems: 'center',
@@ -782,6 +793,7 @@ const Cart = ({ route, navigation }) => {
     function renderAdvanceOrderCheckbox() {
         const onChange = (event, selecteddate) => {
             const d = selecteddate || selectedDate;
+            console.log(d)
             if(d < new Date()){
                 alert('Incorrect Time selected')
             } else {
@@ -848,7 +860,7 @@ const Cart = ({ route, navigation }) => {
 
     function renderFooter() {
         return (
-            <View style={{ borderStyle: 'solid', borderWidth: orderButtonRaise? 110 : 80, borderColor: '#F5F5F6', width: width }}></View>
+            <View style={{ borderStyle: 'solid', borderWidth: 90, borderColor: '#F5F5F6', width: width }}></View>
         )
     }
 
@@ -862,38 +874,52 @@ const Cart = ({ route, navigation }) => {
         )
     }
 
+    function renderLoader() {
+        return (
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size="large" color="#FC6D3F"/>
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-            {renderHeader()}
-            {cartEmpty ?
-                renderEmptyCart()
-                :
-                <View>
-                    <ScrollView>
-                        {renderCartItems()}
-                        {renderMessageTextbox()}
-                        {renderGap()}
-                        {renderCoupons()}
-                        {renderGap()}
-                        {renderModeSelect()}
-                        {renderGap()}
-                        {renderBillingDetails()}
-                        {renderGap()}
-                        {loggedIn ?
-                            <View>
-                                {renderAddresses()}
-                                {renderGap()}
-                            </View>
+            {
+                loading ?
+                    renderLoader() :
+                    <View  style={{flex: 1}}>
+                        {renderHeader()}
+                        {cartEmpty ?
+                            renderEmptyCart()
                             :
-                            null
+                            <View>
+                                <ScrollView>
+                                    {renderCartItems()}
+                                    {renderMessageTextbox()}
+                                    {renderGap()}
+                                    {renderCoupons()}
+                                    {renderGap()}
+                                    {renderModeSelect()}
+                                    {renderGap()}
+                                    {renderBillingDetails()}
+                                    {renderGap()}
+                                    {loggedIn ?
+                                        <View>
+                                            {renderAddresses()}
+                                            {renderGap()}
+                                        </View>
+                                        :
+                                        null
+                                    }
+                                    {kitchen?.acceptAdvcOrders ? renderAdvanceOrderCheckbox() : null}
+                                    {renderFooter()}
+                                </ScrollView>
+                                {renderOrderButton()}
+                                {renderRemoveItemModal()}
+                                {renderCouponModal()}
+                            </View>
                         }
-                        {renderAdvanceOrderCheckbox()}
-                        {renderFooter()}
-                    </ScrollView>
-                    {renderOrderButton()}
-                    {renderRemoveItemModal()}
-                    {renderCouponModal()}
-                </View>
+                    </View>
             }
         </SafeAreaView>
     )

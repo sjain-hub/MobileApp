@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "996053764178",
+    "project_id": "foodfall",
+    "storage_bucket": "foodfall.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:996053764178:android:62f655a8d76e5e89ea778b",
+        "android_client_info": {
+          "package_name": "com.mobileapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "996053764178-vvldoi054qk5pp0jd0sbm6fi7n8dmmql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2nKfP84MoO2FloebXHIs7tS1bjbQfeno"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "996053764178-vvldoi054qk5pp0jd0sbm6fi7n8dmmql.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

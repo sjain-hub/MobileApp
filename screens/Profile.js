@@ -15,7 +15,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get("window");
 import back from "../assets/icons/back.png";
-
+import auth from '@react-native-firebase/auth';
 
 const Profile = ({ route, navigation }) => {
 
@@ -27,9 +27,22 @@ const Profile = ({ route, navigation }) => {
     const [email, setEmail] = React.useState();
     const [otp, setOtp] = React.useState();
     const [errors, setErrors] = React.useState();
+    const [confirm, setConfirm] = React.useState(null);
 
     React.useEffect(() => {
         fetchUserAccDetails()
+
+        if (otpSent) {
+            auth().onAuthStateChanged((user) => {
+                if (user) {
+                    fetchUpdateDetails()
+                } 
+                else 
+                {
+                    alert("Internal Error")
+                }
+            });
+        }
     }, [])
 
     function fetchUserAccDetails() {
@@ -48,7 +61,11 @@ const Profile = ({ route, navigation }) => {
                         setEmail(json.user.email)
                         setErrors()
                     }).catch((error) => {
-                        console.error(error);
+                         if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                     });
             }
         });
@@ -66,11 +83,7 @@ const Profile = ({ route, navigation }) => {
         }
     }
 
-    function sendOTP() {
-        setOtpSent(true)
-    }
-
-    function verifyOTPAndUpdate() {
+    function fetchUpdateDetails() {
         AsyncStorage.getItem("authToken").then((token) => {
             if (token) {
                 fetch(config.url + '/userapi/appUpdateProfile', {
@@ -82,13 +95,12 @@ const Profile = ({ route, navigation }) => {
                     },
                     body: JSON.stringify({
                         "phone": phoneNo,
-                        "email": email,
-                        "otp": otp
+                        "email": email
                     })
                 }).then((response) => response.json())
                     .then((json) => {
                         setOtpSent(false)
-                        if(json.response) {
+                        if (json.response) {
                             alert(json.response)
                             setEditMode(false)
                             fetchUserAccDetails()
@@ -97,11 +109,34 @@ const Profile = ({ route, navigation }) => {
                             checkUpdateForm(phoneNo, email, json)
                         }
                     }).catch((error) => {
-                        console.error(error);
+                         if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                     });
 
             }
         });
+    }
+
+    async function sendOTP() {
+        const confirmation = await auth().signInWithPhoneNumber('+91 ' + phoneNo);
+        setConfirm(confirmation);
+        if (confirmation._auth._authResult) {
+            setOtpSent(true)
+        } else {
+            alert("Internal Error")
+        }
+    }
+
+    async function verifyOTPAndUpdate() {
+        try {
+            await confirm.confirm(otp);
+            fetchUpdateDetails()
+        } catch (error) {
+            console.log('Invalid code.');
+        }
     }
 
     function renderLogin() {
@@ -126,7 +161,7 @@ const Profile = ({ route, navigation }) => {
                                     <TextInput
                                         autoFocus
                                         keyboardType={'number-pad'}
-                                        maxLength={4}
+                                        maxLength={6}
                                         style={{ fontFamily: "Roboto-Bold", fontSize: 30, width: '100%' }}
                                         onChangeText={(text) => setOtp(text)}
                                     >
@@ -149,7 +184,7 @@ const Profile = ({ route, navigation }) => {
                             :
                             editMode ?
                                 <View style={{ padding: 50 }}>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold' }}>Profile</Text>
+                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold' }}>PROFILE</Text>
                                     <Text style={{ fontFamily: "Roboto-Regular", color: 'gray', marginTop: 10 }}>Update your account details</Text>
                                     <View
                                         style={{
@@ -196,18 +231,18 @@ const Profile = ({ route, navigation }) => {
                                             value={phoneNo}
                                             onChangeText={(text) => {
                                                 setPhoneNo(text)
-                                                setErrors(errors?{
+                                                setErrors(errors ? {
                                                     'email': errors.email
-                                                }: null)
-                                                checkUpdateForm(text, email, errors?{
+                                                } : null)
+                                                checkUpdateForm(text, email, errors ? {
                                                     'email': errors.email
-                                                }: null)
+                                                } : null)
                                             }}
                                         >
                                         </TextInput>
-                                        {errors?.phone?
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'red' }}>{errors.phone}</Text>
-                                        : null
+                                        {errors?.phone ?
+                                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'red' }}>{errors.phone}</Text>
+                                            : null
                                         }
                                     </View>
                                     <View
@@ -223,18 +258,18 @@ const Profile = ({ route, navigation }) => {
                                             value={email}
                                             onChangeText={(text) => {
                                                 setEmail(text)
-                                                setErrors(errors?{
+                                                setErrors(errors ? {
                                                     'phone': errors.phone,
-                                                }: null)
-                                                checkUpdateForm(phoneNo, text, errors?{
+                                                } : null)
+                                                checkUpdateForm(phoneNo, text, errors ? {
                                                     'phone': errors.phone,
-                                                }: null)
+                                                } : null)
                                             }}
                                         >
                                         </TextInput>
-                                        {errors?.email?
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'red' }}>{errors.email}</Text>
-                                        : null
+                                        {errors?.email ?
+                                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'red' }}>{errors.email}</Text>
+                                            : null
                                         }
                                     </View>
                                     <View style={{ flexDirection: 'row', marginTop: 30, justifyContent: 'center' }}>
@@ -260,7 +295,7 @@ const Profile = ({ route, navigation }) => {
                                 :
                                 <View style={{ padding: 50 }}>
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold', width: width * 0.5 }}>Profile</Text>
+                                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold', width: width * 0.5 }}>PROFILE</Text>
                                         <Pressable
                                             style={{ alignItems: 'center' }}
                                             onPress={() => setEditMode(true)}

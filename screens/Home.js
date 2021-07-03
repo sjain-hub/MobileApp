@@ -26,18 +26,18 @@ const Home = ({ route, navigation }) => {
     const [kitchensData, setKitchensData] = React.useState([])
     const [marginBottom, setMarginBottom] = React.useState(1)
 
-    const backAction = () => {
-        removeItemValue("region")
-        BackHandler.exitApp()
-        return true;
-    };
+    // const backAction = () => {
+    //     removeItemValue("region")
+    //     BackHandler.exitApp()
+    //     return true;
+    // };
 
-    React.useEffect(() => {
-        BackHandler.addEventListener("hardwareBackPress", backAction);
+    // React.useEffect(() => {
+    //     BackHandler.addEventListener("hardwareBackPress", backAction);
 
-        return () =>
-            BackHandler.removeEventListener("hardwareBackPress", backAction);
-    }, []);
+    //     return () =>
+    //         BackHandler.removeEventListener("hardwareBackPress", backAction);
+    // }, []);
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -112,7 +112,11 @@ const Home = ({ route, navigation }) => {
             .then((json) => {
                 setKitchensData(json)
             }).catch((error) => {
-                console.error(error);
+                if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                } 
             });
     };
 

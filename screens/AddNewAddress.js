@@ -320,7 +320,11 @@ const AddNewAddresses = ({ route, navigation }) => {
                             console.log(json);
                         }
                     }).catch((error) => {
-                        console.error(error);
+                         if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                     });
             }
         });

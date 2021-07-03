@@ -10,7 +10,8 @@ import {
     Animated,
     Dimensions,
     FlatList,
-    ScrollView
+    ScrollView,
+    ActivityIndicator
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geocoder from 'react-native-geocoding';
@@ -86,6 +87,7 @@ const kitchens = ({ route, navigation }) => {
     const [selectedCategory, setSelectedCategory] = React.useState({ "icon": 18, "id": 1, "name": "All" })
     const [kitchensData, setKitchensData] = React.useState([])
     const [filteredKitchens, setFilteredKitchens] = React.useState([])
+    const [loading, setLoading] = React.useState(true)
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -110,10 +112,15 @@ const kitchens = ({ route, navigation }) => {
                 })
             }).then((response) => response.json())
                 .then((json) => {
+                    setLoading(false)
                     setFilteredKitchens(json.kit_object)
                     setKitchensData(json.kit_object)
                 }).catch((error) => {
-                    console.error(error);
+                     if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                 });
         });
     }
@@ -326,10 +333,10 @@ const kitchens = ({ route, navigation }) => {
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
 
                     {item.catdesc != "" ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "#C0C0C0", marginBottom: 3 }}>{item.catdesc}</Text>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "gray", marginBottom: 3 }}>{item.catdesc}</Text>
                     : null}
 
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "#C0C0C0", marginBottom: 5 }}>{item.landmark}</Text>
+                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "gray", marginBottom: 5 }}>{item.landmark}</Text>
 
                     <View
                         style={{
@@ -387,15 +394,18 @@ const kitchens = ({ route, navigation }) => {
         )
     }
 
+    function renderLoader() {
+        return (
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size="large" color="#FC6D3F"/>
+            </View>
+        )
+    }
 
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
-            {/* <ScrollView>
-                {renderMainCategories()}
-                {renderRestaurantList()}
-            </ScrollView> */}
-            {renderRestaurantList()}
+            {loading ? renderLoader() : renderRestaurantList()}
         </SafeAreaView>
     )
 

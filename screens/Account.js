@@ -10,6 +10,7 @@ import {
     Pressable,
     TouchableOpacity,
     TextInput,
+    ActivityIndicator
 } from "react-native";
 import Modal from 'react-native-modal';
 const { width, height } = Dimensions.get("window");
@@ -17,6 +18,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import config from '../config.json';
 import back from "../assets/icons/back.png";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import auth from '@react-native-firebase/auth';
+// import messaging from '@react-native-firebase/messaging';
 
 
 const Account = ({ route, navigation }) => {
@@ -36,16 +39,40 @@ const Account = ({ route, navigation }) => {
     const [user, setUser] = React.useState();
     const [cameFrom, setCameFrom] = React.useState(false);
     const [errors, setErrors] = React.useState();
+    const [confirm, setConfirm] = React.useState(null);
+    const [loading, setLoading] = React.useState(true)
 
     React.useEffect(() => {
-        let { cameFrom } = route.params;
-        setCameFrom(cameFrom)
-        AsyncStorage.getItem("authToken").then((value) => {
-            if (value) {
-                fetchUserAccDetails(value)
-                setLoggedIn(true)
+        // checkPermission()
+        const unsubscribe = navigation.addListener('focus', () => {
+            let { cameFrom } = route.params;
+            setCameFrom(cameFrom)
+            AsyncStorage.getItem("authToken").then((value) => {
+                if (value) {
+                    fetchUserAccDetails(value)
+                    setLoggedIn(true)
+                } else {
+                    setLoading(false)
+                }
+            });
+        });
+        return unsubscribe;
+    }, [])
+
+    React.useEffect(() => {
+        const subscriber = auth().onAuthStateChanged((user) => {
+            if (user) {
+                setLoading(true)
+                var pno = user.phoneNumber.substring(3)
+                setPhoneNo(pno)
+                if (registerUser) {
+                    requestRegister(pno)
+                } else {
+                    requestLogin(pno)
+                }
             }
         });
+        return subscriber;
     }, [])
 
     function fetchUserAccDetails(authToken) {
@@ -57,9 +84,14 @@ const Account = ({ route, navigation }) => {
             },
         }).then((response) => response.json())
             .then((json) => {
+                setLoading(false)
                 setUser(json.user)
             }).catch((error) => {
-                console.error(error);
+                 if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
             });
     }
 
@@ -102,15 +134,27 @@ const Account = ({ route, navigation }) => {
                     setRegisterUser(true)
                 }
             }).catch((error) => {
-                console.error(error);
+                 if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
             });
     }
 
-    function sendOTP() {
-        setOtpSent(true)
+    async function sendOTP() {
+        setLoading(true)
+        const confirmation = await auth().signInWithPhoneNumber('+91 ' + phoneNo);
+        setConfirm(confirmation);
+        if (confirmation._auth._authResult) {
+            setOtpSent(true)
+        } else {
+            alert("Internal Error, send Again")
+        }
+        setLoading(false)
     }
 
-    function verifyOTPAndLogin() {
+    function requestLogin(phone) {
         fetch(config.url + '/userapi/applogin', {
             method: 'POST',
             headers: {
@@ -118,12 +162,12 @@ const Account = ({ route, navigation }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "phone": phoneNo,
-                "otp": otp
+                "phone": phone
             })
         }).then((response) => response.json())
             .then((json) => {
                 if (json.token) {
+                    setLoading(false)
                     AsyncStorage.setItem('authToken', json.token)
                     if (cameFrom) {
                         navigation.goBack()
@@ -137,11 +181,15 @@ const Account = ({ route, navigation }) => {
                 }
                 setOtpSent(false)
             }).catch((error) => {
-                console.error(error);
+                 if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
             });
     }
 
-    function verifyOTPAndRegister() {
+    function requestRegister(phone) {
         fetch(config.url + '/userapi/appregister', {
             method: 'POST',
             headers: {
@@ -149,16 +197,16 @@ const Account = ({ route, navigation }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "phone": phoneNo,
+                "phone": phone,
                 "email": email,
                 "first_name": firstname,
                 "last_name": lastname,
                 "username": username,
-                "otp": otp
             })
         }).then((response) => response.json())
             .then((json) => {
                 if (json.token) {
+                    setLoading(false)
                     AsyncStorage.setItem('authToken', json.token)
                     if (cameFrom) {
                         navigation.goBack()
@@ -174,8 +222,33 @@ const Account = ({ route, navigation }) => {
                     setOtpSent(false)
                 }
             }).catch((error) => {
-                console.error(error);
+                 if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
             });
+    }
+
+    async  function verifyOTPAndLogin() {
+        setLoading(true)
+        try {
+            await confirm.confirm(otp);
+            requestLogin(phoneNo)
+        } catch (error) {
+            console.log(error)
+            alert('Invalid code.');
+        }
+    }
+
+    async function verifyOTPAndRegister() {
+        setLoading(true)
+        try {
+            await confirm.confirm(otp);
+            requestRegister(phoneNo)
+          } catch (error) {
+            console.log('Invalid code.');
+          }
     }
 
     function checkRegistrationForm(un, em, fn, ln) {
@@ -190,7 +263,6 @@ const Account = ({ route, navigation }) => {
     function renderLogin() {
         return (
             <View style={{ backgroundColor: '#fcecdd', flex: 1 }}>
-                {renderHeader()}
                 <View style={{ justifyContent: 'center', flex: 1 }}>
                     <View style={{ width: width * 0.9, backgroundColor: 'white', alignSelf: 'center', borderRadius: 30, opacity: 0.9, ...styles.shadow }}>
                         {otpSent ?
@@ -209,7 +281,7 @@ const Account = ({ route, navigation }) => {
                                     <TextInput
                                         autoFocus
                                         keyboardType={'number-pad'}
-                                        maxLength={4}
+                                        maxLength={6}
                                         style={{ fontFamily: "Roboto-Bold", fontSize: 30, width: '100%' }}
                                         onChangeText={(text) => setOtp(text)}
                                     >
@@ -399,33 +471,6 @@ const Account = ({ route, navigation }) => {
         )
     }
 
-    function renderHeader() {
-        return (
-            <View style={{ flexDirection: 'row', height: 50, backgroundColor: 'white' }}>
-                <TouchableOpacity
-                    style={{
-                        width: 50,
-                        paddingLeft: 20,
-                        justifyContent: 'center'
-                    }}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Image
-                        source={back}
-                        resizeMode="contain"
-                        style={{
-                            width: 20,
-                            height: 20
-                        }}
-                    />
-                </TouchableOpacity>
-                {/* <View style={{justifyContent: 'center'}}>
-                    <Text style={{fontFamily: "Roboto-Regular", fontWeight: 'bold', fontSize: 20}}>Name</Text>
-                </View> */}
-            </View>
-        )
-    }
-
     function renderGap() {
         return (
             <View style={{
@@ -439,7 +484,7 @@ const Account = ({ route, navigation }) => {
     function renderUser() {
         return (
             <View>
-                <View style={{ flexDirection: 'row', marginHorizontal: 20, paddingVertical: 20 }}>
+                <View style={{ flexDirection: 'row', marginHorizontal: 20, paddingVertical: 30 }}>
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20 }}>Hello,  </Text>
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold' }}>{user?.first_name} {user?.last_name}</Text>
                 </View>
@@ -468,7 +513,7 @@ const Account = ({ route, navigation }) => {
         return (
             <TouchableOpacity
                 style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}
-                onPress={() =>  navigation.navigate("FavKitchens")}
+                onPress={() => navigation.navigate("FavKitchens")}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Favourite Kitchens</Text>
@@ -484,7 +529,7 @@ const Account = ({ route, navigation }) => {
         return (
             <TouchableOpacity
                 style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}
-            // onPress={() => }
+                onPress={() => navigation.navigate("Orders")}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Orders</Text>
@@ -574,6 +619,7 @@ const Account = ({ route, navigation }) => {
                                 setLogoutModalVisible(!logoutModalVisible)
                                 setLoggedIn(false)
                                 removeItemValue('authToken')
+                                auth().signOut().then(() => console.log('User signed out!'));
                             }}
                         >
                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Logout</Text>
@@ -593,7 +639,6 @@ const Account = ({ route, navigation }) => {
     function renderAccount() {
         return (
             <View>
-                {renderHeader()}
                 <ScrollView>
                     {renderUser()}
                     {renderGap()}
@@ -616,13 +661,42 @@ const Account = ({ route, navigation }) => {
         )
     }
 
+    function renderLoader() {
+        return (
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size="large" color="#FC6D3F"/>
+            </View>
+        )
+    }
+
+    // async function checkPermission() {
+    //     const enabled = await messaging().hasPermission()
+    //     if(enabled) {
+    //         getToken()
+    //     } else {
+    //         requestPermission()
+    //     }
+    // }
+
+    // async function getToken() {
+    //     fcmToken = await messaging().getToken()
+    //     console.log(fcmToken)
+    // }
+
     return (
         <SafeAreaView style={styles.container}>
             {renderLogoutConfirmationModal()}
-            {loggedIn ?
-                renderAccount()
-                :
-                renderLogin()
+            {
+                loading ?
+                    renderLoader()
+                    :
+                    <View style={{ flex: 1 }}>
+                        {loggedIn ?
+                            renderAccount()
+                            :
+                            renderLogin()
+                        }
+                    </View>
             }
         </SafeAreaView>
     )

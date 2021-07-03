@@ -12,7 +12,8 @@ import {
     Switch,
     SectionList,
     TouchableOpacity,
-    TextInput
+    TextInput,
+    ActivityIndicator
 } from "react-native";
 // import { TouchableOpacity} from 'react-native-gesture-handler'
 import Modal from 'react-native-modal';
@@ -50,6 +51,8 @@ const Menu = ({ route, navigation }) => {
     const [sectionListRef, setSectionListRef] = React.useState();
     const [totalCartItems, setTotalCartItems] = React.useState(0);
     const [favourite, setFavourite] = React.useState();
+    const [loading, setLoading] = React.useState(true)
+
 
     const scrollY = new Animated.Value(0)
     const translateY = scrollY.interpolate({
@@ -80,30 +83,34 @@ const Menu = ({ route, navigation }) => {
 
     function getKitchen(kitId, token) {
         AsyncStorage.getItem("region").then((value) => JSON.parse(value))
-        .then((json) => {
-            fetch(config.url + '/userapi/appgetKitchen', {
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                    Authorization: token? 'Token ' + token : ''
-                },
-                body: JSON.stringify({
-                    "lon": json.longitude,
-                    "lat": json.latitude,
-                    "kitId": kitId
-                })
-            }).then((response) => response.json())
-                .then((json) => {
-                    if(json.kit_object){
-                        fetchMenu(json.kit_object)
-                        setKitchen(json.kit_object)
-                        setFavourite(json.kit_object.favourite)
-                    }
-                }).catch((error) => {
-                    console.error(error);
-                });
-        });
+            .then((json) => {
+                fetch(config.url + '/userapi/appgetKitchen', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: token ? 'Token ' + token : ''
+                    },
+                    body: JSON.stringify({
+                        "lon": json.longitude,
+                        "lat": json.latitude,
+                        "kitId": kitId
+                    })
+                }).then((response) => response.json())
+                    .then((json) => {
+                        if (json.kit_object) {
+                            fetchMenu(json.kit_object)
+                            setKitchen(json.kit_object)
+                            setFavourite(json.kit_object.favourite)
+                        }
+                    }).catch((error) => {
+                        if (error == 'TypeError: Network request failed') {
+                            navigation.navigate("NoInternet")
+                        } else {
+                            console.error(error)
+                        }
+                    });
+            });
     }
 
     function countOrderItems(items) {
@@ -274,12 +281,17 @@ const Menu = ({ route, navigation }) => {
             })
         }).then((response) => response.json())
             .then((json) => {
+                setLoading(false)
                 setCategories(json.categories)
                 setMenu(json.menuitems)
                 makeSectionList(json.menuitems, json.categories)
                 setReviews(json.reviews)
             }).catch((error) => {
-                console.error(error);
+                 if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
             });
     }
 
@@ -588,7 +600,11 @@ const Menu = ({ route, navigation }) => {
                     .then((json) => {
                         setFavourite(!favourite)
                     }).catch((error) => {
-                        console.error(error);
+                         if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                     });
             }
             else {
@@ -1130,15 +1146,30 @@ const Menu = ({ route, navigation }) => {
         )
     }
 
+    function renderLoader() {
+        return (
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size="large" color="#FC6D3F"/>
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-            {renderHeader()}
-            {renderAnimatedHeader()}
-            {renderMenu()}
-            {renderKitSwitchModal()}
-            {renderSubItemsModal()}
-            {renderCategoryModal()}
-            {renderCart()}
+            {
+                loading ?
+                    renderLoader()
+                    :
+                    <View style={{flex: 1}}>
+                        {renderHeader()}
+                        {renderAnimatedHeader()}
+                        {renderMenu()}
+                        {renderKitSwitchModal()}
+                        {renderSubItemsModal()}
+                        {renderCategoryModal()}
+                        {renderCart()}
+                    </View>
+            }
         </SafeAreaView>
     )
 }

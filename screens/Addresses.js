@@ -53,7 +53,11 @@ const Addresses = ({ route, navigation }) => {
                     .then((json) => {
                         setAddresses(json.addresses)
                     }).catch((error) => {
-                        console.error(error);
+                         if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                     });
             }
         });
@@ -95,7 +99,7 @@ const Addresses = ({ route, navigation }) => {
                         justifyContent: 'center',
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>Manage Addresses</Text>
+                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>MANAGE ADDRESSES</Text>
                 </View>
             </View>
         )
@@ -120,7 +124,11 @@ const Addresses = ({ route, navigation }) => {
                         fetchUserAddresses()
                         console.log(json);
                     }).catch((error) => {
-                        console.error(error);
+                         if(error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")        
+                } else {
+                    console.error(error)     
+                }
                     });
             }
         });

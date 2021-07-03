@@ -1,5 +1,5 @@
 {
-    "url" : "http://192.168.0.104:8000",
+    "url" : "http://192.168.0.103:8000",
     "webSocketUrl" : "ws://192.168.0.100:8000/notify/",
     "GMapAPIKey": "AIzaSyCpAMGuZlY5oYDrXPwe5VdFfBLT-cBEfn8"
 }

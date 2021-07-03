@@ -13,6 +13,8 @@ import Addresses from './Addresses'
 import Search from './Search'
 import AddNewAddress from './AddNewAddress'
 import SearchAddress from './SearchAddress'
+import OrderDetails from'./OrderDetails'
+import NoInternet from './NoInternet'
 
 export {
     Home,
@@ -29,5 +31,7 @@ export {
     Search,
     AddNewAddress,
     SearchAddress,
+    OrderDetails,
+    NoInternet,
     Test
 }
