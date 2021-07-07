@@ -16,13 +16,39 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import config from '../config.json';
 const { width, height } = Dimensions.get("window");
 import back from "../assets/icons/back.png";
+import StepIndicator from 'react-native-step-indicator';
 
 
 const OrderDetails = ({ route, navigation }) => {
 
     const [order, setOrder] = React.useState();
     const [trackOrder, setTrackOrder] = React.useState(false);
+    const [currentPosition, setCurrentPosition] = React.useState(0);
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const labels = ["Cart", "Delivery Address", "Order Summary", "Payment Method", "Track"];
+    const customStyles = {
+        stepIndicatorSize: 25,
+        currentStepIndicatorSize: 30,
+        separatorStrokeWidth: 2,
+        currentStepStrokeWidth: 3,
+        stepStrokeCurrentColor: '#fe7013',
+        stepStrokeWidth: 3,
+        stepStrokeFinishedColor: '#fe7013',
+        stepStrokeUnFinishedColor: '#aaaaaa',
+        separatorFinishedColor: '#fe7013',
+        separatorUnFinishedColor: '#aaaaaa',
+        stepIndicatorFinishedColor: '#fe7013',
+        stepIndicatorUnFinishedColor: '#ffffff',
+        stepIndicatorCurrentColor: '#ffffff',
+        stepIndicatorLabelFontSize: 13,
+        currentStepIndicatorLabelFontSize: 13,
+        stepIndicatorLabelCurrentColor: '#fe7013',
+        stepIndicatorLabelFinishedColor: '#ffffff',
+        stepIndicatorLabelUnFinishedColor: '#aaaaaa',
+        labelColor: '#999999',
+        labelSize: 13,
+        currentStepLabelColor: '#fe7013'
+    }
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -122,7 +148,7 @@ const OrderDetails = ({ route, navigation }) => {
                     <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>{order?.itemswithquantity}</Text>
                 </View>
                 {order?.message ?
-                    <View style={{ marginVertical: 20 }}>
+                    <View style={{ marginBottom: 20 }}>
                         <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>Message</Text>
                         <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>{order?.message}</Text>
                     </View>
@@ -236,13 +262,25 @@ const OrderDetails = ({ route, navigation }) => {
         )
     }
 
+    function currentOrderSteps() {
+        return (
+            <View>
+                <StepIndicator
+                    customStyles={customStyles}
+                    currentPosition={currentPosition}
+                    labels={labels}
+                />
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
             {renderGap()}
-            {trackOrder?
+            {trackOrder ?
                 <ScrollView>
-                    
+                    {currentOrderSteps()}
                 </ScrollView>
                 :
                 <ScrollView>

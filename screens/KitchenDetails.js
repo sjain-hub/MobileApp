@@ -188,7 +188,10 @@ const KitchenDetails = ({ route, navigation }) => {
             <View style={{padding: 20}}>
                 <View style={{flexDirection: 'row', width: width*0.9, borderWidth: 1, borderRadius: 20, borderColor: 'white', padding: 10, alignSelf: 'center', ...styles.shadow, backgroundColor: 'white', marginBottom: 30 }}>
                     <View style={{width: "45%", alignItems: 'center'}}>
-                        <FAIcon name="star" size={65} color="gold" />
+                        <Text style={{fontSize: 50}}>
+                            {kitchen.avgrating?.ratings__avg}
+                            <FAIcon name="star" size={50} color="gold" />
+                        </Text>
                         <Text>Average Ratings</Text>
                         <Text style={{fontSize: 12}}>(Based on {reviews?.length} ratings)</Text>
                     </View>
@@ -235,7 +238,7 @@ const KitchenDetails = ({ route, navigation }) => {
                                 }
                             </View>
                             <View>
-                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16 }}>{review.reviews}</Text>
+                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginTop: 4 }}>{review.reviews}</Text>
                             </View>
                         </View>
                     )

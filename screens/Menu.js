@@ -540,8 +540,8 @@ const Menu = ({ route, navigation }) => {
                                     marginBottom: 5,
                                 }}
                             >
-                                {kitchen?.ratings__avg != null ?
-                                    <View style={{
+                                {kitchen?.avgrating != null ?
+                                    <TouchableOpacity style={{
                                         flexDirection: 'row'
                                     }}>
                                         <Image
@@ -550,11 +550,11 @@ const Menu = ({ route, navigation }) => {
                                                 marginTop: 2,
                                                 height: 16,
                                                 width: 16,
-                                                tintColor: (kitchen?.ratings__avg >= 4) ? "green" : (kitchen?.ratings__avg >= 3) ? "gold" : "red",
+                                                tintColor: (kitchen?.avgrating.ratings__avg >= 4) ? "green" : (kitchen?.avgrating.ratings__avg >= 3) ? "gold" : "red",
                                             }}
                                         />
-                                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}> {kitchen?.ratings__avg}  <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
-                                    </View>
+                                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}> {kitchen?.avgrating.ratings__avg} <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
+                                    </TouchableOpacity>
                                     : null}
                                 <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>{kitchen?.dist} km  |  </Text>
                                 <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>{kitchen?.mode} ({kitchen?.deliveryTime} min)</Text>

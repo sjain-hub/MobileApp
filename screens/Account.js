@@ -43,34 +43,23 @@ const Account = ({ route, navigation }) => {
     const [loading, setLoading] = React.useState(true)
 
     React.useEffect(() => {
-        // checkPermission()
-        const unsubscribe = navigation.addListener('focus', () => {
-            let { cameFrom } = route.params;
-            setCameFrom(cameFrom)
+        let { cameFrom } = route.params;
+        setCameFrom(cameFrom)
+
+        const subscriber = auth().onAuthStateChanged((user) => {
             AsyncStorage.getItem("authToken").then((value) => {
                 if (value) {
                     fetchUserAccDetails(value)
                     setLoggedIn(true)
+                } else if (user) {
+                    setLoading(true)
+                    var pno = user.phoneNumber.substring(3)
+                    setPhoneNo(pno)
+                    checkUser(pno)
                 } else {
                     setLoading(false)
                 }
             });
-        });
-        return unsubscribe;
-    }, [])
-
-    React.useEffect(() => {
-        const subscriber = auth().onAuthStateChanged((user) => {
-            if (user) {
-                setLoading(true)
-                var pno = user.phoneNumber.substring(3)
-                setPhoneNo(pno)
-                if (registerUser) {
-                    requestRegister(pno)
-                } else {
-                    requestLogin(pno)
-                }
-            }
         });
         return subscriber;
     }, [])
@@ -115,7 +104,7 @@ const Account = ({ route, navigation }) => {
         }
     }
 
-    function checkUser() {
+    function checkUser(phone) {
         fetch(config.url + '/userapi/appcheckuser', {
             method: 'POST',
             headers: {
@@ -123,15 +112,17 @@ const Account = ({ route, navigation }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "phone": phoneNo,
+                "phone": phone,
             })
         }).then((response) => response.json())
             .then((json) => {
                 if (json.resp == "UserVerified") {
-                    sendOTP()
+                    requestLogin(phone)
                 }
                 else {
+                    setLoading(false)
                     setRegisterUser(true)
+                    setOtpSent(false)
                 }
             }).catch((error) => {
                  if(error == 'TypeError: Network request failed') {
@@ -189,7 +180,8 @@ const Account = ({ route, navigation }) => {
             });
     }
 
-    function requestRegister(phone) {
+    function requestRegister() {
+        setLoading(true)
         fetch(config.url + '/userapi/appregister', {
             method: 'POST',
             headers: {
@@ -197,7 +189,7 @@ const Account = ({ route, navigation }) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "phone": phone,
+                "phone": phoneNo,
                 "email": email,
                 "first_name": firstname,
                 "last_name": lastname,
@@ -230,24 +222,13 @@ const Account = ({ route, navigation }) => {
             });
     }
 
-    async  function verifyOTPAndLogin() {
+    async function verifyOTP() {
         setLoading(true)
         try {
             await confirm.confirm(otp);
-            requestLogin(phoneNo)
-        } catch (error) {
-            console.log(error)
-            alert('Invalid code.');
-        }
-    }
-
-    async function verifyOTPAndRegister() {
-        setLoading(true)
-        try {
-            await confirm.confirm(otp);
-            requestRegister(phoneNo)
+            checkUser(phoneNo)
           } catch (error) {
-            console.log('Invalid code.');
+            alert('Invalid code.');
           }
     }
 
@@ -296,7 +277,7 @@ const Account = ({ route, navigation }) => {
                                         borderRadius: 10,
                                         marginTop: 20
                                     }}
-                                    onPress={() => registerUser ? verifyOTPAndRegister() : verifyOTPAndLogin()}
+                                    onPress={() => verifyOTP()}
                                 >
                                     <Text style={{ color: 'white', fontSize: 16 }}>Verify</Text>
                                 </TouchableOpacity>
@@ -421,7 +402,7 @@ const Account = ({ route, navigation }) => {
                                             borderRadius: 10,
                                             marginTop: 20
                                         }}
-                                        onPress={() => sendOTP()}
+                                        onPress={() => requestRegister()}
                                     >
                                         <Text style={{ color: regFormComplt ? 'white' : 'gray', fontSize: 16 }}>Verify and Register</Text>
                                     </TouchableOpacity>
@@ -459,7 +440,7 @@ const Account = ({ route, navigation }) => {
                                             borderRadius: 10,
                                             marginTop: 20
                                         }}
-                                        onPress={() => checkUser()}
+                                        onPress={() => sendOTP()}
                                     >
                                         <Text style={{ color: numberValid ? 'white' : 'gray', fontSize: 16 }}>Send OTP</Text>
                                     </TouchableOpacity>

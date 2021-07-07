@@ -352,16 +352,16 @@ const kitchens = ({ route, navigation }) => {
                                     source={Star}
                                     style={{
                                         marginTop: 2,
-                                        height: 12,
-                                        width: 12,
+                                        height: 13,
+                                        width: 13,
                                         tintColor: (item.ratings__avg >= 4) ? "green" : (item.ratings__avg >= 3) ? "gold" : "red",
                                     }}
                                 />
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}> {item.ratings__avg}  |  </Text>
+                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13 }}> {item.ratings__avg}  |  </Text>
                             </View>
                         : null}
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{item.dist} km  |  </Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{item.mode} ({item.deliveryTime} min)</Text>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13 }}>{item.dist} km  |  </Text>
+                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13 }}>{item.mode} ({item.deliveryTime} min)</Text>
                     </View>
 
                     <View

@@ -11,6 +11,7 @@ import {
     Pressable,
     TouchableOpacity,
     TextInput,
+    ActivityIndicator
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const { width, height } = Dimensions.get("window");
@@ -28,22 +29,38 @@ const Profile = ({ route, navigation }) => {
     const [otp, setOtp] = React.useState();
     const [errors, setErrors] = React.useState();
     const [confirm, setConfirm] = React.useState(null);
+    const [loading, setLoading] = React.useState(true)
+
+    React.useEffect(() => {
+        const subscriber = auth().onAuthStateChanged((user) => {
+            AsyncStorage.getItem("tempUpdateClicked").then((value) => {
+                if(value) {
+                    if(user) {
+                        setLoading(true)
+                        var pno = user.phoneNumber.substring(3)
+                        setPhoneNo(pno)
+                        requestUpdateDetails(pno)
+                    }
+                }
+                removeItemValue('tempUpdateClicked')
+            });
+        });
+        return subscriber;
+    }, [])
 
     React.useEffect(() => {
         fetchUserAccDetails()
-
-        if (otpSent) {
-            auth().onAuthStateChanged((user) => {
-                if (user) {
-                    fetchUpdateDetails()
-                } 
-                else 
-                {
-                    alert("Internal Error")
-                }
-            });
-        }
     }, [])
+
+    async function removeItemValue(key) {
+        try {
+            await AsyncStorage.removeItem(key);
+            return true;
+        }
+        catch (exception) {
+            return false;
+        }
+    }
 
     function fetchUserAccDetails() {
         AsyncStorage.getItem("authToken").then((value) => {
@@ -56,6 +73,7 @@ const Profile = ({ route, navigation }) => {
                     },
                 }).then((response) => response.json())
                     .then((json) => {
+                        setLoading(false)
                         setUser(json.user)
                         setPhoneNo(json.user.phone)
                         setEmail(json.user.email)
@@ -83,8 +101,10 @@ const Profile = ({ route, navigation }) => {
         }
     }
 
-    function fetchUpdateDetails() {
-        AsyncStorage.getItem("authToken").then((token) => {
+    function requestUpdateDetails(phone) {
+        AsyncStorage.multiGet(['authToken', 'tempEmail'], (err, items) => {
+            var token = items[0][1]
+            var emailid = items[1][1]
             if (token) {
                 fetch(config.url + '/userapi/appUpdateProfile', {
                     method: 'POST',
@@ -94,12 +114,13 @@ const Profile = ({ route, navigation }) => {
                         Authorization: token ? 'Token ' + token : ''
                     },
                     body: JSON.stringify({
-                        "phone": phoneNo,
-                        "email": email
+                        "phone": phone,
+                        "email": emailid
                     })
                 }).then((response) => response.json())
                     .then((json) => {
                         setOtpSent(false)
+                        setLoading(false)
                         if (json.response) {
                             alert(json.response)
                             setEditMode(false)
@@ -108,19 +129,21 @@ const Profile = ({ route, navigation }) => {
                             setErrors(json)
                             checkUpdateForm(phoneNo, email, json)
                         }
+                        removeItemValue('tempEmail')
                     }).catch((error) => {
-                         if(error == 'TypeError: Network request failed') {
-                    navigation.navigate("NoInternet")        
-                } else {
-                    console.error(error)     
-                }
+                        if (error == 'TypeError: Network request failed') {
+                            navigation.navigate("NoInternet")
+                        } else {
+                            console.error(error)
+                        }
                     });
-
             }
         });
     }
 
     async function sendOTP() {
+        setUpdateFormValid(false)
+        setLoading(true)
         const confirmation = await auth().signInWithPhoneNumber('+91 ' + phoneNo);
         setConfirm(confirmation);
         if (confirmation._auth._authResult) {
@@ -128,18 +151,19 @@ const Profile = ({ route, navigation }) => {
         } else {
             alert("Internal Error")
         }
+        setLoading(false)
     }
 
     async function verifyOTPAndUpdate() {
         try {
             await confirm.confirm(otp);
-            fetchUpdateDetails()
+            requestUpdateDetails(phoneNo)
         } catch (error) {
-            console.log('Invalid code.');
+            alert('Invalid code.');
         }
     }
 
-    function renderLogin() {
+    function renderProfile() {
         return (
             <View style={{ backgroundColor: '#fcecdd', flex: 1 }}>
                 {renderHeader()}
@@ -278,6 +302,7 @@ const Profile = ({ route, navigation }) => {
                                             onPress={() => {
                                                 setEditMode(false)
                                                 fetchUserAccDetails()
+                                                setUpdateFormValid(false)
                                             }}
                                         >
                                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Cancel</Text>
@@ -286,6 +311,8 @@ const Profile = ({ route, navigation }) => {
                                             disabled={!updateFormValid}
                                             onPress={() => {
                                                 sendOTP()
+                                                AsyncStorage.setItem('tempUpdateClicked', 'true')
+                                                AsyncStorage.setItem('tempEmail', email)
                                             }}
                                         >
                                             <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: updateFormValid ? '#FC6D3F' : 'lightgray' }}>Update</Text>
@@ -395,9 +422,17 @@ const Profile = ({ route, navigation }) => {
         )
     }
 
+    function renderLoader() {
+        return (
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size="large" color="#FC6D3F"/>
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
-            {renderLogin()}
+            { loading ? renderLoader() : renderProfile()}
         </SafeAreaView>
     )
 }

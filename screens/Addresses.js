@@ -9,6 +9,7 @@ import {
     Dimensions,
     Pressable,
     TouchableOpacity,
+    ActivityIndicator
 } from "react-native";
 import Modal from 'react-native-modal';
 import config from '../config.json';
@@ -22,6 +23,7 @@ const Addresses = ({ route, navigation }) => {
     const [addresses, setAddresses] = React.useState();
     const [deleteAdd, setDeleteAdd] = React.useState();
     const [addDelModal, setAddDelModal] = React.useState(false);
+    const [loading, setLoading] = React.useState(true)
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
@@ -51,6 +53,7 @@ const Addresses = ({ route, navigation }) => {
                     },
                 }).then((response) => response.json())
                     .then((json) => {
+                        setLoading(false)
                         setAddresses(json.addresses)
                     }).catch((error) => {
                          if(error == 'TypeError: Network request failed') {
@@ -251,11 +254,19 @@ const Addresses = ({ route, navigation }) => {
         )
     }
 
+    function renderLoader() {
+        return (
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <ActivityIndicator size="large" color="#FC6D3F"/>
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
             {renderGap()}
-            {renderAddressList()}
+            {loading ? renderLoader() : renderAddressList()}
             {renderAddButton()}
             {renderDeleteAddressModal()}
         </SafeAreaView>
