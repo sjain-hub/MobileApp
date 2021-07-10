@@ -287,10 +287,10 @@ const Menu = ({ route, navigation }) => {
                 makeSectionList(json.menuitems, json.categories)
                 setReviews(json.reviews)
             }).catch((error) => {
-                 if(error == 'TypeError: Network request failed') {
-                    navigation.navigate("NoInternet")        
+                if (error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")
                 } else {
-                    console.error(error)     
+                    console.error(error)
                 }
             });
     }
@@ -516,9 +516,9 @@ const Menu = ({ route, navigation }) => {
                             }}
                         >
                             <View style={{ flexDirection: 'row' }}>
-                                <TouchableOpacity 
-                                    style={{ marginBottom: 5, width: '85%'}} 
-                                    activeOpacity={0.5} 
+                                <TouchableOpacity
+                                    style={{ marginBottom: 5, width: '85%' }}
+                                    activeOpacity={0.5}
                                     onPress={() => navigation.navigate("KitchenDetails", {
                                         kitchen: kitchen,
                                         reviews: reviews
@@ -526,10 +526,10 @@ const Menu = ({ route, navigation }) => {
                                 >
                                     <Text style={{ fontFamily: "System", fontSize: 22, fontWeight: 'bold' }}>{kitchen?.kitName} <AntIcon name="right" size={22} /></Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity 
-                                    onPress={() => markFavourite(kitchen.id)}    
+                                <TouchableOpacity
+                                    onPress={() => markFavourite(kitchen.id)}
                                 >
-                                    <AntIcon name={favourite? "heart" : "hearto"} size={22} color="red" />
+                                    <AntIcon name={favourite ? "heart" : "hearto"} size={22} color="red" />
                                 </TouchableOpacity>
                             </View>
                             <Text style={{ fontFamily: "System", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.catdesc}</Text>
@@ -537,23 +537,30 @@ const Menu = ({ route, navigation }) => {
                             <View
                                 style={{
                                     flexDirection: 'row',
-                                    marginBottom: 5,
+                                    marginBottom: 10,
                                 }}
                             >
-                                {kitchen?.avgrating != null ?
-                                    <TouchableOpacity style={{
-                                        flexDirection: 'row'
-                                    }}>
+                                {kitchen?.avgrating ?
+                                    <TouchableOpacity
+                                        style={{
+                                            flexDirection: 'row'
+                                        }}
+                                        onPress={() => navigation.navigate("KitchenDetails", {
+                                            kitchen: kitchen,
+                                            reviews: reviews,
+                                            scrollToReviews: true
+                                        })}
+                                    >
                                         <Image
                                             source={Star}
                                             style={{
                                                 marginTop: 2,
                                                 height: 16,
                                                 width: 16,
-                                                tintColor: (kitchen?.avgrating.ratings__avg >= 4) ? "green" : (kitchen?.avgrating.ratings__avg >= 3) ? "gold" : "red",
+                                                tintColor: (kitchen?.avgrating >= 4) ? "green" : (kitchen?.avgrating >= 3) ? "gold" : "red",
                                             }}
                                         />
-                                        <Text style={{ fontFamily: "System", fontSize: 16 }}> {kitchen?.avgrating.ratings__avg} <Text style={{ fontFamily: "System", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 16 }}> {kitchen?.avgrating} <Text style={{ fontFamily: "System", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
                                     </TouchableOpacity>
                                     : null}
                                 <Text style={{ fontFamily: "System", fontSize: 16 }}>{kitchen?.dist} km  |  </Text>
@@ -600,11 +607,11 @@ const Menu = ({ route, navigation }) => {
                     .then((json) => {
                         setFavourite(!favourite)
                     }).catch((error) => {
-                         if(error == 'TypeError: Network request failed') {
-                    navigation.navigate("NoInternet")        
-                } else {
-                    console.error(error)     
-                }
+                        if (error == 'TypeError: Network request failed') {
+                            navigation.navigate("NoInternet")
+                        } else {
+                            console.error(error)
+                        }
                     });
             }
             else {
@@ -937,7 +944,9 @@ const Menu = ({ route, navigation }) => {
 
         const renderItem = ({ item, index }) => (
             <View>
-                <TouchableOpacity onPress={() => scrollToSection(index)} ><Text style={{ fontSize: 18, padding: 15 }}>{item.category}</Text></TouchableOpacity>
+                <TouchableOpacity onPress={() => scrollToSection(index)} >
+                    <Text style={{ fontSize: 18, padding: 15 }}>{item.category}</Text>
+                </TouchableOpacity>
             </View>
         );
 
@@ -1128,28 +1137,28 @@ const Menu = ({ route, navigation }) => {
 
     function renderCart() {
         return (
-            totalCartItems>0?
-            <View style={{ top: '90%', alignSelf: 'center', position: 'absolute' }}>
-                <TouchableOpacity 
-                    style={{width: width*0.4, height: 50, borderRadius: 30, backgroundColor: 'lightgreen', ...styles.shadow, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}
-                    onPress={() => navigation.navigate("Cart", {
-                        raiseButton : false
-                    })}
-                >
-                    <FAIcon name="shopping-cart" size={22} color="green" />
-                    <View style={{width: 22, height: 22, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center'}}>
-                        <Text style={{color: 'white'}}>{totalCartItems}</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-            :null
+            totalCartItems > 0 ?
+                <View style={{ top: '90%', alignSelf: 'center', position: 'absolute' }}>
+                    <TouchableOpacity
+                        style={{ width: width * 0.4, height: 50, borderRadius: 30, backgroundColor: 'lightgreen', ...styles.shadow, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+                        onPress={() => navigation.navigate("Cart", {
+                            raiseButton: false
+                        })}
+                    >
+                        <FAIcon name="shopping-cart" size={22} color="green" />
+                        <View style={{ width: 22, height: 22, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center' }}>
+                            <Text style={{ color: 'white' }}>{totalCartItems}</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+                : null
         )
     }
 
     function renderLoader() {
         return (
-            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                <ActivityIndicator size="large" color="#FC6D3F"/>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <ActivityIndicator size="large" color="#FC6D3F" />
             </View>
         )
     }
@@ -1160,7 +1169,7 @@ const Menu = ({ route, navigation }) => {
                 loading ?
                     renderLoader()
                     :
-                    <View style={{flex: 1}}>
+                    <View style={{ flex: 1 }}>
                         {renderHeader()}
                         {renderAnimatedHeader()}
                         {renderMenu()}

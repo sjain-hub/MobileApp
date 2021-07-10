@@ -304,30 +304,30 @@ const kitchens = ({ route, navigation }) => {
                     source={{ uri: config.url + item.dp }}
                     resizeMode="cover"
                     style={{
-                        width: 110,
-                        height: 120,
+                        width: width*0.28,
+                        height: height*0.16,
                         borderRadius: 10,
                         marginRight: 20
                     }}
                 />
 
-                {/* <View
+                {item.maxDiscount > 0 && <View
                     style={{
                         position: 'absolute',
                         bottom: 0,
-                        height: 25,
+                        height: height * 0.036,
                         width: width * 0.2,
                         backgroundColor: 'white',
-                        borderTopRightRadius: 30,
-                        borderBottomLeftRadius: 30,
+                        borderTopRightRadius: 10,
+                        borderBottomLeftRadius: 10,
                         alignItems: 'center',
                         justifyContent: 'center',
                         marginLeft: 20,
                         ...styles.shadow
                     }}
                 >
-                    <Text style={{ fontFamily: "System", fontSize: 13, lineHeight: 22 }}>{item.deliveryTime} min</Text>
-                </View> */}
+                    <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold', color: '#FC6D3F' }}>{item.maxDiscount}% OFF</Text>
+                </View>}
 
                 <View style={{ maxWidth: width * 0.56, justifyContent: 'center' }}>
                     <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
@@ -344,7 +344,7 @@ const kitchens = ({ route, navigation }) => {
                             marginBottom: 5
                         }}
                     >
-                        {item.ratings__avg != null ?
+                        {item.avgrating ?
                             <View style={{
                                 flexDirection: 'row'
                             }}>
@@ -354,29 +354,28 @@ const kitchens = ({ route, navigation }) => {
                                         marginTop: 2,
                                         height: 13,
                                         width: 13,
-                                        tintColor: (item.ratings__avg >= 4) ? "green" : (item.ratings__avg >= 3) ? "gold" : "red",
+                                        tintColor: (item.avgrating >= 4) ? "green" : (item.avgrating >= 3) ? "gold" : "red",
                                     }}
                                 />
-                                <Text style={{ fontFamily: "System", fontSize: 13 }}> {item.ratings__avg}  |  </Text>
+                                <Text style={{ fontFamily: "System", fontSize: 13 }}> {item.avgrating}  |  </Text>
                             </View>
                         : null}
                         <Text style={{ fontFamily: "System", fontSize: 13 }}>{item.dist} km  |  </Text>
                         <Text style={{ fontFamily: "System", fontSize: 13 }}>{item.mode} ({item.deliveryTime} min)</Text>
                     </View>
 
-                    <View
-                        style={{
-                            marginTop: 5,
-                            marginBottom: 5,
-                            borderBottomColor: '#F5F5F6',
-                            borderBottomWidth: 1,
-                        }}
-                    />
-
                     {item.acceptAdvcOrders ?
-                        <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>
-                            <Entypo name="info-with-circle" size={12} color="skyblue" /> 
-                        Accepts Advance Orders upto 2 Days.</Text>
+                        <View>
+                            <View
+                                style={{
+                                    marginTop: 5,
+                                    marginBottom: 5,
+                                    borderBottomColor: '#F5F5F6',
+                                    borderBottomWidth: 1,
+                                }}
+                            />
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}><Entypo name="info-with-circle" size={12} color="skyblue" /> Accepts Advance Orders upto 2 Days.</Text>
+                        </View>
                     : null}
 
                 </View>
@@ -390,7 +389,7 @@ const kitchens = ({ route, navigation }) => {
                 renderItem={renderItem}
                 ListHeaderComponent={renderMainCategories}
                 contentContainerStyle={{
-                    paddingBottom: 40
+                    paddingBottom: 60
                 }}
             />
         )
@@ -426,7 +425,7 @@ const styles = StyleSheet.create({
         },
         shadowOpacity: 0.1,
         shadowRadius: 3,
-        elevation: 2,
+        elevation: 5,
     }
 })
 

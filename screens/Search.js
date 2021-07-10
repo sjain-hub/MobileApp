@@ -164,7 +164,7 @@ const Search = ({ route, navigation }) => {
                             marginBottom: 5
                         }}
                     >
-                        {item.ratings__avg != null ?
+                        {item.avgrating ?
                             <View style={{
                                 flexDirection: 'row'
                             }}>
@@ -174,10 +174,10 @@ const Search = ({ route, navigation }) => {
                                         marginTop: 2,
                                         height: 12,
                                         width: 12,
-                                        tintColor: (item.ratings__avg >= 4) ? "green" : (item.ratings__avg >= 3) ? "gold" : "red",
+                                        tintColor: (item.avgrating >= 4) ? "green" : (item.avgrating >= 3) ? "gold" : "red",
                                     }}
                                 />
-                                <Text style={{ fontFamily: "System", fontSize: 12 }}> {item.ratings__avg}  |  </Text>
+                                <Text style={{ fontFamily: "System", fontSize: 12 }}> {item.avgrating}  |  </Text>
                             </View>
                         : null}
                         <Text style={{ fontFamily: "System", fontSize: 12 }}>{item.dist} km  |  </Text>

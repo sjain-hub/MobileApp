@@ -27,9 +27,10 @@ const KitchenDetails = ({ route, navigation }) => {
     const [reviews, setReviews] = React.useState()
     const [ratingsCount, setRatingsCount] = React.useState([])
     const [height, setHeight] = React.useState(301)
+    const [scrollViewRef, setScrollViewRef] = React.useState();
 
     React.useEffect(() => {
-        let { kitchen, reviews } = route.params;
+        let { kitchen, reviews, scrollToReviews } = route.params;
         setReviews(reviews)
         setKitchen(kitchen)
         countRatings(reviews)
@@ -45,7 +46,11 @@ const KitchenDetails = ({ route, navigation }) => {
         setTimeout(() => {
             setHeight(300)
         }, 100);
-    }, [])
+
+        if (scrollToReviews) {
+            scrollViewRef?.scrollTo({ x: 0, y: 1200, animated: true })
+        }
+    }, [scrollViewRef])
 
     function countRatings(reviews) {
         let temp = []
@@ -189,7 +194,7 @@ const KitchenDetails = ({ route, navigation }) => {
                 <View style={{flexDirection: 'row', width: width*0.9, borderWidth: 1, borderRadius: 20, borderColor: 'white', padding: 10, alignSelf: 'center', ...styles.shadow, backgroundColor: 'white', marginBottom: 30 }}>
                     <View style={{width: "45%", alignItems: 'center'}}>
                         <Text style={{fontSize: 50}}>
-                            {kitchen.avgrating?.ratings__avg}
+                            {kitchen.avgrating}
                             <FAIcon name="star" size={50} color="gold" />
                         </Text>
                         <Text>Average Ratings</Text>
@@ -250,7 +255,9 @@ const KitchenDetails = ({ route, navigation }) => {
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
-            <ScrollView>
+            <ScrollView
+                ref={(ref) => setScrollViewRef(ref)}
+            >
                 {renderKitchenInfo()}
                 {renderLocation()}
                 {renderYouTubeReview()}
