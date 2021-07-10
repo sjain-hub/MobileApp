@@ -168,8 +168,8 @@ const SearchAddress = ({ route, navigation }) => {
                 onPress={() => setRegion(item)}
             >
                 <View style={{ width: width * 0.9 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{item.place}</Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10, color: 'gray', marginTop: 10 }}>{item.address}, Floor No: {item.floorNo}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{item.place}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10, color: 'gray', marginTop: 10 }}>{item.address}, Floor No: {item.floorNo}</Text>
                 </View>
             </TouchableOpacity>
         )

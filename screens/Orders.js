@@ -101,7 +101,7 @@ const Orders = ({ route, navigation }) => {
                         justifyContent: 'center',
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>ORDERS</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>ORDERS</Text>
                 </View>
             </View>
         )
@@ -167,13 +167,13 @@ const Orders = ({ route, navigation }) => {
             >
                 <View style={{flexDirection: 'row'}}>
                     <View style={{width: '70%', marginRight: 5}}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>{item.kitchen.kitName}</Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginBottom: 10 }}>{'\u20B9'}{item.total_amount}</Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', marginBottom: 10 }}>{item.itemswithquantity}</Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, color: 'gray', marginBottom: 10 }}>{getFormattedDate(item.scheduled_order)}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>{item.kitchen.kitName}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, marginBottom: 10 }}>{'\u20B9'}{item.total_amount}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'gray', marginBottom: 10 }}>{item.itemswithquantity}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray', marginBottom: 10 }}>{getFormattedDate(item.scheduled_order)}</Text>
                     </View>
                     <View style={{alignItems: 'flex-end', width: '30%'}}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginBottom: 10, color: getColor(item.status), fontWeight: 'bold' }}>{item.status}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, marginBottom: 10, color: getColor(item.status), fontWeight: 'bold' }}>{item.status}</Text>
                     </View>
                 </View>
                 {getColor(item.status) == "#FFCC00" ?
@@ -294,7 +294,7 @@ const Orders = ({ route, navigation }) => {
                     padding: 20,
                 }}>
                     <View>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, marginBottom: 10 }}>Rate this Kitchen</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 18, marginBottom: 10 }}>Rate this Kitchen</Text>
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
                             <TouchableOpacity
                                 onPress={() => setRatings(1)}
@@ -360,7 +360,7 @@ const Orders = ({ route, navigation }) => {
                             style={{ marginRight: '30%' }}
                             onPress={() => setReviewsModal(!reviewsModal)}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Cancel</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Cancel</Text>
                         </Pressable>
                         <Pressable
                             onPress={() => {
@@ -368,7 +368,7 @@ const Orders = ({ route, navigation }) => {
                                 updateReviews(reviewsObject.kit)
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Update</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Update</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -393,9 +393,9 @@ const Orders = ({ route, navigation }) => {
                     width: width*0.9
                 }}>
                     <View>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, marginBottom: 20 }}>Provide the details here</Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginBottom: 5 }}>Phone number</Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginBottom: 5, color: 'gray' }}>The number should be on PayTm (for refund request).</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 18, marginBottom: 20 }}>Provide the details here</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, marginBottom: 5 }}>Phone number</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, marginBottom: 5, color: 'gray' }}>The number should be on PayTm (for refund request).</Text>
                         <TextInput
                             style={{borderWidth: 1, borderColor: 'lightgray', borderRadius: 5, fontSize: 18, paddingHorizontal: 10, paddingVertical: 5, marginBottom: 20}}
                             keyboardType={'number-pad'}
@@ -403,14 +403,14 @@ const Orders = ({ route, navigation }) => {
                             // value={reviews}
                             // onChangeText={(text) => setReviews(text)}
                         />
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginBottom: 5 }}>Subject</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, marginBottom: 5 }}>Subject</Text>
                         <TextInput
                             style={{borderWidth: 1, borderColor: 'lightgray', borderRadius: 5, fontSize: 16, paddingHorizontal: 10, paddingVertical: 5, marginBottom: 20}}
                             maxLength={50}
                             // value={reviews}
                             // onChangeText={(text) => setReviews(text)}
                         />
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginBottom: 5 }}>Query</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, marginBottom: 5 }}>Query</Text>
                         <TextInput
                             style={{borderWidth: 1, borderColor: 'lightgray', borderRadius: 5, fontSize: 16, paddingHorizontal: 10, paddingVertical: 20, maxHeight: 160, marginBottom: 20}}
                             numberOfLines={4}
@@ -425,14 +425,14 @@ const Orders = ({ route, navigation }) => {
                             style={{ marginRight: '30%' }}
                             onPress={() => setHelpModal(!helpModal)}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Close</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Close</Text>
                         </Pressable>
                         <Pressable
                             onPress={() => {
                                 setHelpModal(!helpModal)
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Send Query</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Send Query</Text>
                         </Pressable>
                     </View>
                 </View>

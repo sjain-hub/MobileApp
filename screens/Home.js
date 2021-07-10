@@ -113,7 +113,8 @@ const Home = ({ route, navigation }) => {
                 setKitchensData(json)
             }).catch((error) => {
                 if(error == 'TypeError: Network request failed') {
-                    navigation.navigate("NoInternet")        
+                    // navigation.navigate("NoInternet") 
+                    console.error(error)         
                 } else {
                     console.error(error)     
                 } 
@@ -251,7 +252,7 @@ const Home = ({ route, navigation }) => {
                     />
 
                     <View style={{ flex: 1 }}>
-                        <Text numberOfLines={1} style={{ fontFamily: "Roboto-Regular", fontSize: 16, lineHeight: 22 }}>{userLocation}</Text>
+                        <Text numberOfLines={1} style={{ fontFamily: "System", fontSize: 16, lineHeight: 22 }}>{userLocation}</Text>
                     </View>
                 </View>
             </TouchableOpacity>

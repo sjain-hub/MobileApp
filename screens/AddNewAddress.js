@@ -124,7 +124,7 @@ const AddNewAddresses = ({ route, navigation }) => {
                         justifyContent: 'center',
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{editAddress? "Edit Address" : "Add new Address"}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{editAddress? "Edit Address" : "Add new Address"}</Text>
                 </View>
             </View>
         )
@@ -196,7 +196,7 @@ const AddNewAddresses = ({ route, navigation }) => {
                         backgroundColor: '#F5F5F6',
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, width: '100%' }}>{userLocation}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, width: '100%' }}>{userLocation}</Text>
                 </View>
             </TouchableOpacity>
         )
@@ -226,10 +226,10 @@ const AddNewAddresses = ({ route, navigation }) => {
         return (
             <View style={{ paddingVertical: 14, paddingHorizontal: 20 }}>
                 <View>
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, color: 'gray' }}>Enter Full Address:</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, color: 'gray' }}>Enter Full Address:</Text>
                     <TextInput
                         value={address}
-                        style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', paddingHorizontal: 10, borderBottomWidth: 1, paddingVertical: 5, borderBottomColor: 'lightgray' }}
+                        style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', paddingHorizontal: 10, borderBottomWidth: 1, paddingVertical: 5, borderBottomColor: 'lightgray' }}
                         onChangeText={(text) => {
                             setAddress(text)
                             checkForm(text, floorNo, place)
@@ -239,12 +239,12 @@ const AddNewAddresses = ({ route, navigation }) => {
                 </View>
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     <View style={{ width: '30%' }}>
-                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, color: 'gray' }}>Floor No:</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, color: 'gray' }}>Floor No:</Text>
                         <TextInput
                             value={floorNo}
                             keyboardType={'number-pad'}
                             maxLength={2}
-                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', paddingHorizontal: 10, borderBottomWidth: 1, paddingVertical: 5, borderBottomColor: 'lightgray' }}
+                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', paddingHorizontal: 10, borderBottomWidth: 1, paddingVertical: 5, borderBottomColor: 'lightgray' }}
                             onChangeText={(text) => {
                                 setFloorNo(text)
                                 checkForm(address, text, place)
@@ -253,11 +253,11 @@ const AddNewAddresses = ({ route, navigation }) => {
                         </TextInput>
                     </View>
                     <View style={{ width: '64%', marginLeft: '6%' }}>
-                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, color: 'gray' }}>Name of Place:</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, color: 'gray' }}>Name of Place:</Text>
                         <TextInput
                             value={place}
                             maxLength={30}
-                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', paddingHorizontal: 10, borderBottomWidth: 1, paddingVertical: 5, borderBottomColor: 'lightgray' }}
+                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', paddingHorizontal: 10, borderBottomWidth: 1, paddingVertical: 5, borderBottomColor: 'lightgray' }}
                             onChangeText={(text) => {
                                 setPlace(text)
                                 checkForm(address, floorNo, text)

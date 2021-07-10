@@ -355,7 +355,7 @@ const Menu = ({ route, navigation }) => {
                                 borderRadius: 30,
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 20, lineHeight: 22 }}>{kitchen?.kitName}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 20, lineHeight: 22 }}>{kitchen?.kitName}</Text>
                         </View>
                     </View>
 
@@ -441,7 +441,7 @@ const Menu = ({ route, navigation }) => {
                         }}
                     >
                         <TextInput
-                            style={{ fontFamily: "Roboto-Bold", fontSize: 20, lineHeight: 22, width: '100%' }}
+                            style={{ fontFamily: "System", fontSize: 20, lineHeight: 22, width: '100%' }}
                             onChangeText={(text) => showSearchResults(text)}
                             placeholder="Search"
                         >
@@ -524,7 +524,7 @@ const Menu = ({ route, navigation }) => {
                                         reviews: reviews
                                     })}
                                 >
-                                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 22, fontWeight: 'bold' }}>{kitchen?.kitName} <AntIcon name="right" size={22} /></Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 22, fontWeight: 'bold' }}>{kitchen?.kitName} <AntIcon name="right" size={22} /></Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity 
                                     onPress={() => markFavourite(kitchen.id)}    
@@ -532,8 +532,8 @@ const Menu = ({ route, navigation }) => {
                                     <AntIcon name={favourite? "heart" : "hearto"} size={22} color="red" />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.catdesc}</Text>
-                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.landmark}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.catdesc}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.landmark}</Text>
                             <View
                                 style={{
                                     flexDirection: 'row',
@@ -553,15 +553,15 @@ const Menu = ({ route, navigation }) => {
                                                 tintColor: (kitchen?.avgrating.ratings__avg >= 4) ? "green" : (kitchen?.avgrating.ratings__avg >= 3) ? "gold" : "red",
                                             }}
                                         />
-                                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}> {kitchen?.avgrating.ratings__avg} <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 16 }}> {kitchen?.avgrating.ratings__avg} <Text style={{ fontFamily: "System", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
                                     </TouchableOpacity>
                                     : null}
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>{kitchen?.dist} km  |  </Text>
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>{kitchen?.mode} ({kitchen?.deliveryTime} min)</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 16 }}>{kitchen?.dist} km  |  </Text>
+                                <Text style={{ fontFamily: "System", fontSize: 16 }}>{kitchen?.mode} ({kitchen?.deliveryTime} min)</Text>
                             </View>
                             {!kitchen?.pureVeg ?
                                 <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, }}>Veg Only</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 15, }}>Veg Only</Text>
                                     <Switch
                                         trackColor={{ false: "#767577", true: "lightgreen" }}
                                         thumbColor={vegSelected ? "#228B22" : "#f4f3f4"}
@@ -573,7 +573,7 @@ const Menu = ({ route, navigation }) => {
                                 </View>
                                 :
                                 <View style={{ flexDirection: 'row' }}>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 15, marginRight: 5 }}>Pure Veg</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 15, marginRight: 5 }}>Pure Veg</Text>
                                     <FAIcon name="leaf" size={18} color="green" />
                                 </View>
                             }
@@ -623,7 +623,7 @@ const Menu = ({ route, navigation }) => {
         const renderItem = ({ item }) => (
             <View style={{ marginBottom: 30, marginTop: 20, flexDirection: 'row', width: width, paddingHorizontal: 20 }}>
                 <View style={{ width: width * 0.56, justifyContent: 'center', marginRight: 15 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginBottom: 5 }}>{item.name}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginBottom: 5 }}>{item.name}</Text>
                     {item.type == "veg" ?
                         <Image
                             source={veg}
@@ -640,27 +640,27 @@ const Menu = ({ route, navigation }) => {
                             }}
                         />}
 
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: "#C0C0C0" }}>{item.desc}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, color: "#C0C0C0" }}>{item.desc}</Text>
 
                     {item.minOrder > 0 ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: "#C0C0C0" }}>Minimum Order: {item.minOrder}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, color: "#C0C0C0" }}>Minimum Order: {item.minOrder}</Text>
                         : null}
 
                     {item.condition ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: "red" }}>{item.condition}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, color: "red" }}>{item.condition}</Text>
                         : null}
 
                     {item.offer > 0 ?
                         <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>{'\u20B9'} {item.discountrate}</Text>
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: 'gray', textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 10 }}>{'\u20B9'} {item.price}</Text>
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 8, backgroundColor: 'green', color: 'white', paddingLeft: 3, paddingRight: 3 }}>{item.offer}% off</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 16 }}>{'\u20B9'} {item.discountrate}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 16, color: 'gray', textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 10 }}>{'\u20B9'} {item.price}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 8, backgroundColor: 'green', color: 'white', paddingLeft: 3, paddingRight: 3 }}>{item.offer}% off</Text>
                         </View>
-                        : <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginTop: 10 }}>{'\u20B9'} {item.price}</Text>
+                        : <Text style={{ fontFamily: "System", fontSize: 16, marginTop: 10 }}>{'\u20B9'} {item.price}</Text>
                     }
 
                     {item.out_of_stock ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: "gray", fontWeight: 'bold' }}>OUT OF STOCK</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, color: "gray", fontWeight: 'bold' }}>OUT OF STOCK</Text>
                         : null}
 
                 </View>
@@ -735,7 +735,7 @@ const Menu = ({ route, navigation }) => {
                             disabled={item.out_of_stock || getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id) == 0}
                             onPress={() => checkCart("-", item.id)}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 30, lineHeight: 32, color: item.out_of_stock ? 'gray' : 'green' }}>-</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 30, lineHeight: 32, color: item.out_of_stock ? 'gray' : 'green' }}>-</Text>
                         </TouchableOpacity>
 
                         <View
@@ -747,7 +747,7 @@ const Menu = ({ route, navigation }) => {
                                 ...styles.shadow
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, lineHeight: 25, color: item.out_of_stock ? 'gray' : 'green' }}>{getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id)}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14, lineHeight: 25, color: item.out_of_stock ? 'gray' : 'green' }}>{getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id)}</Text>
                         </View>
 
                         <TouchableOpacity
@@ -764,7 +764,7 @@ const Menu = ({ route, navigation }) => {
                             disabled={item.out_of_stock}
                             onPress={() => checkCart("+", item.id)}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, lineHeight: 25, color: item.out_of_stock ? 'gray' : 'green' }}>+</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 20, lineHeight: 25, color: item.out_of_stock ? 'gray' : 'green' }}>+</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -901,13 +901,13 @@ const Menu = ({ route, navigation }) => {
                     borderRadius: 20,
                     padding: 35,
                 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Items already in the cart will be removed. Do you wish to continue?</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>Items already in the cart will be removed. Do you wish to continue?</Text>
                     <View style={{ flexDirection: 'row', marginTop: 20 }}>
                         <Pressable
                             style={{ width: '40%' }}
                             onPress={() => setModalVisible(!modalVisible)}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>No</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>No</Text>
                         </Pressable>
                         <Pressable
                             onPress={() => {
@@ -915,7 +915,7 @@ const Menu = ({ route, navigation }) => {
                                 editOrderAfterKitchenChange()
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -1014,12 +1014,12 @@ const Menu = ({ route, navigation }) => {
                                         height: 19,
                                     }}
                                 />}
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, marginLeft: 10, lineHeight: 20 }}>{tempSelectedItem.name}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, marginLeft: 10, lineHeight: 20 }}>{tempSelectedItem.name}</Text>
                         </View>
 
                         {minOrderError ?
                             <View style={{ marginBottom: 20 }}>
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'red' }}>* Minimum Order Quantity : {tempSelectedItem.minOrder}</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 14, color: 'red' }}>* Minimum Order Quantity : {tempSelectedItem.minOrder}</Text>
                             </View>
                             : null}
 
@@ -1028,14 +1028,14 @@ const Menu = ({ route, navigation }) => {
                                 <View key={subitem.id} style={{ marginBottom: 20 }}>
                                     <View style={{ flexDirection: 'row', width: width * 0.7, marginBottom: 20, justifyContent: 'center' }}>
                                         <View style={{ alignItems: 'flex-start', width: '70%', justifyContent: 'center' }}>
-                                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>{subitem.name}</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 16 }}>{subitem.name}</Text>
                                             {tempSelectedItem.offer > 0 ?
                                                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold' }}>{'\u20B9'} {subitem.discountrate}</Text>
-                                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 10 }}>{'\u20B9'} {subitem.price}</Text>
-                                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, marginLeft: 8, backgroundColor: 'green', color: 'white', paddingLeft: 3, paddingRight: 3 }}>{tempSelectedItem.offer}% off</Text>
+                                                    <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}>{'\u20B9'} {subitem.discountrate}</Text>
+                                                    <Text style={{ fontFamily: "System", fontSize: 14, color: 'gray', textDecorationLine: 'line-through', textDecorationStyle: 'solid', marginLeft: 10 }}>{'\u20B9'} {subitem.price}</Text>
+                                                    <Text style={{ fontFamily: "System", fontSize: 12, marginLeft: 8, backgroundColor: 'green', color: 'white', paddingLeft: 3, paddingRight: 3 }}>{tempSelectedItem.offer}% off</Text>
                                                 </View>
-                                                : <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginTop: 10 }}>{'\u20B9'} {subitem.price}</Text>
+                                                : <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginTop: 10 }}>{'\u20B9'} {subitem.price}</Text>
                                             }
                                         </View>
                                         <View
@@ -1060,7 +1060,7 @@ const Menu = ({ route, navigation }) => {
                                                 activeOpacity={0.5}
                                                 onPress={() => editOrder("-", tempSelectedItem.id + '-' + subitem.id)}
                                             >
-                                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 30, lineHeight: 32, color: 'green' }}>-</Text>
+                                                <Text style={{ fontFamily: "System", fontSize: 30, lineHeight: 32, color: 'green' }}>-</Text>
                                             </TouchableOpacity>
 
                                             <View
@@ -1072,7 +1072,7 @@ const Menu = ({ route, navigation }) => {
                                                     ...styles.shadow
                                                 }}
                                             >
-                                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, lineHeight: 25, color: 'green' }}>{getOrderQty(tempSelectedItem?.id + '-' + subitem.id)}</Text>
+                                                <Text style={{ fontFamily: "System", fontSize: 14, lineHeight: 25, color: 'green' }}>{getOrderQty(tempSelectedItem?.id + '-' + subitem.id)}</Text>
                                             </View>
 
                                             <TouchableOpacity
@@ -1088,7 +1088,7 @@ const Menu = ({ route, navigation }) => {
                                                 activeOpacity={0.5}
                                                 onPress={() => editOrder("+", tempSelectedItem.id + '-' + subitem.id)}
                                             >
-                                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, lineHeight: 25, color: 'green' }}>+</Text>
+                                                <Text style={{ fontFamily: "System", fontSize: 20, lineHeight: 25, color: 'green' }}>+</Text>
                                             </TouchableOpacity>
                                         </View>
                                     </View>

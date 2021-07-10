@@ -119,7 +119,7 @@ const Search = ({ route, navigation }) => {
                 <TextInput
                     placeholder={"Search Kitchen"}
                     value={searchText}
-                    style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: width * 0.9, backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 6, borderRadius: 10, ...styles.shadow }}
+                    style={{ fontFamily: "System", fontSize: 16, width: width * 0.9, backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 6, borderRadius: 10, ...styles.shadow }}
                     onChangeText={(text) => checkLength(text)}
                 >
                 </TextInput>
@@ -154,9 +154,9 @@ const Search = ({ route, navigation }) => {
                 />
 
                 <View style={{ maxWidth: width * 0.56, justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
 
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, color: "#C0C0C0", marginBottom: 5 }}>{item.landmark}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 12, color: "#C0C0C0", marginBottom: 5 }}>{item.landmark}</Text>
 
                     <View
                         style={{
@@ -177,11 +177,11 @@ const Search = ({ route, navigation }) => {
                                         tintColor: (item.ratings__avg >= 4) ? "green" : (item.ratings__avg >= 3) ? "gold" : "red",
                                     }}
                                 />
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}> {item.ratings__avg}  |  </Text>
+                                <Text style={{ fontFamily: "System", fontSize: 12 }}> {item.ratings__avg}  |  </Text>
                             </View>
                         : null}
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{item.dist} km  |  </Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{item.mode} ({item.deliveryTime} min)</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 12 }}>{item.dist} km  |  </Text>
+                        <Text style={{ fontFamily: "System", fontSize: 12 }}>{item.mode} ({item.deliveryTime} min)</Text>
                     </View>
 
                 </View>
@@ -222,14 +222,14 @@ const Search = ({ route, navigation }) => {
                 />
 
                 <View style={{alignItems: 'center', marginTop: 5 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray' }}>{item.kitName}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, color: 'gray' }}>{item.kitName}</Text>
                 </View>
             </TouchableOpacity>
         )
 
         return (
             <View style={{paddingHorizontal: 20}}>
-                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Recents</Text>
+                <Text style={{ fontFamily: "System", fontSize: 14 }}>Recents</Text>
                 <FlatList
                     data={recentSearchedKitchens}
                     horizontal
@@ -246,7 +246,7 @@ const Search = ({ route, navigation }) => {
         const renderQRText = () => {
             return (
                 <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, bottom: -400 }}>
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'white', paddingVertical: 4, fontStyle: 'italic', paddingHorizontal: 30 }}>Scan Kitchen's QR Code</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, color: 'white', paddingVertical: 4, fontStyle: 'italic', paddingHorizontal: 30 }}>Scan Kitchen's QR Code</Text>
                 </View>
             )
         }
@@ -261,7 +261,7 @@ const Search = ({ route, navigation }) => {
                     markerStyle={{ borderRadius: 10, borderColor: 'white' }}
                     bottomContent={
                         <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F' }}>
-                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'white', paddingVertical: 5, paddingHorizontal: 20 }}>Scan QR Code</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14, color: 'white', paddingVertical: 5, paddingHorizontal: 20 }}>Scan QR Code</Text>
                         </View>
                     }
                 />

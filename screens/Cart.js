@@ -364,13 +364,13 @@ const Cart = ({ route, navigation }) => {
                     borderRadius: 20,
                     padding: 35,
                 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Do you wish to remove this item?</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>Do you wish to remove this item?</Text>
                     <View style={{ flexDirection: 'row', marginTop: 20 }}>
                         <Pressable
                             style={{ width: '40%' }}
                             onPress={() => setRemoveItemModal(!removeItemModal)}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>No</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>No</Text>
                         </Pressable>
                         <Pressable
                             onPress={() => {
@@ -378,7 +378,7 @@ const Cart = ({ route, navigation }) => {
                                 subtractQty(tempSelectedItem, true)
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -405,8 +405,8 @@ const Cart = ({ route, navigation }) => {
                         }}
                     />
                     <View style={{ justifyContent: 'center' }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18 }}>{kitchen?.kitName}</Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>{kitchen?.landmark}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 18 }}>{kitchen?.kitName}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14 }}>{kitchen?.landmark}</Text>
                     </View>
                 </View>
 
@@ -433,7 +433,7 @@ const Cart = ({ route, navigation }) => {
                                                     alignSelf: 'center'
                                                 }}
                                             />}
-                                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 5, lineHeight: 18, width: '90%' }}>{item.name}</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 5, lineHeight: 18, width: '90%' }}>{item.name}</Text>
                                     </View>
                                     <View
                                         style={{
@@ -457,7 +457,7 @@ const Cart = ({ route, navigation }) => {
                                             activeOpacity={0.5}
                                             onPress={() => checkMinQty(item.id)}
                                         >
-                                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 30, lineHeight: 32, color: 'green' }}>-</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 30, lineHeight: 32, color: 'green' }}>-</Text>
                                         </TouchableOpacity>
 
                                         <View
@@ -469,7 +469,7 @@ const Cart = ({ route, navigation }) => {
                                                 ...styles.shadow
                                             }}
                                         >
-                                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, lineHeight: 25, color: 'green' }}>{getOrderQty(item.id)}</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 14, lineHeight: 25, color: 'green' }}>{getOrderQty(item.id)}</Text>
                                         </View>
 
                                         <TouchableOpacity
@@ -485,10 +485,10 @@ const Cart = ({ route, navigation }) => {
                                             activeOpacity={0.5}
                                             onPress={() => addQty(item.id)}
                                         >
-                                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, lineHeight: 25, color: 'green' }}>+</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 20, lineHeight: 25, color: 'green' }}>+</Text>
                                         </TouchableOpacity>
                                     </View>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold', alignSelf: 'center', marginLeft: 10 }}>{'\u20B9'}{getTotalCost(item.price, getOrderQty(item.id))}</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold', alignSelf: 'center', marginLeft: 10 }}>{'\u20B9'}{getTotalCost(item.price, getOrderQty(item.id))}</Text>
                                 </View>
                                 <View style={{
                                     borderStyle: 'dotted',
@@ -537,7 +537,7 @@ const Cart = ({ route, navigation }) => {
                     }}
                 >
                     <TextInput
-                        style={{ fontFamily: "Roboto-Bold", fontSize: 14, width: '100%' }}
+                        style={{ fontFamily: "System", fontSize: 14, width: '100%' }}
                         onChangeText={(text) => setMsgToKitchen(text)}
                         placeholder="Any message to the Kitchen?"
                     >
@@ -555,8 +555,8 @@ const Cart = ({ route, navigation }) => {
                         <MaterialIcons name="check-circle" size={30} color={'green'} />
                     </View>
                     <View style={{ flexDirection: 'row', width: width - 120, alignItems: 'center' }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>COUPON APPLIED : </Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', width: '50%', marginLeft: 5 }}>{couponApplied.code}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14 }}>COUPON APPLIED : </Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', width: '50%', marginLeft: 5 }}>{couponApplied.code}</Text>
                     </View>
                     <TouchableOpacity
                         style={{ alignItems: 'center', justifyContent: 'center' }}
@@ -578,7 +578,7 @@ const Cart = ({ route, navigation }) => {
                         <MaterialIcons name="local-offer" size={30} color={'gray'} />
                     </View>
                     <View style={{ width: width - 120, alignItems: 'flex-start', justifyContent: 'center' }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, paddingLeft: 10 }}>APPLY COUPON</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, paddingLeft: 10 }}>APPLY COUPON</Text>
                     </View>
                     <View style={{ alignItems: 'center' }}>
                         <MaterialIcons name="arrow-right" size={30} color={'gray'} />
@@ -618,19 +618,19 @@ const Cart = ({ route, navigation }) => {
                             calcBill(cartItems, ASItems, item, mode)
                         }}
                     >
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, color: 'green' }}>APPLY</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 12, color: 'green' }}>APPLY</Text>
                     </TouchableOpacity>
                 </View>
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Get</Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold' }}> {item.discount}%</Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}> off upto {'\u20B9'}{item.maxDiscount},</Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold' }}> Valid Till : </Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>{getDate(item.validTill)}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14 }}>Get</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}> {item.discount}%</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14 }}> off upto {'\u20B9'}{item.maxDiscount},</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}> Valid Till : </Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14 }}>{getDate(item.validTill)}</Text>
                 </View>
                 {item.description == "" ?
                     null :
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray' }}>{item.description}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, color: 'gray' }}>{item.description}</Text>
                 }
                 <View style={{ borderStyle: 'solid', borderWidth: 1, borderColor: '#F5F5F6', marginVertical: 10 }}></View>
             </View>
@@ -654,7 +654,7 @@ const Cart = ({ route, navigation }) => {
                     paddingVertical: 10
                 }}>
                     <View style={{ marginBottom: 10, width: '100%' }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginLeft: 10, marginBottom: 10 }}>Select the Coupon</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, marginBottom: 10 }}>Select the Coupon</Text>
                         <View style={{
                             borderStyle: 'solid',
                             borderWidth: 1,
@@ -678,7 +678,7 @@ const Cart = ({ route, navigation }) => {
         return (
             kitchen?.mode == "Delivery" ?
                 <View style={{ marginHorizontal: 20, marginVertical: 20 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold' }}>Select Mode</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold' }}>Select Mode</Text>
                     <View style={{flexDirection: 'row', marginTop: 10, alignItems: 'center'}}>
                         <RadioButton
                             value="PickUp"
@@ -688,7 +688,7 @@ const Cart = ({ route, navigation }) => {
                                 calcBill(cartItems, ASItems, couponApplied, 'PickUp')
                             }}
                         />
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginRight: 50, marginLeft: 10 }}>Pick Up</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, marginRight: 50, marginLeft: 10 }}>Pick Up</Text>
                         <RadioButton
                             value="Delivery"
                             status={mode === 'Delivery' ? 'checked' : 'unchecked'}
@@ -697,7 +697,7 @@ const Cart = ({ route, navigation }) => {
                                 calcBill(cartItems, ASItems, couponApplied, 'Delivery')
                             }}
                         />
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10 }}>Delivery</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10 }}>Delivery</Text>
                     </View>
                 </View>
                 :
@@ -710,41 +710,41 @@ const Cart = ({ route, navigation }) => {
     function renderBillingDetails() {
         return (
             <View style={{ marginHorizontal: 20, marginVertical: 20 }}>
-                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold' }}>Billing Details</Text>
+                <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}>Billing Details</Text>
                 <View style={{ flexDirection: 'row', marginTop: 20 }}>
                     <View style={{ width: width * 0.75 }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Sub-Total</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14 }}>Sub-Total</Text>
                         {kitDiscount > 0 ?
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Kitchen Discount</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14 }}>Kitchen Discount</Text>
                             : null
                         }
                         {couponApplied ?
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Coupon Discount</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14 }}>Coupon Discount</Text>
                             : null
                         }
                         {mode == "Delivery" ?
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>Delivery Charge</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14 }}>Delivery Charge</Text>
                             : null
                         }
                         <View style={{ borderStyle: 'solid', borderWidth: 1, borderColor: '#F5F5F6', width: '100%', marginVertical: 10 }}></View>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold' }}>Total Amount</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}>Total Amount</Text>
                     </View>
                     <View style={{ alignItems: 'flex-end' }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>{'\u20B9'}{subTotal}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14 }}>{'\u20B9'}{subTotal}</Text>
                         {kitDiscount > 0 ?
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'green' }}>- {'\u20B9'}{kitDiscount}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14, color: 'green' }}>- {'\u20B9'}{kitDiscount}</Text>
                             : null
                         }
                         {couponApplied ?
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'green' }}>- {'\u20B9'}{couponDiscount}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14, color: 'green' }}>- {'\u20B9'}{couponDiscount}</Text>
                             : null
                         }
                         {mode == "Delivery" ?
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14 }}>{'\u20B9'}{kitchen.deliveryCharge}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14 }}>{'\u20B9'}{kitchen.deliveryCharge}</Text>
                             : null
                         }
                         <View style={{ borderStyle: 'solid', borderWidth: 1, borderColor: '#F5F5F6', width: '100%', marginVertical: 10 }}></View>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold' }}>{'\u20B9'}{toPay}.00</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}>{'\u20B9'}{toPay}.00</Text>
                     </View>
                 </View>
             </View>
@@ -755,7 +755,7 @@ const Cart = ({ route, navigation }) => {
         return (
             <View style={{ marginHorizontal: 20, marginVertical: 20, width: width * 0.8 }}>
                 <View style={{flexDirection: 'row'}}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, fontWeight: 'bold', width: width*0.6 }}>Choose Your Address</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold', width: width*0.6 }}>Choose Your Address</Text>
                     <Pressable 
                         style={{alignItems: 'center'}}
                         onPress={() =>  {
@@ -763,7 +763,7 @@ const Cart = ({ route, navigation }) => {
                             navigation.navigate("AddNewAddress")
                         }}
                     >
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: '#FC6D3F' }} >Add New Address</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, color: '#FC6D3F' }} >Add New Address</Text>
                     </Pressable>
                 </View>
                 <View style={{ marginTop: 10 }}>
@@ -779,8 +779,8 @@ const Cart = ({ route, navigation }) => {
                                     }}
                                 />
                                 <View>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10 }}>{add.place}</Text>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10, color: 'gray' }}>{add.address}, Floor No: {add.floorNo}</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10 }}>{add.place}</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10, color: 'gray' }}>{add.address}, Floor No: {add.floorNo}</Text>
                                 </View>
                             </View>
                         )
@@ -828,19 +828,19 @@ const Cart = ({ route, navigation }) => {
                                 style={{ marginLeft: 30 }}
                                 onPress={showDatepicker}
                             >
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: '#FC6D3F' }}>Select Date</Text>
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, alignSelf: 'center' }}>{selectedDate.getDate()}/{selectedDate.getMonth()}/{selectedDate.getFullYear()}</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 16, color: '#FC6D3F' }}>Select Date</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 16, alignSelf: 'center' }}>{selectedDate.getDate()}/{selectedDate.getMonth()}/{selectedDate.getFullYear()}</Text>
                             </Pressable>
                             <Pressable
                                 style={{ marginLeft: 30 }}
                                 onPress={showTimepicker}
                             >
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: '#FC6D3F' }}>Select Time</Text>
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, alignSelf: 'center' }}>{selectedDate.getHours()}:{selectedDate.getMinutes()}</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 16, color: '#FC6D3F' }}>Select Time</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 16, alignSelf: 'center' }}>{selectedDate.getHours()}:{selectedDate.getMinutes()}</Text>
                             </Pressable>
                         </View>
                         :
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10 }}>Schedule Order?</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10 }}>Schedule Order?</Text>
                     }
                 </View>
                 {dateTimePicker && (
@@ -868,8 +868,8 @@ const Cart = ({ route, navigation }) => {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', width: width*0.8, alignSelf: 'center'}}>
                 <MaterialIcons name="fastfood" size={250} color={'lightgray'} />
-                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, color: 'lightgray', marginTop: 20 }}>Your cart is Empty</Text>
-                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, color: 'lightgray' }}>Add your favourite food to order.</Text>
+                <Text style={{ fontFamily: "System", fontSize: 20, color: 'lightgray', marginTop: 20 }}>Your cart is Empty</Text>
+                <Text style={{ fontFamily: "System", fontSize: 20, color: 'lightgray' }}>Add your favourite food to order.</Text>
             </View>
         )
     }

@@ -98,7 +98,7 @@ const FavKitchens = ({ route, navigation }) => {
                         justifyContent: 'center',
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>FAVOURITE KITCHENS</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>FAVOURITE KITCHENS</Text>
                 </View>
             </View>
         )
@@ -138,17 +138,17 @@ const FavKitchens = ({ route, navigation }) => {
                         ...styles.shadow
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, lineHeight: 22 }}>{item.deliveryTime} min</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 13, lineHeight: 22 }}>{item.deliveryTime} min</Text>
                 </View> */}
 
                 <View style={{ maxWidth: width * 0.56, justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
 
                     {item.catdesc != "" ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "#C0C0C0", marginBottom: 3 }}>{item.catdesc}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 13, color: "#C0C0C0", marginBottom: 3 }}>{item.catdesc}</Text>
                     : null}
 
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "#C0C0C0", marginBottom: 5 }}>{item.landmark}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 13, color: "#C0C0C0", marginBottom: 5 }}>{item.landmark}</Text>
 
                     <View
                         style={{
@@ -169,11 +169,11 @@ const FavKitchens = ({ route, navigation }) => {
                                         tintColor: (item.ratings__avg >= 4) ? "green" : (item.ratings__avg >= 3) ? "gold" : "red",
                                     }}
                                 />
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}> {item.ratings__avg}  |  </Text>
+                                <Text style={{ fontFamily: "System", fontSize: 12 }}> {item.ratings__avg}  |  </Text>
                             </View>
                         : null}
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{item.dist} km  |  </Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12 }}>{item.mode} ({item.deliveryTime} min)</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 12 }}>{item.dist} km  |  </Text>
+                        <Text style={{ fontFamily: "System", fontSize: 12 }}>{item.mode} ({item.deliveryTime} min)</Text>
                     </View>
 
                 </View>

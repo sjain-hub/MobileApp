@@ -108,8 +108,8 @@ const KitchenDetails = ({ route, navigation }) => {
                         paddingHorizontal: 20
                     }}
                 >
-                    <Text style={{ marginVertical: 10, textAlign: 'center', fontFamily: "Roboto-Bold", fontSize: 26, lineHeight: 30, fontWeight: 'bold' }}>{kitchen?.kitName}</Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, lineHeight: 22, color: 'gray' }}>{kitchen?.description}kiursctheri ceriuyfrekuif rjekghcfkreufc geiuygt fskjgeru rgfjer fuyegfjhregf</Text>
+                    <Text style={{ marginVertical: 10, textAlign: 'center', fontFamily: "System", fontSize: 26, lineHeight: 30, fontWeight: 'bold' }}>{kitchen?.kitName}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, lineHeight: 22, color: 'gray' }}>{kitchen?.description}kiursctheri ceriuyfrekuif rjekghcfkreufc geiuygt fskjgeru rgfjer fuyegfjhregf</Text>
                 </View>
 
                 <View style={{
@@ -118,7 +118,7 @@ const KitchenDetails = ({ route, navigation }) => {
                     maxWidth: width * 0.8
                 }}>
                     <FAIcon name="address-book" size={33} color="skyblue" />
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 20, color: 'gray' }}>{kitchen?.address}, Floor - {kitchen?.floorNo}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 20, color: 'gray' }}>{kitchen?.address}, Floor - {kitchen?.floorNo}</Text>
                 </View>
 
                 <View style={{
@@ -126,7 +126,7 @@ const KitchenDetails = ({ route, navigation }) => {
                     flexDirection: 'row'
                 }}>
                     <FAIcon name="phone-square" size={35} color="skyblue" />
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 20, lineHeight: 33, marginLeft: 20 }}>+91 {kitchen?.paytmNo}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 20, lineHeight: 33, marginLeft: 20 }}>+91 {kitchen?.paytmNo}</Text>
                 </View>
             </View>
         )
@@ -164,9 +164,9 @@ const KitchenDetails = ({ route, navigation }) => {
         return (
             <View>
                 <View style={{ padding: 40 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, marginBottom: 10 }}>Reviews By YouTube Page ABCD :</Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', fontStyle: 'italic', marginBottom: 5 }}>{kitchen.youTubeReview}</Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, color: 'gray', marginBottom: 5 }}>Excited to see the Interview Video? Checkout the Link:</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 18, marginBottom: 10 }}>Reviews By YouTube Page ABCD :</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, color: 'gray', fontStyle: 'italic', marginBottom: 5 }}>{kitchen.youTubeReview}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, color: 'gray', marginBottom: 5 }}>Excited to see the Interview Video? Checkout the Link:</Text>
                     <Text style={{ color: 'blue' }}
                         onPress={() => Linking.openURL(kitchen.youTubeLink)}>
                         {kitchen.youTubeLink}
@@ -208,7 +208,7 @@ const KitchenDetails = ({ route, navigation }) => {
                         <View key={review.id} style={{padding: 20}}>
                             <View style={{flexDirection: 'row'}}>
                                 <FAIcon name="user-circle" size={25} color="gray" />
-                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 18, marginLeft: 10, fontWeight: 'bold' }}>{review?.user.first_name} {review?.user.last_name}</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 18, marginLeft: 10, fontWeight: 'bold' }}>{review?.user.first_name} {review?.user.last_name}</Text>
                             </View>
                             <View style={{flexDirection: 'row', marginTop: 10}}>
                                 {review.ratings >= 1 ?
@@ -238,7 +238,7 @@ const KitchenDetails = ({ route, navigation }) => {
                                 }
                             </View>
                             <View>
-                                <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginTop: 4 }}>{review.reviews}</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 16, marginTop: 4 }}>{review.reviews}</Text>
                             </View>
                         </View>
                     )

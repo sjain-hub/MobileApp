@@ -102,7 +102,7 @@ const Addresses = ({ route, navigation }) => {
                         justifyContent: 'center',
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>MANAGE ADDRESSES</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>MANAGE ADDRESSES</Text>
                 </View>
             </View>
         )
@@ -152,8 +152,8 @@ const Addresses = ({ route, navigation }) => {
             <View style={{ marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}>
                 <View>
                     <View style={{ width: width * 0.9 }}>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{item.place}</Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 14, marginLeft: 10, color: 'gray', marginTop: 10 }}>{item.address}, Floor No: {item.floorNo}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{item.place}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10, color: 'gray', marginTop: 10 }}>{item.address}, Floor No: {item.floorNo}</Text>
                     </View>
                     <View style={{ flexDirection: 'row', marginTop: 10 }}>
                         <Pressable
@@ -165,7 +165,7 @@ const Addresses = ({ route, navigation }) => {
                                 removeItemValue("tempRegion")
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: '#FC6D3F' }}>Edit</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 16, color: '#FC6D3F' }}>Edit</Text>
                         </Pressable>
                         <Pressable
                             style={{ marginLeft: 30 }}
@@ -174,7 +174,7 @@ const Addresses = ({ route, navigation }) => {
                                 setAddDelModal(true)
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, color: '#FC6D3F' }}>Delete</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 16, color: '#FC6D3F' }}>Delete</Text>
                         </Pressable>
                     </View>
                 </View>
@@ -232,13 +232,13 @@ const Addresses = ({ route, navigation }) => {
                     borderRadius: 20,
                     padding: 30,
                 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Are you sure you want to delete this address?</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>Are you sure you want to delete this address?</Text>
                     <View style={{ flexDirection: 'row', marginTop: 20 }}>
                         <Pressable
                             style={{ width: '40%' }}
                             onPress={() => setAddDelModal(false)}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>No</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>No</Text>
                         </Pressable>
                         <Pressable
                             onPress={() => {
@@ -246,7 +246,7 @@ const Addresses = ({ route, navigation }) => {
                                 deleteAddress(deleteAdd)
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
                         </Pressable>
                     </View>
                 </View>

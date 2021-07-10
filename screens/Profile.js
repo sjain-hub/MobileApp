@@ -171,8 +171,8 @@ const Profile = ({ route, navigation }) => {
                     <View style={{ width: width * 0.9, backgroundColor: 'white', alignSelf: 'center', borderRadius: 30, opacity: 0.9, ...styles.shadow }}>
                         {otpSent ?
                             <View style={{ padding: 50 }}>
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold' }}>Enter OTP</Text>
-                                <Text style={{ fontFamily: "Roboto-Regular", color: 'gray', marginTop: 20 }}>Enter 4 digit OTP to verify and proceed.</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold' }}>Enter OTP</Text>
+                                <Text style={{ fontFamily: "System", color: 'gray', marginTop: 20 }}>Enter 4 digit OTP to verify and proceed.</Text>
                                 <View
                                     style={{
                                         marginTop: 20,
@@ -186,7 +186,7 @@ const Profile = ({ route, navigation }) => {
                                         autoFocus
                                         keyboardType={'number-pad'}
                                         maxLength={6}
-                                        style={{ fontFamily: "Roboto-Bold", fontSize: 30, width: '100%' }}
+                                        style={{ fontFamily: "System", fontSize: 30, width: '100%' }}
                                         onChangeText={(text) => setOtp(text)}
                                     >
                                     </TextInput>
@@ -208,8 +208,8 @@ const Profile = ({ route, navigation }) => {
                             :
                             editMode ?
                                 <View style={{ padding: 50 }}>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold' }}>PROFILE</Text>
-                                    <Text style={{ fontFamily: "Roboto-Regular", color: 'gray', marginTop: 10 }}>Update your account details</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold' }}>PROFILE</Text>
+                                    <Text style={{ fontFamily: "System", color: 'gray', marginTop: 10 }}>Update your account details</Text>
                                     <View
                                         style={{
                                             marginTop: 20,
@@ -217,9 +217,9 @@ const Profile = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Username</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Username</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={user?.username}
                                             editable={false}
                                         >
@@ -232,9 +232,9 @@ const Profile = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Full Name</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Full Name</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={user?.first_name + ' ' + user?.last_name}
                                             editable={false}
                                         >
@@ -247,11 +247,11 @@ const Profile = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Phone</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Phone</Text>
                                         <TextInput
                                             keyboardType={'number-pad'}
                                             maxLength={10}
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={phoneNo}
                                             onChangeText={(text) => {
                                                 setPhoneNo(text)
@@ -265,7 +265,7 @@ const Profile = ({ route, navigation }) => {
                                         >
                                         </TextInput>
                                         {errors?.phone ?
-                                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'red' }}>{errors.phone}</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 14, color: 'red' }}>{errors.phone}</Text>
                                             : null
                                         }
                                     </View>
@@ -276,9 +276,9 @@ const Profile = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Email</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Email</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={email}
                                             onChangeText={(text) => {
                                                 setEmail(text)
@@ -292,7 +292,7 @@ const Profile = ({ route, navigation }) => {
                                         >
                                         </TextInput>
                                         {errors?.email ?
-                                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'red' }}>{errors.email}</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 14, color: 'red' }}>{errors.email}</Text>
                                             : null
                                         }
                                     </View>
@@ -305,7 +305,7 @@ const Profile = ({ route, navigation }) => {
                                                 setUpdateFormValid(false)
                                             }}
                                         >
-                                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Cancel</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Cancel</Text>
                                         </Pressable>
                                         <Pressable
                                             disabled={!updateFormValid}
@@ -315,19 +315,19 @@ const Profile = ({ route, navigation }) => {
                                                 AsyncStorage.setItem('tempEmail', email)
                                             }}
                                         >
-                                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: updateFormValid ? '#FC6D3F' : 'lightgray' }}>Update</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 18, color: updateFormValid ? '#FC6D3F' : 'lightgray' }}>Update</Text>
                                         </Pressable>
                                     </View>
                                 </View>
                                 :
                                 <View style={{ padding: 50 }}>
                                     <View style={{ flexDirection: 'row' }}>
-                                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold', width: width * 0.5 }}>PROFILE</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold', width: width * 0.5 }}>PROFILE</Text>
                                         <Pressable
                                             style={{ alignItems: 'center' }}
                                             onPress={() => setEditMode(true)}
                                         >
-                                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Edit</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Edit</Text>
                                         </Pressable>
                                     </View>
                                     <View
@@ -337,9 +337,9 @@ const Profile = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Username</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Username</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={user?.username}
                                             editable={false}
                                         >
@@ -352,9 +352,9 @@ const Profile = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Full Name</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Full Name</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={user?.first_name + ' ' + user?.last_name}
                                             editable={false}
                                         >
@@ -367,9 +367,9 @@ const Profile = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Phone</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Phone</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={phoneNo}
                                             editable={false}
                                         >
@@ -382,9 +382,9 @@ const Profile = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Email</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Email</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%', backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={email}
                                             editable={false}
                                         >

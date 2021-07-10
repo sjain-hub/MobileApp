@@ -28,7 +28,7 @@ import sindian from '../assets/icons/sindian.png';
 import all from '../assets/icons/all.png';
 import search from "../assets/icons/search.png";
 import config from '../config.json';
-import FAIcon5 from 'react-native-vector-icons/FontAwesome5';
+import Entypo from 'react-native-vector-icons/Entypo';
 
 
 const kitchens = ({ route, navigation }) => {
@@ -196,7 +196,7 @@ const kitchens = ({ route, navigation }) => {
                             backgroundColor: "#EFEFF1"
                         }}
                     >
-                        <Text numberOfLines={1} style={{ fontFamily: "Roboto-Bold", fontSize: 16, lineHeight: 22 }}>{userLocation}</Text>
+                        <Text numberOfLines={1} style={{ fontFamily: "System", fontSize: 16, lineHeight: 22 }}>{userLocation}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -260,7 +260,7 @@ const kitchens = ({ route, navigation }) => {
                             style={{
                                 marginTop: 10,
                                 color: (selectedCategory?.id == item.id) ? "white" : "#1E1F20",
-                                fontFamily: "Roboto-Regular", fontSize: 12, lineHeight: 22
+                                fontFamily: "System", fontSize: 12, lineHeight: 22
                             }}
                         >
                             {item.name}
@@ -326,17 +326,17 @@ const kitchens = ({ route, navigation }) => {
                         ...styles.shadow
                     }}
                 >
-                    <Text style={{ fontFamily: "Roboto-Bold", fontSize: 13, lineHeight: 22 }}>{item.deliveryTime} min</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 13, lineHeight: 22 }}>{item.deliveryTime} min</Text>
                 </View> */}
 
                 <View style={{ maxWidth: width * 0.56, justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginBottom: 5 }}>{item.kitName}</Text>
 
                     {item.catdesc != "" ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "gray", marginBottom: 3 }}>{item.catdesc}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 13, color: "gray", marginBottom: 3 }}>{item.catdesc}</Text>
                     : null}
 
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13, color: "gray", marginBottom: 5 }}>{item.landmark}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 13, color: "gray", marginBottom: 5 }}>{item.landmark}</Text>
 
                     <View
                         style={{
@@ -357,11 +357,11 @@ const kitchens = ({ route, navigation }) => {
                                         tintColor: (item.ratings__avg >= 4) ? "green" : (item.ratings__avg >= 3) ? "gold" : "red",
                                     }}
                                 />
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13 }}> {item.ratings__avg}  |  </Text>
+                                <Text style={{ fontFamily: "System", fontSize: 13 }}> {item.ratings__avg}  |  </Text>
                             </View>
                         : null}
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13 }}>{item.dist} km  |  </Text>
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 13 }}>{item.mode} ({item.deliveryTime} min)</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 13 }}>{item.dist} km  |  </Text>
+                        <Text style={{ fontFamily: "System", fontSize: 13 }}>{item.mode} ({item.deliveryTime} min)</Text>
                     </View>
 
                     <View
@@ -374,7 +374,9 @@ const kitchens = ({ route, navigation }) => {
                     />
 
                     {item.acceptAdvcOrders ?
-                        <Text style={{ fontFamily: "Roboto-Regular", fontSize: 12, color: 'gray' }}><FAIcon5 name="info-circle" size={12} color="skyblue" /> Accepts Advance Orders upto 2 Days.</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>
+                            <Entypo name="info-with-circle" size={12} color="skyblue" /> 
+                        Accepts Advance Orders upto 2 Days.</Text>
                     : null}
 
                 </View>

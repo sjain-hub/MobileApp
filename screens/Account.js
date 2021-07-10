@@ -248,8 +248,8 @@ const Account = ({ route, navigation }) => {
                     <View style={{ width: width * 0.9, backgroundColor: 'white', alignSelf: 'center', borderRadius: 30, opacity: 0.9, ...styles.shadow }}>
                         {otpSent ?
                             <View style={{ padding: 50 }}>
-                                <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold' }}>Enter OTP</Text>
-                                <Text style={{ fontFamily: "Roboto-Regular", color: 'gray', marginTop: 20 }}>Enter 4 digit OTP to verify and proceed.</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold' }}>Enter OTP</Text>
+                                <Text style={{ fontFamily: "System", color: 'gray', marginTop: 20 }}>Enter 4 digit OTP to verify and proceed.</Text>
                                 <View
                                     style={{
                                         marginTop: 20,
@@ -263,7 +263,7 @@ const Account = ({ route, navigation }) => {
                                         autoFocus
                                         keyboardType={'number-pad'}
                                         maxLength={6}
-                                        style={{ fontFamily: "Roboto-Bold", fontSize: 30, width: '100%' }}
+                                        style={{ fontFamily: "System", fontSize: 30, width: '100%' }}
                                         onChangeText={(text) => setOtp(text)}
                                     >
                                     </TextInput>
@@ -285,8 +285,8 @@ const Account = ({ route, navigation }) => {
                             :
                             registerUser ?
                                 <View style={{ padding: 50 }}>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold' }}>Register</Text>
-                                    <Text style={{ fontFamily: "Roboto-Regular", color: 'gray', marginTop: 10 }}>Create your new account</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold' }}>Register</Text>
+                                    <Text style={{ fontFamily: "System", color: 'gray', marginTop: 10 }}>Create your new account</Text>
                                     <View
                                         style={{
                                             marginTop: 20,
@@ -294,10 +294,10 @@ const Account = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Username</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Username</Text>
                                         <TextInput
                                             autoFocus
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={username}
                                             onChangeText={(text) => {
                                                 setUsername(text)
@@ -310,7 +310,7 @@ const Account = ({ route, navigation }) => {
                                         >
                                         </TextInput>
                                         {errors?.username?
-                                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 12, color: 'red'
+                                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'red'
                                          }}>{errors.username}</Text>
                                             : null
                                         }
@@ -322,9 +322,9 @@ const Account = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Phone</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Phone</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={'+91 ' + phoneNo}
                                             editable={false}
                                         >
@@ -337,9 +337,9 @@ const Account = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Email</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Email</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={email}
                                             onChangeText={(text) => {
                                                 setEmail(text)
@@ -352,7 +352,7 @@ const Account = ({ route, navigation }) => {
                                         >
                                         </TextInput>
                                         {errors?.email?
-                                            <Text style={{ fontFamily: "Roboto-Bold", fontSize: 12, color: 'red' }}>{errors.email}</Text>
+                                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'red' }}>{errors.email}</Text>
                                             : null
                                         }
                                     </View>
@@ -363,9 +363,9 @@ const Account = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>First Name</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>First Name</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={firstname}
                                             onChangeText={(text) => {
                                                 setFirstname(text)
@@ -381,9 +381,9 @@ const Account = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                         }}
                                     >
-                                        <Text style={{ fontFamily: "Roboto-Bold", fontSize: 14, color: 'grey' }}>Last Name</Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14, color: 'grey' }}>Last Name</Text>
                                         <TextInput
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
+                                            style={{ fontFamily: "System", fontSize: 16, width: '100%',  backgroundColor: '#F5F5F6', height: 40, paddingHorizontal: 10 }}
                                             value={lastname}
                                             onChangeText={(text) => {
                                                 setLastname(text)
@@ -409,8 +409,8 @@ const Account = ({ route, navigation }) => {
                                 </View>
                                 :
                                 <View style={{ padding: 50 }}>
-                                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold' }}>LOGIN</Text>
-                                    <Text style={{ fontFamily: "Roboto-Regular", color: 'gray', marginTop: 20 }}>Enter your 10 digit mobile number to Login/Register</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold' }}>LOGIN</Text>
+                                    <Text style={{ fontFamily: "System", color: 'gray', marginTop: 20 }}>Enter your 10 digit mobile number to Login/Register</Text>
                                     <View
                                         style={{
                                             height: 50,
@@ -424,7 +424,7 @@ const Account = ({ route, navigation }) => {
                                         <TextInput
                                             keyboardType={'number-pad'}
                                             maxLength={10}
-                                            style={{ fontFamily: "Roboto-Bold", fontSize: 20, width: '100%' }}
+                                            style={{ fontFamily: "System", fontSize: 20, width: '100%' }}
                                             onChangeText={(text) => checkNumber(text)}
                                             placeholder="E.g. : 9876543216"
                                         >
@@ -466,8 +466,8 @@ const Account = ({ route, navigation }) => {
         return (
             <View>
                 <View style={{ flexDirection: 'row', marginHorizontal: 20, paddingVertical: 30 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20 }}>Hello,  </Text>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 20, fontWeight: 'bold' }}>{user?.first_name} {user?.last_name}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 20 }}>Hello,  </Text>
+                    <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold' }}>{user?.first_name} {user?.last_name}</Text>
                 </View>
                 <View style={{borderStyle: 'solid', borderWidth: 1}}></View>
             </View>
@@ -481,7 +481,7 @@ const Account = ({ route, navigation }) => {
                 onPress={() => navigation.navigate("Profile")}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>My Profile</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>My Profile</Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                     <MaterialIcons name="keyboard-arrow-right" size={30} />
@@ -497,7 +497,7 @@ const Account = ({ route, navigation }) => {
                 onPress={() => navigation.navigate("FavKitchens")}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Favourite Kitchens</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>Favourite Kitchens</Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                     <MaterialIcons name="keyboard-arrow-right" size={30} />
@@ -513,7 +513,7 @@ const Account = ({ route, navigation }) => {
                 onPress={() => navigation.navigate("Orders")}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Orders</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>Orders</Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                     <MaterialIcons name="keyboard-arrow-right" size={30} />
@@ -529,7 +529,7 @@ const Account = ({ route, navigation }) => {
                 onPress={() => navigation.navigate("Addresses")}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Manage Addresses</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>Manage Addresses</Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                     <MaterialIcons name="keyboard-arrow-right" size={30} />
@@ -545,7 +545,7 @@ const Account = ({ route, navigation }) => {
             // onPress={() => }
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Help?</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>Help?</Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                     <MaterialIcons name="keyboard-arrow-right" size={30} />
@@ -561,7 +561,7 @@ const Account = ({ route, navigation }) => {
                 onPress={() => setLogoutModalVisible(true)}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18 }}>Logout</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 18 }}>Logout</Text>
                 </View>
                 <View style={{ alignItems: 'center' }}>
                     <MaterialIcons name="logout" size={30} color={'red'} />
@@ -587,13 +587,13 @@ const Account = ({ route, navigation }) => {
                     borderRadius: 20,
                     padding: 35,
                 }}>
-                    <Text style={{ fontFamily: "Roboto-Regular", fontSize: 16 }}>Are you sure you want to Logout?</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>Are you sure you want to Logout?</Text>
                     <View style={{ flexDirection: 'row', marginTop: 20 }}>
                         <Pressable
                             style={{ width: '40%' }}
                             onPress={() => setLogoutModalVisible(!logoutModalVisible)}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Cancel</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Cancel</Text>
                         </Pressable>
                         <Pressable
                             onPress={() => {
@@ -603,7 +603,7 @@ const Account = ({ route, navigation }) => {
                                 auth().signOut().then(() => console.log('User signed out!'));
                             }}
                         >
-                            <Text style={{ fontFamily: "Roboto-Regular", fontSize: 18, color: '#FC6D3F' }}>Logout</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Logout</Text>
                         </Pressable>
                     </View>
                 </View>
