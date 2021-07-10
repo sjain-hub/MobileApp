@@ -69,6 +69,7 @@ const Cart = ({ route, navigation }) => {
                             fetchCartData(kitId, token)
                         } else {
                             setCartEmpty(true)
+                            setLoading(false)
                         }
                     });
                 }
@@ -78,6 +79,7 @@ const Cart = ({ route, navigation }) => {
                             fetchCartData(kitId,)
                         } else {
                             setCartEmpty(true)
+                            setLoading(false)
                         }
                     });
                 }

@@ -113,8 +113,7 @@ const Home = ({ route, navigation }) => {
                 setKitchensData(json)
             }).catch((error) => {
                 if(error == 'TypeError: Network request failed') {
-                    // navigation.navigate("NoInternet") 
-                    console.error(error)         
+                    navigation.navigate("NoInternet") 
                 } else {
                     console.error(error)     
                 } 

@@ -617,7 +617,7 @@ const Menu = ({ route, navigation }) => {
 
     function renderMenu() {
         const renderCategories = (data) => (
-            <Text style={{ fontFamily: "Roboto-Black", fontSize: 20, fontWeight: 'bold', paddingHorizontal: 20, marginTop: 20 }}>{data.section.category}</Text>
+            <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold', paddingHorizontal: 20, marginTop: 20 }}>{data.section.category}</Text>
         )
 
         const renderItem = ({ item }) => (

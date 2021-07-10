@@ -224,7 +224,7 @@ const Tabs = ({ route, navigation }) => {
                 initialParams={{cameFromCart : false}}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Entypo name="user-alt" size={22} color={focused ? '#FC6D3F' : 'gray'} />
+                        <Entypo name="user" size={22} color={focused ? '#FC6D3F' : 'gray'} />
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
