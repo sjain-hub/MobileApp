@@ -15,6 +15,8 @@ import AddNewAddress from './AddNewAddress'
 import SearchAddress from './SearchAddress'
 import OrderDetails from'./OrderDetails'
 import NoInternet from './NoInternet'
+import Payment from './Payment'
+import LatestUpdates from './LatestUpdates'
 
 export {
     Home,
@@ -33,5 +35,7 @@ export {
     SearchAddress,
     OrderDetails,
     NoInternet,
+    Payment,
+    LatestUpdates,
     Test
 }

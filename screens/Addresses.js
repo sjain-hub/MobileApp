@@ -56,11 +56,11 @@ const Addresses = ({ route, navigation }) => {
                         setLoading(false)
                         setAddresses(json.addresses)
                     }).catch((error) => {
-                         if(error == 'TypeError: Network request failed') {
-                    navigation.navigate("NoInternet")        
-                } else {
-                    console.error(error)     
-                }
+                        if (error == 'TypeError: Network request failed') {
+                            navigation.navigate("NoInternet")
+                        } else {
+                            console.error(error)
+                        }
                     });
             }
         });

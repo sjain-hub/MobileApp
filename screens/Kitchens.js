@@ -29,6 +29,7 @@ import all from '../assets/icons/all.png';
 import search from "../assets/icons/search.png";
 import config from '../config.json';
 import Entypo from 'react-native-vector-icons/Entypo';
+import AntIcon from 'react-native-vector-icons/AntDesign';
 
 
 const kitchens = ({ route, navigation }) => {
@@ -88,10 +89,12 @@ const kitchens = ({ route, navigation }) => {
     const [kitchensData, setKitchensData] = React.useState([])
     const [filteredKitchens, setFilteredKitchens] = React.useState([])
     const [loading, setLoading] = React.useState(true)
+    const [activeOrders, setActiveOrders] = React.useState();
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             fetchNearbyKitchens()
+            fetchActiveOrders()
         });
         return unsubscribe;
     }, [navigation])
@@ -122,6 +125,33 @@ const kitchens = ({ route, navigation }) => {
                     console.error(error)     
                 }
                 });
+        });
+    }
+
+    function fetchActiveOrders() {
+        AsyncStorage.getItem("authToken").then((value) => {
+            if (value) {
+                fetch(config.url + '/userapi/apporders', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: 'Token ' + value
+                    },
+                    body: JSON.stringify({
+                        "action": "active"
+                    })
+                }).then((response) => response.json())
+                    .then((json) => {
+                        setActiveOrders(json.orders)
+                    }).catch((error) => {
+                        if (error == 'TypeError: Network request failed') {
+                            navigation.navigate("NoInternet")
+                        } else {
+                            console.error(error)
+                        }
+                    });
+            }
         });
     }
 
@@ -389,7 +419,7 @@ const kitchens = ({ route, navigation }) => {
                 renderItem={renderItem}
                 ListHeaderComponent={renderMainCategories}
                 contentContainerStyle={{
-                    paddingBottom: 60
+                    paddingBottom: activeOrders?.length > 0 ? 100 : 60
                 }}
             />
         )
@@ -403,10 +433,50 @@ const kitchens = ({ route, navigation }) => {
         )
     }
 
+    function renderActiveOrders() {
+        return (
+            <View
+                style={{
+                    position: 'absolute',
+                    height: 100,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    alignItems: 'center',
+                }}
+            >
+                <TouchableOpacity
+                    style={{
+                        height: 40,
+                        width: width,
+                        backgroundColor: 'lightgreen',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        marginVertical: 10
+                    }}
+                    onPress={() => navigation.navigate("Orders")}
+                >
+                    <Text style={{ color: 'white', fontSize: 16 }}>{activeOrders?.length} Active {activeOrders?.length > 1 ? "Orders" : "Order"}  <AntIcon name="right" size={16} /><AntIcon name="right" size={16} /><AntIcon name="right" size={16} /></Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
-            {loading ? renderLoader() : renderRestaurantList()}
+            {loading ?
+                renderLoader()
+                :
+                <View style={{ flex: 1 }}>
+                    {renderRestaurantList()}
+                    {activeOrders?.length > 0 ?
+                        renderActiveOrders()
+                        :
+                        null
+                    }
+                </View>
+            }
         </SafeAreaView>
     )
 

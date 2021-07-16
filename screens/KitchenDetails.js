@@ -175,7 +175,7 @@ const KitchenDetails = ({ route, navigation }) => {
                     <Text style={{ color: 'blue' }}
                         onPress={() => Linking.openURL(kitchen.youTubeLink)}>
                         {kitchen.youTubeLink}
-                </Text>
+                    </Text>
                 </View>
                 <View style={{
                     alignSelf: 'center',

@@ -10,44 +10,50 @@ import {
     Pressable,
     TouchableOpacity,
     TextInput,
-    FlatList
+    FlatList,
+    Linking,
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import config from '../config.json';
 const { width, height } = Dimensions.get("window");
 import back from "../assets/icons/back.png";
+import paid from '../assets/icons/paid.png';
 import StepIndicator from 'react-native-step-indicator';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Octicons from 'react-native-vector-icons/Octicons';
+import Foundation from 'react-native-vector-icons/Foundation';
 
 
 const OrderDetails = ({ route, navigation }) => {
 
     const [order, setOrder] = React.useState();
     const [trackOrder, setTrackOrder] = React.useState(false);
-    const [currentPosition, setCurrentPosition] = React.useState(0);
+    const [currentPosition, setCurrentPosition] = React.useState(3);
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    const labels = ["Cart", "Delivery Address", "Order Summary", "Payment Method", "Track"];
     const customStyles = {
-        stepIndicatorSize: 25,
-        currentStepIndicatorSize: 30,
+        stepIndicatorSize: 22,
+        currentStepIndicatorSize: 22,
         separatorStrokeWidth: 2,
         currentStepStrokeWidth: 3,
-        stepStrokeCurrentColor: '#fe7013',
+        stepStrokeCurrentColor: '#FC6D3F',
         stepStrokeWidth: 3,
-        stepStrokeFinishedColor: '#fe7013',
-        stepStrokeUnFinishedColor: '#aaaaaa',
-        separatorFinishedColor: '#fe7013',
-        separatorUnFinishedColor: '#aaaaaa',
-        stepIndicatorFinishedColor: '#fe7013',
+        stepStrokeFinishedColor: '#FC6D3F',
+        stepStrokeUnFinishedColor: 'lightgray',
+        separatorFinishedColor: '#FC6D3F',
+        separatorUnFinishedColor: 'lightgray',
+        stepIndicatorFinishedColor: '#FC6D3F',
         stepIndicatorUnFinishedColor: '#ffffff',
         stepIndicatorCurrentColor: '#ffffff',
-        stepIndicatorLabelFontSize: 13,
-        currentStepIndicatorLabelFontSize: 13,
-        stepIndicatorLabelCurrentColor: '#fe7013',
-        stepIndicatorLabelFinishedColor: '#ffffff',
-        stepIndicatorLabelUnFinishedColor: '#aaaaaa',
-        labelColor: '#999999',
-        labelSize: 13,
-        currentStepLabelColor: '#fe7013'
+        stepIndicatorLabelFontSize: 0,
+        currentStepIndicatorLabelFontSize: 0,
+        stepIndicatorLabelCurrentColor: 'transparent',
+        stepIndicatorLabelFinishedColor: 'transparent',
+        stepIndicatorLabelUnFinishedColor: 'transparent',
+        labelColor: 'gray',
+        labelSize: 16,
+        currentStepLabelColor: '#FC6D3F',
+        labelAlign: 'flex-start'
     }
 
     React.useEffect(() => {
@@ -61,16 +67,6 @@ const OrderDetails = ({ route, navigation }) => {
         return unsubscribe;
     }, [navigation])
 
-    function renderGap() {
-        return (
-            <View style={{
-                borderStyle: 'solid',
-                borderWidth: 10,
-                borderColor: '#F5F5F6',
-            }}></View>
-        )
-    }
-
     const getColor = (status) => {
         if (status == "Delivered" || status == "Picked") {
             return "#4BB543"
@@ -78,7 +74,7 @@ const OrderDetails = ({ route, navigation }) => {
         else if (status == "Rejected" || status == "Cancelled") {
             return "red"
         }
-        else if (status == "Waiting" || status == "Placed" || status == "Accepted" || status == "Preparing" || status == "Packed" || status == "Dispatched") {
+        else if (status == "Waiting" || status == "Placed" || status == "Payment" || status == "Preparing" || status == "Packed" || status == "Dispatched") {
             return "#FFCC00"
         }
     }
@@ -110,16 +106,19 @@ const OrderDetails = ({ route, navigation }) => {
                         width: width * 0.6
                     }}
                 >
-                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>ORDER DETAILS</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{trackOrder ? "ORDER STATUS" : "ORDER DETAILS"}</Text>
                 </View>
-                <View
-                    style={{
-                        alignItems: 'flex-end',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Text style={{ fontFamily: "System", fontSize: 18, marginLeft: 10, color: getColor(order?.status), fontWeight: 'bold' }}>{order?.status}</Text>
-                </View>
+                {trackOrder ?
+                    null
+                    :
+                    <View
+                        style={{
+                            alignItems: 'flex-end',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Text style={{ fontFamily: "System", fontSize: 18, marginLeft: 10, color: getColor(order?.status), fontWeight: 'bold' }}>{order?.status}</Text>
+                    </View>}
             </View>
         )
     }
@@ -127,7 +126,7 @@ const OrderDetails = ({ route, navigation }) => {
     function renderCartItems() {
         return (
             <View style={{ paddingHorizontal: 20 }}>
-                <View style={{ flexDirection: 'row', marginVertical: 20 }}>
+                <View style={{ flexDirection: 'row', marginTop: 20 }}>
                     <Image
                         source={{ uri: config.url + order?.kitchen.dp }}
                         resizeMode="cover"
@@ -163,7 +162,7 @@ const OrderDetails = ({ route, navigation }) => {
         return (
             <View style={{
                 borderStyle: 'solid',
-                borderWidth: 7,
+                borderWidth: 6,
                 borderColor: '#F5F5F6',
             }}></View>
         )
@@ -249,6 +248,25 @@ const OrderDetails = ({ route, navigation }) => {
                         <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}>{'\u20B9'}{order?.total_amount}.00</Text>
                     </View>
                 </View>
+                {order?.balance == 0 ?
+                    <View style={{ position: 'absolute', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                        <Image
+                            source={paid}
+                            resizeMode="contain"
+                            style={{
+                                height: width * 0.16
+                            }}
+                        />
+                    </View>
+                    :
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate("Payment", {
+                            order: order
+                        })}
+                    >
+                        <Text style={{ fontFamily: "System", fontSize: 16, marginTop: 20, color: '#FC6D3F' }}>Pay Online now?</Text>
+                    </TouchableOpacity>
+                }
             </View>
         )
     }
@@ -262,15 +280,91 @@ const OrderDetails = ({ route, navigation }) => {
         )
     }
 
-    function currentOrderSteps() {
+    function currentOrderStatus() {
+        var labels = []
+
+        const getLabels = () => {
+            if (order.mode == "Delivery") {
+                labels = ["Placed", "Preparing", "Packed", "Dispatched", "Delivered"]
+            } else {
+                labels = ["Placed", "Preparing", "Packed", "Picked"]
+            }
+            // if (order.paymentOption == "Advance Payment") {
+            //     labels = ["Payment", ...labels]
+            // }
+            return labels
+        }
+
+        const calcCurrentStatus = () => {
+            return labels.indexOf(order.status)
+        }
+
+        const renderStatusData = () => {
+            if (order.status == "Placed") {
+                return (
+                    <View style={{justifyContent: 'center', alignItems: 'center', width: width*0.56}}>
+                        <Foundation name="clipboard-pencil" size={220} color="lightgray" />
+                    </View>
+                )
+            } else if (order.status == "Preparing") {
+                return (
+                    <View style={{justifyContent: 'center', alignItems: 'center', width: width*0.56}}>
+                        <MaterialCommunityIcons name="coffee-maker" size={220} color="lightgray" />
+                    </View>
+                )
+            } else if (order.status == "Packed") {
+                return (
+                    <View style={{justifyContent: 'center', alignItems: 'center', width: width*0.56}}>
+                        <Octicons name="package" size={220} color="lightgray" />
+                    </View>
+                )
+            } else if (order.status == "Dispatched") {
+                return (
+                    <View style={{justifyContent: 'center', alignItems: 'center', width: width*0.56}}>
+                        <MaterialCommunityIcons name="scooter" size={220} color="lightgray" />
+                    </View>
+                )
+            }
+        }
+
+        const renderStepIndicator = () => (
+            <AntDesign name="check" size={16} color="white" />
+          );
+
         return (
-            <View>
-                <StepIndicator
-                    customStyles={customStyles}
-                    currentPosition={currentPosition}
-                    labels={labels}
-                />
+            <View style={{ marginVertical: 20, marginHorizontal: 20 }}>
+                <View style={{ height: height * 0.4, flexDirection: 'row' }}>
+                    <View style={{ width: width * 0.3 }}>
+                        <StepIndicator
+                            direction="vertical"
+                            renderStepIndicator={renderStepIndicator}
+                            stepCount={getLabels().length}
+                            customStyles={customStyles}
+                            currentPosition={calcCurrentStatus()}
+                            labels={getLabels()}
+                        />
+                    </View>
+                    {renderStatusData()}
+                </View>
             </View>
+        )
+    }
+
+    function renderCancelButton() {
+        return (
+            <View style={{ paddingHorizontal: 20, backgroundColor: '#F5F5F6', paddingVertical: 20 }}>
+                <TouchableOpacity
+                    style={{ backgroundColor: '#ff0033', paddingVertical: 12, borderRadius: 10, ...styles.shadow, alignItems: 'center' }}
+                >
+                    <Text style={{ fontFamily: "System", fontWeight: 'bold', color: 'white', fontSize: 16 }}>CANCEL ORDER</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    function renderFooter() {
+        return (
+            <View style={{ borderStyle: 'solid', borderWidth: 20, borderColor: '#F5F5F6', width: width }}></View>
         )
     }
 
@@ -278,27 +372,24 @@ const OrderDetails = ({ route, navigation }) => {
         <SafeAreaView style={styles.container}>
             {renderHeader()}
             {renderGap()}
-            {trackOrder ?
-                <ScrollView>
-                    {currentOrderSteps()}
-                </ScrollView>
-                :
-                <ScrollView>
-                    {renderCartItems()}
-                    {renderGap()}
-                    {renderDates()}
-                    {renderGap()}
-                    {renderAddress()}
-                    {renderGap()}
-                    {renderBillingDetails()}
-                    {renderGap()}
-                    {order?.msgtocust ?
-                        renderKitchensMessage()
-                        :
-                        null
-                    }
-                </ScrollView>
-            }
+            <ScrollView>
+                {renderCartItems()}
+                {renderGap()}
+                {trackOrder ? currentOrderStatus() : renderDates()}
+                {renderGap()}
+                {renderAddress()}
+                {renderGap()}
+                {renderBillingDetails()}
+                {renderGap()}
+                {order?.msgtocust ?
+                    renderKitchensMessage()
+                    :
+                    null
+                }
+                {order?.status == "Placed" ? renderCancelButton() : null}
+                {renderGap()}
+                {renderFooter()}
+            </ScrollView>
         </SafeAreaView>
     )
 }

@@ -112,7 +112,7 @@ const Orders = ({ route, navigation }) => {
         const getFormattedDate = (timestamp) => {
             var date = new Date(timestamp)
             date.setMinutes(date.getMinutes() + date.getTimezoneOffset())
-            return (date.getDate() + " " + months[date.getMonth()] + ", " + (date.getHours()>12 ? date.getHours()-12 + ":" + (date.getMinutes().toString().length>1 ? date.getMinutes() : "0" + date.getMinutes()) + " pm" : date.getHours() + ":" + (date.getMinutes().toString().length>1 ? date.getMinutes() : "0" + date.getMinutes()) + " am"))
+            return (date.getDate() + " " + months[date.getMonth()] + ", " + date.getFullYear() + "   " + (date.getHours()>12 ? date.getHours()-12 + ":" + (date.getMinutes().toString().length>1 ? date.getMinutes() : "0" + date.getMinutes()) + " pm" : date.getHours() + ":" + (date.getMinutes().toString().length>1 ? date.getMinutes() : "0" + date.getMinutes()) + " am"))
         }
 
         const getColor = (status) => {
@@ -122,7 +122,7 @@ const Orders = ({ route, navigation }) => {
             else if (status=="Rejected" || status=="Cancelled") {
                 return "red"
             }
-            else if (status=="Waiting" || status=="Placed" || status=="Accepted" || status=="Preparing" || status=="Packed" || status=="Dispatched") {
+            else if (status=="Waiting" || status=="Placed" || status=="Payment" || status=="Preparing" || status=="Packed" || status=="Dispatched") {
                 return "#FFCC00"
             }
         }
@@ -161,15 +161,15 @@ const Orders = ({ route, navigation }) => {
         const renderItem = ({ item }) => (
             <TouchableOpacity
                 style={{width: width*0.9, paddingVertical: 20, paddingHorizontal: 20, borderRadius: 10, backgroundColor: 'white', marginVertical: 16, ...styles.shadow}}
-                onPress={() => navigation.navigate("OrderDetails", {
+                onPress={() => navigation.navigate(item.status == "Payment"? "Payment" : "OrderDetails", {
                     order: item
                 })}
             >
                 <View style={{flexDirection: 'row'}}>
                     <View style={{width: '70%', marginRight: 5}}>
                         <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>{item.kitchen.kitName}</Text>
-                        <Text style={{ fontFamily: "System", fontSize: 14, marginBottom: 10 }}>{'\u20B9'}{item.total_amount}</Text>
                         <Text style={{ fontFamily: "System", fontSize: 14, color: 'gray', marginBottom: 10 }}>{item.itemswithquantity}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, marginBottom: 10 }}>{'\u20B9'}{item.total_amount}</Text>
                         <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray', marginBottom: 10 }}>{getFormattedDate(item.scheduled_order)}</Text>
                     </View>
                     <View style={{alignItems: 'flex-end', width: '30%'}}>

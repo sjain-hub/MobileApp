@@ -309,8 +309,8 @@ const AddNewAddresses = ({ route, navigation }) => {
                         "address": address,
                         "floorNo": floorNo,
                         "place": place,
-                        "action": editAddress? "update" : "add",
-                        "addid": editAddress? editAddress.id : null,
+                        "action": editAddress ? "update" : "add",
+                        "addid": editAddress ? editAddress.id : null,
                     })
                 }).then((response) => response.json())
                     .then((json) => {
@@ -320,11 +320,11 @@ const AddNewAddresses = ({ route, navigation }) => {
                             console.log(json);
                         }
                     }).catch((error) => {
-                         if(error == 'TypeError: Network request failed') {
-                    navigation.navigate("NoInternet")        
-                } else {
-                    console.error(error)     
-                }
+                        if (error == 'TypeError: Network request failed') {
+                            navigation.navigate("NoInternet")
+                        } else {
+                            console.error(error)
+                        }
                     });
             }
         });

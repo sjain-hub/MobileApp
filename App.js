@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import PushNotification from "react-native-push-notification";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { Home, Kitchens, Menu, KitchenDetails, VideoPlayer, Cart, Account, Profile, FavKitchens, Orders, Addresses, Search, AddNewAddress, SearchAddress, OrderDetails, NoInternet, Test } from './screens'
+import { Home, Kitchens, Menu, KitchenDetails, VideoPlayer, Cart, Account, Profile, FavKitchens, Orders, Addresses, Search, AddNewAddress, SearchAddress, OrderDetails, NoInternet, Payment, LatestUpdates, Test } from './screens'
 import Tabs from './navigation/tabs'
 
 const Stack = createStackNavigator();
@@ -104,6 +104,8 @@ const App = () => {
                 <Stack.Screen name="SearchAddress" component={SearchAddress} />
                 <Stack.Screen name="OrderDetails" component={OrderDetails} />
                 <Stack.Screen name="NoInternet" component={NoInternet} />
+                <Stack.Screen name="Payment" component={Payment} />
+                <Stack.Screen name="LatestUpdates" component={LatestUpdates} />
                 <Stack.Screen name="test" component={Test} />
             </Stack.Navigator>}
         </NavigationContainer>

@@ -538,6 +538,22 @@ const Account = ({ route, navigation }) => {
         )
     }
 
+    function renderLatestUpdatesTab() {
+        return (
+            <TouchableOpacity
+                style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}
+                onPress={() => navigation.navigate("LatestUpdates")}
+            >
+                <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
+                    <Text style={{ fontFamily: "System", fontSize: 16 }}>Latest Updates</Text>
+                </View>
+                <View style={{ alignItems: 'center' }}>
+                    <MaterialIcons name="keyboard-arrow-right" size={30} />
+                </View>
+            </TouchableOpacity>
+        ) 
+    }
+
     function renderHelpTab() {
         return (
             <TouchableOpacity
@@ -620,9 +636,9 @@ const Account = ({ route, navigation }) => {
     function renderAccount() {
         return (
             <View>
+                {renderUser()}
+                {renderGap()}
                 <ScrollView>
-                    {renderUser()}
-                    {renderGap()}
                     {renderProfileTab()}
                     {renderGap()}
                     {renderFavKitchensTab()}
@@ -630,6 +646,8 @@ const Account = ({ route, navigation }) => {
                     {renderOrdersTab()}
                     {renderGap()}
                     {renderAddressesTab()}
+                    {renderGap()}
+                    {renderLatestUpdatesTab()}
                     {renderGap()}
                     {renderHelpTab()}
                     {renderGap()}
