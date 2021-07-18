@@ -13,11 +13,8 @@ import { isIphoneX } from 'react-native-iphone-x-helper';
 
 import { Home, Kitchens, Cart, Test, Account, Search } from "../screens"
 import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Cutlery from "../assets/icons/cutlery.png";
-import search from "../assets/icons/search.png";
-import ShoppingCart from "../assets/icons/shopping-basket.png";
-import User from "../assets/icons/user.png";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -145,7 +142,6 @@ const Tabs = ({ route, navigation }) => {
                     right: 0,
                     borderTopWidth: 0,
                     backgroundColor: "transparent",
-                    ...styles.shadow
                 }
             }}
             tabBar={(props) => (
@@ -175,15 +171,7 @@ const Tabs = ({ route, navigation }) => {
                 component={Search}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Image
-                            source={search}
-                            resizeMode="contain"
-                            style={{
-                                width: 22,
-                                height: 22,
-                                tintColor: focused ? '#FC6D3F' : 'gray'
-                            }}
-                        />
+                        <Ionicons name="search" size={28} color={focused ? '#FC6D3F' : 'gray'} />
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
@@ -193,10 +181,25 @@ const Tabs = ({ route, navigation }) => {
                 }}
             />
 
+            {/* <Tab.Screen
+                name="Searc"
+                component={Search}
+                options={{
+                    tabBarIcon: ({ focused }) => (
+                        <Ionicons name="search" size={28} color={focused ? '#FC6D3F' : 'gray'} />
+                    ),
+                    tabBarButton: (props) => (
+                        <TabBarCustomButton
+                            {...props}
+                        />
+                    )
+                }}
+            /> */}
+
             <Tab.Screen
                 name="Cart"
                 component={Cart}
-                initialParams={{raiseButton : true}}
+                initialParams={{ raiseButton: true }}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <View style={{ flexDirection: 'row' }}>
@@ -215,14 +218,14 @@ const Tabs = ({ route, navigation }) => {
                             {...props}
                         />
                     ),
-                    unmountOnBlur: () => {true}
+                    unmountOnBlur: () => { true }
                 }}
             />
 
             <Tab.Screen
                 name="User"
                 component={Account}
-                initialParams={{cameFromCart : false}}
+                initialParams={{ cameFromCart: false }}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Entypo name="user" size={22} color={focused ? '#FC6D3F' : 'gray'} />
@@ -232,7 +235,7 @@ const Tabs = ({ route, navigation }) => {
                             {...props}
                         />
                     ),
-                    unmountOnBlur: () => {true}
+                    unmountOnBlur: () => { true }
                 }}
             />
         </Tab.Navigator>
@@ -248,7 +251,7 @@ const styles = StyleSheet.create({
             width: 0,
             height: 3,
         },
-        shadowOpacity: Platform.OS == "ios" ? 0.2 : 0.8,
+        shadowOpacity: Platform.OS == "ios" ? 0.4 : 0.8,
         shadowRadius: 3,
         elevation: 5,
     }

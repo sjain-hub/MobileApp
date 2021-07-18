@@ -265,7 +265,7 @@ const Home = ({ route, navigation }) => {
             <View
                 style={{
                     position: 'absolute',
-                    bottom: Platform.OS == "ios" ? 60 : 30,
+                    bottom: Platform.OS == "ios" ? 70 : 30,
                     left: 0,
                     right: 0,
                     alignItems: 'center',
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
             width: 0,
             height: 3,
         },
-        shadowOpacity: 0.8,
+        shadowOpacity: Platform.OS == "ios" ? 0.4 : 0.8,
         shadowRadius: 3,
         elevation: 5,
     }

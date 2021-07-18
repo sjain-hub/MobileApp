@@ -255,12 +255,13 @@ const kitchens = ({ route, navigation }) => {
             return (
                 <TouchableOpacity
                     style={{
-                        width: 70,
+                        width: 72,
                         padding: 10,
                         paddingBottom: 10 * 2,
                         backgroundColor: (selectedCategory?.id == item.id) ? "#FC6D3F" : "white",
                         borderRadius: 30,
                         marginHorizontal: 5,
+                        alignItems: "center",
                         ...styles.shadow
                     }}
                     onPress={() => onSelectCategory(item)}
@@ -335,7 +336,7 @@ const kitchens = ({ route, navigation }) => {
                     resizeMode="cover"
                     style={{
                         width: width*0.28,
-                        height: height*0.16,
+                        height: 140,
                         borderRadius: 10,
                         marginRight: 20
                     }}
@@ -345,7 +346,7 @@ const kitchens = ({ route, navigation }) => {
                     style={{
                         position: 'absolute',
                         bottom: 0,
-                        height: height * 0.036,
+                        height: 34,
                         width: width * 0.2,
                         backgroundColor: 'white',
                         borderTopRightRadius: 10,
@@ -419,7 +420,7 @@ const kitchens = ({ route, navigation }) => {
                 renderItem={renderItem}
                 ListHeaderComponent={renderMainCategories}
                 contentContainerStyle={{
-                    paddingBottom: activeOrders?.length > 0 ? 100 : 60
+                    paddingBottom: activeOrders?.length > 0 ? 120 : 80
                 }}
             />
         )

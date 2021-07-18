@@ -119,7 +119,7 @@ const Search = ({ route, navigation }) => {
                 <TextInput
                     placeholder={"Search Kitchen"}
                     value={searchText}
-                    style={{ fontFamily: "System", fontSize: 16, width: width * 0.9, backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 6, borderRadius: 10, ...styles.shadow }}
+                    style={{ fontFamily: "System", fontSize: 16, width: width * 0.9, backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, ...styles.shadow }}
                     onChangeText={(text) => checkLength(text)}
                 >
                 </TextInput>
@@ -245,25 +245,20 @@ const Search = ({ route, navigation }) => {
     function renderScanner() {
         const renderQRText = () => {
             return (
-                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, bottom: -400 }}>
+                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, marginTop: 330}}>
                     <Text style={{ fontFamily: "System", fontSize: 14, color: 'white', paddingVertical: 4, fontStyle: 'italic', paddingHorizontal: 30 }}>Scan Kitchen's QR Code</Text>
                 </View>
             )
         }
 
         return (
-            <View style={{bottom: -78}}>
+            <View style={{marginTop: 20, marginBottom: 80}}>
                 <QRCodeScanner
                     onRead={onSuccess}
                     reactivate={true}
                     permissionDialogMessage={'Need Permission to access your Camera'}
                     showMarker={true}
                     markerStyle={{ borderRadius: 10, borderColor: 'white' }}
-                    bottomContent={
-                        <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F' }}>
-                            <Text style={{ fontFamily: "System", fontSize: 14, color: 'white', paddingVertical: 5, paddingHorizontal: 20 }}>Scan QR Code</Text>
-                        </View>
-                    }
                 />
                 {renderQRText()}
             </View>    
@@ -272,10 +267,12 @@ const Search = ({ route, navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            {renderSearchBox()}
-            {showRecentSearches ? renderRecentSearches() : null}
-            {showScanner ? renderScanner() : null}
-            {showSearchResults ? renderSearchResults() : null}
+            <ScrollView>
+                {renderSearchBox()}
+                {showRecentSearches ? renderRecentSearches() : null}
+                {showScanner ? renderScanner() : null}
+                {showSearchResults ? renderSearchResults() : null}
+            </ScrollView>
         </SafeAreaView>
     )
 }
