@@ -206,7 +206,7 @@ const Tabs = ({ route, navigation }) => {
                         <View style={{ flexDirection: 'row' }}>
                             <Entypo name="shopping-cart" size={22} color={focused ? '#FC6D3F' : 'gray'} />
                             {totalCartItems > 0 && !focused ?
-                                <View style={{ width: 18, height: 18, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center', marginLeft: -5, marginTop: -5 }}>
+                                <View style={{ width: 18, height: 18, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center', justifyContent: 'center', marginLeft: -5, marginTop: -5 }}>
                                     <Text style={{ color: 'white', fontSize: 12 }}>{totalCartItems}</Text>
                                 </View>
                                 :

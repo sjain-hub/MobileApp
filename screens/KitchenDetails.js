@@ -210,12 +210,12 @@ const KitchenDetails = ({ route, navigation }) => {
                 </View>
                 {reviews?.map(review => {
                     return (
-                        <View key={review.id} style={{padding: 20}}>
-                            <View style={{flexDirection: 'row'}}>
-                                <FAIcon name="user-circle" size={25} color="gray" />
-                                <Text style={{ fontFamily: "System", fontSize: 18, marginLeft: 10, fontWeight: 'bold' }}>{review?.user.first_name} {review?.user.last_name}</Text>
+                        <View key={review.id} style={{padding: 14}}>
+                            <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                                <FAIcon name="user-circle" size={22} color="gray" />
+                                <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{review?.user.first_name} {review?.user.last_name}</Text>
                             </View>
-                            <View style={{flexDirection: 'row', marginTop: 10}}>
+                            <View style={{flexDirection: 'row', marginVertical: 8}}>
                                 {review.ratings >= 1 ?
                                 <FAIcon name="star" size={20} color="gold" />
                                 :
@@ -243,7 +243,7 @@ const KitchenDetails = ({ route, navigation }) => {
                                 }
                             </View>
                             <View>
-                                <Text style={{ fontFamily: "System", fontSize: 16, marginTop: 4 }}>{review.reviews}</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 14 }}>{review.reviews}</Text>
                             </View>
                         </View>
                     )

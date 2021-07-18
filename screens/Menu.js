@@ -507,7 +507,7 @@ const Menu = ({ route, navigation }) => {
                                 },
                                 shadowOpacity: 0.25,
                                 shadowRadius: 4,
-                                elevation: 50,
+                                elevation: 10,
                             }}
                         >
                             <View style={{ flexDirection: 'row' }}>
@@ -555,10 +555,10 @@ const Menu = ({ route, navigation }) => {
                                                 tintColor: (kitchen?.avgrating >= 4) ? "green" : (kitchen?.avgrating >= 3) ? "gold" : "red",
                                             }}
                                         />
-                                        <Text style={{ fontFamily: "System", fontSize: 14 }}> {kitchen?.avgrating} <Text style={{ fontFamily: "System", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14 }}> {kitchen?.avgrating} <Text style={{ fontFamily: "System", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text> | </Text>
                                     </TouchableOpacity>
                                     : null}
-                                <Text style={{ fontFamily: "System", fontSize: 14 }}>{kitchen?.dist} km  |  </Text>
+                                <Text style={{ fontFamily: "System", fontSize: 14 }}>{kitchen?.dist} km | </Text>
                                 <Text style={{ fontFamily: "System", fontSize: 14 }}>{kitchen?.mode} ({kitchen?.deliveryTime} min)</Text>
                             </View>
                             {!kitchen?.pureVeg ?
@@ -590,7 +590,7 @@ const Menu = ({ route, navigation }) => {
                                 width: 50,
                                 paddingLeft: 20,
                                 justifyContent: 'center',
-                                marginRight: width * 0.67
+                                marginRight: width * 0.64
                             }}
                             onPress={() => navigation.goBack()}
                         >

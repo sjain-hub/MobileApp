@@ -335,7 +335,7 @@ const kitchens = ({ route, navigation }) => {
                     source={{ uri: config.url + item.dp }}
                     resizeMode="cover"
                     style={{
-                        width: width*0.28,
+                        width: width*0.3,
                         height: 140,
                         borderRadius: 10,
                         marginRight: 20
