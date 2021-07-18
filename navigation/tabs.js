@@ -142,6 +142,7 @@ const Tabs = ({ route, navigation }) => {
                     right: 0,
                     borderTopWidth: 0,
                     backgroundColor: "transparent",
+                    elevation: 0
                 }
             }}
             tabBar={(props) => (

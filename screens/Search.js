@@ -228,7 +228,7 @@ const Search = ({ route, navigation }) => {
         )
 
         return (
-            <View style={{paddingHorizontal: 20}}>
+            <View style={{paddingHorizontal: 20, height: 200}}>
                 <Text style={{ fontFamily: "System", fontSize: 14 }}>Recents</Text>
                 <FlatList
                     data={recentSearchedKitchens}
@@ -245,7 +245,7 @@ const Search = ({ route, navigation }) => {
     function renderScanner() {
         const renderQRText = () => {
             return (
-                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, marginTop: 330}}>
+                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, marginTop: 380}}>
                     <Text style={{ fontFamily: "System", fontSize: 14, color: 'white', paddingVertical: 4, fontStyle: 'italic', paddingHorizontal: 30 }}>Scan Kitchen's QR Code</Text>
                 </View>
             )
