@@ -444,13 +444,14 @@ const Cart = ({ route, navigation }) => {
                                             justifyContent: 'center',
                                             flexDirection: 'row',
                                             marginLeft: 5,
+                                            borderRadius: 25,
+                                            backgroundColor: 'white',
                                             ...styles.shadow
                                         }}
                                     >
                                         <TouchableOpacity
                                             style={{
                                                 width: 35,
-                                                backgroundColor: 'white',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
                                                 borderTopLeftRadius: 25,
@@ -465,7 +466,6 @@ const Cart = ({ route, navigation }) => {
                                         <View
                                             style={{
                                                 width: 35,
-                                                backgroundColor: 'white',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
                                             }}
@@ -476,7 +476,6 @@ const Cart = ({ route, navigation }) => {
                                         <TouchableOpacity
                                             style={{
                                                 width: 35,
-                                                backgroundColor: 'white',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
                                                 borderTopRightRadius: 25,
