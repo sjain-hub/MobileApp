@@ -126,13 +126,13 @@ const KitchenDetails = ({ route, navigation }) => {
                     <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 20, color: 'gray' }}>{kitchen?.address}, Floor - {kitchen?.floorNo}</Text>
                 </View>
 
-                <View style={{
+                {/* <View style={{
                     marginTop: 20,
                     flexDirection: 'row'
                 }}>
                     <FAIcon name="phone-square" size={35} color="skyblue" />
                     <Text style={{ fontFamily: "System", fontSize: 20, lineHeight: 33, marginLeft: 20 }}>+91 {kitchen?.paytmNo}</Text>
-                </View>
+                </View> */}
             </View>
         )
     }
