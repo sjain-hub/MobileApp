@@ -13,7 +13,8 @@ import {
     SectionList,
     TouchableOpacity,
     TextInput,
-    ActivityIndicator
+    ActivityIndicator,
+    Platform
 } from "react-native";
 // import { TouchableOpacity} from 'react-native-gesture-handler'
 import Modal from 'react-native-modal';
@@ -477,7 +478,7 @@ const Menu = ({ route, navigation }) => {
                         transform: [
                             { translateY: translateY }
                         ],
-                        ...styles.shadow
+                        // ...styles.shadow
                     }}
                 >
                     <View
@@ -555,27 +556,30 @@ const Menu = ({ route, navigation }) => {
                                             source={Star}
                                             style={{
                                                 marginTop: 2,
-                                                height: 16,
-                                                width: 16,
+                                                height: 14,
+                                                width: 14,
                                                 tintColor: (kitchen?.avgrating >= 4) ? "green" : (kitchen?.avgrating >= 3) ? "gold" : "red",
                                             }}
                                         />
-                                        <Text style={{ fontFamily: "System", fontSize: 16 }}> {kitchen?.avgrating} <Text style={{ fontFamily: "System", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
+                                        <Text style={{ fontFamily: "System", fontSize: 14 }}> {kitchen?.avgrating} <Text style={{ fontFamily: "System", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
                                     </TouchableOpacity>
                                     : null}
-                                <Text style={{ fontFamily: "System", fontSize: 16 }}>{kitchen?.dist} km  |  </Text>
-                                <Text style={{ fontFamily: "System", fontSize: 16 }}>{kitchen?.mode} ({kitchen?.deliveryTime} min)</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 14 }}>{kitchen?.dist} km  |  </Text>
+                                <Text style={{ fontFamily: "System", fontSize: 14 }}>{kitchen?.mode} ({kitchen?.deliveryTime} min)</Text>
                             </View>
                             {!kitchen?.pureVeg ?
                                 <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
-                                    <Text style={{ fontFamily: "System", fontSize: 15, }}>Veg Only</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 15, alignSelf: 'center'}}>Veg Only</Text>
                                     <Switch
                                         trackColor={{ false: "#767577", true: "lightgreen" }}
                                         thumbColor={vegSelected ? "#228B22" : "#f4f3f4"}
                                         ios_backgroundColor="#3e3e3e"
                                         onValueChange={() => filterVegItems()}
                                         value={vegSelected}
-                                        style={{ transform: [{ scaleX: 1 }, { scaleY: 1 }], marginLeft: 10 }}
+                                        style={Platform.OS == "ios" ?
+                                            { transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }], marginLeft: 10}
+                                            :
+                                            { transform: [{ scaleX: 1 }, { scaleY: 1 }], marginLeft: 10 }}
                                     />
                                 </View>
                                 :
@@ -629,7 +633,7 @@ const Menu = ({ route, navigation }) => {
 
         const renderItem = ({ item }) => (
             <View style={{ marginBottom: 30, marginTop: 20, flexDirection: 'row', width: width, paddingHorizontal: 20 }}>
-                <View style={{ width: width * 0.56, justifyContent: 'center', marginRight: 15 }}>
+                <View style={{ width: width * 0.54, justifyContent: 'center', marginRight: 15 }}>
                     <Text style={{ fontFamily: "System", fontSize: 16, marginBottom: 5 }}>{item.name}</Text>
                     {item.type == "veg" ?
                         <Image
@@ -671,7 +675,7 @@ const Menu = ({ route, navigation }) => {
                         : null}
 
                 </View>
-                <View style={{ height: 130 }}>
+                <View style={{ height: 130, alignItems: 'center', justifyContent: 'center' }}>
                     {item.out_of_stock ?
                         <View>
                             <Image source={{ uri: config.url + item.image }}
@@ -703,55 +707,39 @@ const Menu = ({ route, navigation }) => {
                             }}
                         />
                     }
-                    {/* <Image
-                        source={{ uri: config.url + item.image }}
-                        resizeMode="cover"
-                        style={item.out_of_stock ? {
-                            width: 120,
-                            height: 120,
-                            borderRadius: 100,
-                            opacity: 0.3
-                        } : {
-                            width: 120,
-                            height: 120,
-                            borderRadius: 100,
-                        }}
-                    /> */}
-
                     <View
                         style={{
                             position: 'absolute',
-                            bottom: - 5,
+                            bottom: -8,
                             width: width * 0.3,
                             height: 35,
                             justifyContent: 'center',
                             flexDirection: 'row',
+                            borderRadius: 25,
+                            backgroundColor: 'white',
+                            ...styles.shadow
                         }}
                     >
                         <TouchableOpacity
                             style={{
                                 width: 35,
-                                backgroundColor: 'white',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 borderTopLeftRadius: 25,
                                 borderBottomLeftRadius: 25,
-                                ...styles.shadow
                             }}
                             activeOpacity={0.9}
                             disabled={item.out_of_stock || getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id) == 0}
                             onPress={() => checkCart("-", item.id)}
                         >
-                            <Text style={{ fontFamily: "System", fontSize: 30, lineHeight: 32, color: item.out_of_stock ? 'gray' : 'green' }}>-</Text>
+                            <Entypo name="minus" size={16} color={item.out_of_stock ? 'gray' : 'green'} />
                         </TouchableOpacity>
 
                         <View
                             style={{
                                 width: 35,
-                                backgroundColor: 'white',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                ...styles.shadow
                             }}
                         >
                             <Text style={{ fontFamily: "System", fontSize: 14, lineHeight: 25, color: item.out_of_stock ? 'gray' : 'green' }}>{getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id)}</Text>
@@ -760,18 +748,16 @@ const Menu = ({ route, navigation }) => {
                         <TouchableOpacity
                             style={{
                                 width: 35,
-                                backgroundColor: 'white',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 borderTopRightRadius: 25,
                                 borderBottomRightRadius: 25,
-                                ...styles.shadow
                             }}
                             activeOpacity={0.9}
                             disabled={item.out_of_stock}
                             onPress={() => checkCart("+", item.id)}
                         >
-                            <Text style={{ fontFamily: "System", fontSize: 20, lineHeight: 25, color: item.out_of_stock ? 'gray' : 'green' }}>+</Text>
+                            <Entypo name="plus" size={16} color={item.out_of_stock ? 'gray' : 'green'} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -1146,7 +1132,7 @@ const Menu = ({ route, navigation }) => {
                         })}
                     >
                         <FAIcon name="shopping-cart" size={22} color="green" />
-                        <View style={{ width: 22, height: 22, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center' }}>
+                        <View style={{ width: 22, height: 22, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={{ color: 'white' }}>{totalCartItems}</Text>
                         </View>
                     </TouchableOpacity>

@@ -460,7 +460,7 @@ const Cart = ({ route, navigation }) => {
                                             activeOpacity={0.5}
                                             onPress={() => checkMinQty(item.id)}
                                         >
-                                            <Text style={{ fontFamily: "System", fontSize: 30, lineHeight: 32, color: 'green' }}>-</Text>
+                                            <Entypo name="minus" size={16} color={'green'} />
                                         </TouchableOpacity>
 
                                         <View
@@ -484,7 +484,7 @@ const Cart = ({ route, navigation }) => {
                                             activeOpacity={0.5}
                                             onPress={() => addQty(item.id)}
                                         >
-                                            <Text style={{ fontFamily: "System", fontSize: 20, lineHeight: 25, color: 'green' }}>+</Text>
+                                            <Entypo name="plus" size={16} color={'green'} />
                                         </TouchableOpacity>
                                     </View>
                                     <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold', alignSelf: 'center', marginLeft: 10 }}>{'\u20B9'}{getTotalCost(item.price, getOrderQty(item.id))}</Text>
