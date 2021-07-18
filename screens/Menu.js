@@ -53,12 +53,13 @@ const Menu = ({ route, navigation }) => {
     const [totalCartItems, setTotalCartItems] = React.useState(0);
     const [favourite, setFavourite] = React.useState();
     const [loading, setLoading] = React.useState(true)
+    const [normalHeaderVisible, setNormalHeaderVisible] = React.useState(false)
 
 
     const scrollY = new Animated.Value(0)
     const translateY = scrollY.interpolate({
-        inputRange: [0, 150],
-        outputRange: [0, -150]
+        inputRange: [0, 240],
+        outputRange: [0, -240]
     })
 
     React.useEffect(() => {
@@ -321,7 +322,7 @@ const Menu = ({ route, navigation }) => {
             searchPressed ?
                 renderSearch()
                 :
-                <View style={{ flexDirection: 'row', width: width }}>
+                normalHeaderVisible? <View style={{ flexDirection: 'row', width: width }}>
                     <TouchableOpacity
                         style={{
                             width: 50,
@@ -388,6 +389,8 @@ const Menu = ({ route, navigation }) => {
                         <Entypo name="menu" size={26} />
                     </TouchableOpacity>
                 </View>
+                :
+                null
         )
     }
 
@@ -471,16 +474,7 @@ const Menu = ({ route, navigation }) => {
             searchPressed ?
                 null
                 :
-                <Animated.View
-                    style={{
-                        zIndex: 1,
-                        position: 'absolute',
-                        transform: [
-                            { translateY: translateY }
-                        ],
-                        // ...styles.shadow
-                    }}
-                >
+                <View>
                     <View
                         style={{
                             backgroundColor: 'white',
@@ -569,7 +563,7 @@ const Menu = ({ route, navigation }) => {
                             </View>
                             {!kitchen?.pureVeg ?
                                 <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
-                                    <Text style={{ fontFamily: "System", fontSize: 15, alignSelf: 'center'}}>Veg Only</Text>
+                                    <Text style={{ fontFamily: "System", fontSize: 15, alignSelf: 'center' }}>Veg Only</Text>
                                     <Switch
                                         trackColor={{ false: "#767577", true: "lightgreen" }}
                                         thumbColor={vegSelected ? "#228B22" : "#f4f3f4"}
@@ -577,7 +571,7 @@ const Menu = ({ route, navigation }) => {
                                         onValueChange={() => filterVegItems()}
                                         value={vegSelected}
                                         style={Platform.OS == "ios" ?
-                                            { transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }], marginLeft: 10}
+                                            { transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }], marginLeft: 10 }
                                             :
                                             { transform: [{ scaleX: 1 }, { scaleY: 1 }], marginLeft: 10 }}
                                     />
@@ -590,7 +584,175 @@ const Menu = ({ route, navigation }) => {
                             }
                         </View>
                     </View>
-                </Animated.View>
+                    <View style={{ flexDirection: 'row', width: width, backgroundColor: 'white', paddingVertical: 20 }}>
+                        <TouchableOpacity
+                            style={{
+                                width: 50,
+                                paddingLeft: 20,
+                                justifyContent: 'center',
+                                marginRight: width * 0.67
+                            }}
+                            onPress={() => navigation.goBack()}
+                        >
+                            <Image
+                                source={back}
+                                resizeMode="contain"
+                                style={{
+                                    width: 20,
+                                    height: 20
+                                }}
+                            />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={{
+                                paddingRight: 20,
+                                justifyContent: 'center'
+                            }}
+                            onPress={() => setSearchPressed(true)}
+                        >
+                            <Image
+                                source={search}
+                                resizeMode="contain"
+                                style={{
+                                    width: 15,
+                                    height: 15
+                                }}
+                            />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                            style={{
+                                paddingRight: 20,
+                                justifyContent: 'center'
+                            }}
+                            onPress={() => setCategoryModal(true)}
+                        >
+                            <Entypo name="menu" size={26} />
+                        </TouchableOpacity>
+
+                    </View>
+                </View>
+                // <Animated.View
+                //     style={{
+                //         zIndex: 1,
+                //         position: 'absolute',
+                //         transform: [
+                //             { translateY: translateY }
+                //         ],
+                //         // ...styles.shadow
+                //     }}
+                // >
+                //     <View
+                //         style={{
+                //             backgroundColor: 'white',
+                //             height: 250,
+                //         }}
+                //     >
+                //         <Image
+                //             source={{ uri: config.url + kitchen?.dp }}
+                //             resizeMode="stretch"
+                //             style={{
+                //                 width: width,
+                //                 height: 200,
+                //                 borderBottomLeftRadius: 30,
+                //                 borderBottomRightRadius: 30,
+                //             }}
+                //         />
+                //         <View
+                //             style={{
+                //                 top: - 150,
+                //                 width: width * 0.9,
+                //                 height: 180,
+                //                 backgroundColor: 'white',
+                //                 borderRadius: 40,
+                //                 alignSelf: 'center',
+                //                 padding: 20,
+                //                 shadowColor: "#000",
+                //                 shadowOffset: {
+                //                     width: 0,
+                //                     height: 3,
+                //                 },
+                //                 shadowOpacity: 0.25,
+                //                 shadowRadius: 4,
+                //                 elevation: 50,
+                //             }}
+                //         >
+                //             <View style={{ flexDirection: 'row' }}>
+                //                 <TouchableOpacity
+                //                     style={{ marginBottom: 5, width: '85%' }}
+                //                     activeOpacity={0.5}
+                //                     onPress={() => navigation.navigate("KitchenDetails", {
+                //                         kitchen: kitchen,
+                //                         reviews: reviews
+                //                     })}
+                //                 >
+                //                     <Text style={{ fontFamily: "System", fontSize: 22, fontWeight: 'bold' }}>{kitchen?.kitName} <AntIcon name="right" size={22} /></Text>
+                //                 </TouchableOpacity>
+                //                 <TouchableOpacity
+                //                     onPress={() => markFavourite(kitchen.id)}
+                //                 >
+                //                     <AntIcon name={favourite ? "heart" : "hearto"} size={22} color="red" />
+                //                 </TouchableOpacity>
+                //             </View>
+                //             <Text style={{ fontFamily: "System", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.catdesc}</Text>
+                //             <Text style={{ fontFamily: "System", fontSize: 13, color: 'gray', marginBottom: 5 }}>{kitchen?.landmark}</Text>
+                //             <View
+                //                 style={{
+                //                     flexDirection: 'row',
+                //                     marginBottom: 10,
+                //                 }}
+                //             >
+                //                 {kitchen?.avgrating ?
+                //                     <TouchableOpacity
+                //                         style={{
+                //                             flexDirection: 'row'
+                //                         }}
+                //                         onPress={() => navigation.navigate("KitchenDetails", {
+                //                             kitchen: kitchen,
+                //                             reviews: reviews,
+                //                             scrollToReviews: true
+                //                         })}
+                //                     >
+                //                         <Image
+                //                             source={Star}
+                //                             style={{
+                //                                 marginTop: 2,
+                //                                 height: 14,
+                //                                 width: 14,
+                //                                 tintColor: (kitchen?.avgrating >= 4) ? "green" : (kitchen?.avgrating >= 3) ? "gold" : "red",
+                //                             }}
+                //                         />
+                //                         <Text style={{ fontFamily: "System", fontSize: 14 }}> {kitchen?.avgrating} <Text style={{ fontFamily: "System", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text>  |  </Text>
+                //                     </TouchableOpacity>
+                //                     : null}
+                //                 <Text style={{ fontFamily: "System", fontSize: 14 }}>{kitchen?.dist} km  |  </Text>
+                //                 <Text style={{ fontFamily: "System", fontSize: 14 }}>{kitchen?.mode} ({kitchen?.deliveryTime} min)</Text>
+                //             </View>
+                //             {!kitchen?.pureVeg ?
+                //                 <View style={{ alignItems: 'flex-start', flexDirection: 'row' }}>
+                //                     <Text style={{ fontFamily: "System", fontSize: 15, alignSelf: 'center'}}>Veg Only</Text>
+                //                     <Switch
+                //                         trackColor={{ false: "#767577", true: "lightgreen" }}
+                //                         thumbColor={vegSelected ? "#228B22" : "#f4f3f4"}
+                //                         ios_backgroundColor="#3e3e3e"
+                //                         onValueChange={() => filterVegItems()}
+                //                         value={vegSelected}
+                //                         style={Platform.OS == "ios" ?
+                //                             { transform: [{ scaleX: 0.7 }, { scaleY: 0.7 }], marginLeft: 10}
+                //                             :
+                //                             { transform: [{ scaleX: 1 }, { scaleY: 1 }], marginLeft: 10 }}
+                //                     />
+                //                 </View>
+                //                 :
+                //                 <View style={{ flexDirection: 'row' }}>
+                //                     <Text style={{ fontFamily: "System", fontSize: 15, marginRight: 5 }}>Pure Veg</Text>
+                //                     <FAIcon name="leaf" size={18} color="green" />
+                //                 </View>
+                //             }
+                //         </View>
+                //     </View>
+                // </Animated.View>
         )
     }
 
@@ -628,7 +790,9 @@ const Menu = ({ route, navigation }) => {
 
     function renderMenu() {
         const renderCategories = (data) => (
-            <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold', paddingHorizontal: 20, marginTop: 20 }}>{data.section.category}</Text>
+            <View style={{ backgroundColor: 'white', paddingVertical: 10 }}>
+                <Text style={{ fontFamily: "System", fontSize: 20, fontWeight: 'bold', paddingHorizontal: 20, marginTop: 10 }}>{data.section.category}</Text>
+            </View>
         )
 
         const renderItem = ({ item }) => (
@@ -784,54 +948,7 @@ const Menu = ({ route, navigation }) => {
             searchPressed ?
                 null
                 :
-                <View style={{ flexDirection: 'row', width: width, backgroundColor: 'white', paddingVertical: 20 }}>
-                    <TouchableOpacity
-                        style={{
-                            width: 50,
-                            paddingLeft: 20,
-                            justifyContent: 'center',
-                            marginRight: width * 0.67
-                        }}
-                        onPress={() => navigation.goBack()}
-                    >
-                        <Image
-                            source={back}
-                            resizeMode="contain"
-                            style={{
-                                width: 20,
-                                height: 20
-                            }}
-                        />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={{
-                            paddingRight: 20,
-                            justifyContent: 'center'
-                        }}
-                        onPress={() => setSearchPressed(true)}
-                    >
-                        <Image
-                            source={search}
-                            resizeMode="contain"
-                            style={{
-                                width: 15,
-                                height: 15
-                            }}
-                        />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        style={{
-                            paddingRight: 20,
-                            justifyContent: 'center'
-                        }}
-                        onPress={() => setCategoryModal(true)}
-                    >
-                        <Entypo name="menu" size={26} />
-                    </TouchableOpacity>
-
-                </View>
+                renderAnimatedHeader()
         )
 
         const footer = () => (
@@ -863,13 +980,14 @@ const Menu = ({ route, navigation }) => {
                 }
                 onScroll={(e) => {
                     scrollY.setValue(e.nativeEvent.contentOffset.y)
+                    e.nativeEvent.contentOffset.y > 280 ? setNormalHeaderVisible(true) : setNormalHeaderVisible(false)
                 }}
                 ItemSeparatorComponent={separator}
                 renderSectionFooter={sectionFooter}
                 keyExtractor={(item) => item.id}
-                contentContainerStyle={{
-                    paddingTop: searchPressed ? 10 : 180,
-                }}
+                // contentContainerStyle={{
+                //     paddingTop: 10
+                // }}
                 ListHeaderComponent={Header}
                 ListFooterComponent={footer}
                 ref={(ref) => setSectionListRef(ref)}
@@ -1039,32 +1157,31 @@ const Menu = ({ route, navigation }) => {
                                                 height: 35,
                                                 justifyContent: 'center',
                                                 flexDirection: 'row',
-                                                alignSelf: 'center'
+                                                alignSelf: 'center',
+                                                backgroundColor: 'white',
+                                                borderRadius: 25,
+                                                ...styles.shadow
                                             }}
                                         >
                                             <TouchableOpacity
                                                 style={{
                                                     width: 35,
-                                                    backgroundColor: 'white',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
                                                     borderTopLeftRadius: 25,
                                                     borderBottomLeftRadius: 25,
-                                                    ...styles.shadow
                                                 }}
                                                 activeOpacity={0.5}
                                                 onPress={() => editOrder("-", tempSelectedItem.id + '-' + subitem.id)}
                                             >
-                                                <Text style={{ fontFamily: "System", fontSize: 30, lineHeight: 32, color: 'green' }}>-</Text>
+                                                <Entypo name="minus" size={16} color={'green'} />
                                             </TouchableOpacity>
 
                                             <View
                                                 style={{
                                                     width: 35,
-                                                    backgroundColor: 'white',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
-                                                    ...styles.shadow
                                                 }}
                                             >
                                                 <Text style={{ fontFamily: "System", fontSize: 14, lineHeight: 25, color: 'green' }}>{getOrderQty(tempSelectedItem?.id + '-' + subitem.id)}</Text>
@@ -1073,17 +1190,15 @@ const Menu = ({ route, navigation }) => {
                                             <TouchableOpacity
                                                 style={{
                                                     width: 35,
-                                                    backgroundColor: 'white',
                                                     alignItems: 'center',
                                                     justifyContent: 'center',
                                                     borderTopRightRadius: 25,
                                                     borderBottomRightRadius: 25,
-                                                    ...styles.shadow
                                                 }}
                                                 activeOpacity={0.5}
                                                 onPress={() => editOrder("+", tempSelectedItem.id + '-' + subitem.id)}
                                             >
-                                                <Text style={{ fontFamily: "System", fontSize: 20, lineHeight: 25, color: 'green' }}>+</Text>
+                                                <Entypo name="plus" size={16} color={'green'} />
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -1157,7 +1272,6 @@ const Menu = ({ route, navigation }) => {
                     :
                     <View style={{ flex: 1 }}>
                         {renderHeader()}
-                        {renderAnimatedHeader()}
                         {renderMenu()}
                         {renderKitSwitchModal()}
                         {renderSubItemsModal()}
