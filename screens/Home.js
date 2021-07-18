@@ -8,6 +8,7 @@ import {
     StyleSheet,
     SafeAreaView,
     BackHandler,
+    Platform
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
@@ -22,7 +23,7 @@ const Home = ({ route, navigation }) => {
 
     const mapView = React.useRef()
     const [region, setRegion] = React.useState(null)
-    const [userLocation, setUserLocation] = React.useState(null)
+    const [userLocationAddress, setUserLocationAddress] = React.useState(null)
     const [kitchensData, setKitchensData] = React.useState([])
     const [marginBottom, setMarginBottom] = React.useState(1)
 
@@ -89,6 +90,7 @@ const Home = ({ route, navigation }) => {
             setRegion(mapRegion)
             AsyncStorage.setItem('region', JSON.stringify(mapRegion))
             findAddress(pos.coords.latitude, pos.coords.longitude)
+            mapView.current.animateToRegion(mapRegion, 200)
         })
     }
 
@@ -96,7 +98,7 @@ const Home = ({ route, navigation }) => {
         Geocoder.init(config.GMapAPIKey);
         Geocoder.from(lat, lon)
             .then(json => {
-                setUserLocation(json.results[1].formatted_address);
+                setUserLocationAddress(json.results[1].formatted_address);
             })
             .catch(error => console.warn(error));
     }
@@ -251,7 +253,7 @@ const Home = ({ route, navigation }) => {
                     />
 
                     <View style={{ flex: 1 }}>
-                        <Text numberOfLines={1} style={{ fontFamily: "System", fontSize: 16, lineHeight: 22 }}>{userLocation}</Text>
+                        <Text numberOfLines={1} style={{ fontFamily: "System", fontSize: 16, lineHeight: 22 }}>{userLocationAddress}</Text>
                     </View>
                 </View>
             </TouchableOpacity>
@@ -263,7 +265,7 @@ const Home = ({ route, navigation }) => {
             <View
                 style={{
                     position: 'absolute',
-                    bottom: 30,
+                    bottom: Platform.OS == "ios" ? 60 : 30,
                     left: 0,
                     right: 0,
                     alignItems: 'center',

@@ -4,7 +4,8 @@ import {
     Image,
     TouchableOpacity,
     StyleSheet,
-    Text
+    Text,
+    Platform
 } from 'react-native';
 import { createBottomTabNavigator, BottomTabBar } from "@react-navigation/bottom-tabs"
 import Svg, { Path } from 'react-native-svg';
@@ -140,11 +141,11 @@ const Tabs = ({ route, navigation }) => {
                 style: {
                     position: 'absolute',
                     left: 0,
-                    bottom: 0,
+                    bottom: Platform.OS == "ios" ? 11 : 0,
                     right: 0,
                     borderTopWidth: 0,
                     backgroundColor: "transparent",
-                    elevation: 50
+                    ...styles.shadow
                 }
             }}
             tabBar={(props) => (
@@ -247,7 +248,7 @@ const styles = StyleSheet.create({
             width: 0,
             height: 3,
         },
-        shadowOpacity: 0.8,
+        shadowOpacity: Platform.OS == "ios" ? 0.2 : 0.8,
         shadowRadius: 3,
         elevation: 5,
     }
