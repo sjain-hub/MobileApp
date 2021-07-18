@@ -443,7 +443,8 @@ const Cart = ({ route, navigation }) => {
                                             height: 35,
                                             justifyContent: 'center',
                                             flexDirection: 'row',
-                                            marginLeft: 5
+                                            marginLeft: 5,
+                                            ...styles.shadow
                                         }}
                                     >
                                         <TouchableOpacity
@@ -454,7 +455,6 @@ const Cart = ({ route, navigation }) => {
                                                 justifyContent: 'center',
                                                 borderTopLeftRadius: 25,
                                                 borderBottomLeftRadius: 25,
-                                                ...styles.shadow
                                             }}
                                             activeOpacity={0.5}
                                             onPress={() => checkMinQty(item.id)}
@@ -468,7 +468,6 @@ const Cart = ({ route, navigation }) => {
                                                 backgroundColor: 'white',
                                                 alignItems: 'center',
                                                 justifyContent: 'center',
-                                                ...styles.shadow
                                             }}
                                         >
                                             <Text style={{ fontFamily: "System", fontSize: 14, lineHeight: 25, color: 'green' }}>{getOrderQty(item.id)}</Text>
@@ -482,7 +481,6 @@ const Cart = ({ route, navigation }) => {
                                                 justifyContent: 'center',
                                                 borderTopRightRadius: 25,
                                                 borderBottomRightRadius: 25,
-                                                ...styles.shadow
                                             }}
                                             activeOpacity={0.5}
                                             onPress={() => addQty(item.id)}

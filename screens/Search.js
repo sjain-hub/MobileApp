@@ -11,7 +11,8 @@ import {
     Pressable,
     TouchableOpacity,
     TextInput,
-    FlatList
+    FlatList,
+    Platform
 } from "react-native";
 const { width, height } = Dimensions.get("window");
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -228,7 +229,7 @@ const Search = ({ route, navigation }) => {
         )
 
         return (
-            <View style={{paddingHorizontal: 20, height: 200}}>
+            <View style={Platform.OS == "ios" ? {paddingHorizontal: 20} : {paddingHorizontal: 20, height: 200}}>
                 <Text style={{ fontFamily: "System", fontSize: 14 }}>Recents</Text>
                 <FlatList
                     data={recentSearchedKitchens}
@@ -245,14 +246,14 @@ const Search = ({ route, navigation }) => {
     function renderScanner() {
         const renderQRText = () => {
             return (
-                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, marginTop: 380}}>
+                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, top: '88%'}}>
                     <Text style={{ fontFamily: "System", fontSize: 14, color: 'white', paddingVertical: 4, fontStyle: 'italic', paddingHorizontal: 30 }}>Scan Kitchen's QR Code</Text>
                 </View>
             )
         }
 
         return (
-            <View style={{marginTop: 20, marginBottom: 80}}>
+            <View style={{marginBottom: 80}}>
                 <QRCodeScanner
                     onRead={onSuccess}
                     reactivate={true}
@@ -267,11 +268,11 @@ const Search = ({ route, navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
-                {renderSearchBox()}
-                {showRecentSearches ? renderRecentSearches() : null}
+            {renderSearchBox()}
+            {showRecentSearches ? renderRecentSearches() : null}
+            {showSearchResults ? renderSearchResults() : null}
+            <ScrollView style={{marginTop: 20}}>
                 {showScanner ? renderScanner() : null}
-                {showSearchResults ? renderSearchResults() : null}
             </ScrollView>
         </SafeAreaView>
     )
