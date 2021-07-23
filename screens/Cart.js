@@ -885,8 +885,9 @@ const Cart = ({ route, navigation }) => {
         <SafeAreaView style={styles.container}>
             {
                 loading ?
-                    renderLoader() :
-                    <View  style={{flex: 1}}>
+                    renderLoader()
+                    :
+                    <View style={{ flex: 1 }}>
                         {renderHeader()}
                         {cartEmpty ?
                             renderEmptyCart()

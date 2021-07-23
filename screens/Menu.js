@@ -584,7 +584,7 @@ const Menu = ({ route, navigation }) => {
                             }
                         </View>
                     </View>
-                    <View style={{ flexDirection: 'row', width: width, backgroundColor: 'white', paddingVertical: 20 }}>
+                    <View style={{ flexDirection: 'row', width: width, backgroundColor: 'white', paddingVertical: 10 }}>
                         <TouchableOpacity
                             style={{
                                 width: 50,

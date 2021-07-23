@@ -335,8 +335,8 @@ const kitchens = ({ route, navigation }) => {
                     source={{ uri: config.url + item.dp }}
                     resizeMode="cover"
                     style={{
-                        width: width*0.3,
-                        height: 140,
+                        width: width*0.26,
+                        height: 120,
                         borderRadius: 10,
                         marginRight: 20
                     }}
@@ -345,7 +345,7 @@ const kitchens = ({ route, navigation }) => {
                 {item.maxDiscount > 0 && <View
                     style={{
                         position: 'absolute',
-                        bottom: 0,
+                        top: 86,
                         height: 34,
                         width: width * 0.2,
                         backgroundColor: 'white',

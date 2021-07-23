@@ -12,6 +12,7 @@ import {
     TextInput,
     FlatList,
     Linking,
+    Platform,
 } from "react-native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import config from '../config.json';
@@ -23,6 +24,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
 import Foundation from 'react-native-vector-icons/Foundation';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 const OrderDetails = ({ route, navigation }) => {
@@ -154,6 +156,46 @@ const OrderDetails = ({ route, navigation }) => {
                     :
                     null
                 }
+            </View>
+        )
+    }
+
+    function renderContactInfo() {
+        const goToDialpad = (phoneno) => {
+            if (Platform.OS == "android") {
+                Linking.openURL('tel:${'+phoneno+'}')
+            } else {
+                Linking.openURL('telprompt:${'+phoneno+'}')
+            }
+        }
+
+        const goToMaps = (lat, lng, kitchen) => {
+            const scheme = Platform.select({ ios: 'maps:0,0?q=', android: 'geo:0,0?q=' });
+            const latLng = `${lat},${lng}`;
+            const label = kitchen;
+            const url = Platform.select({
+                ios: `${scheme}${label}&ll=${latLng}`,
+                android: `${scheme}${latLng}(${label})`
+            });
+            Linking.openURL(url)
+        }
+
+        return (
+            <View style={{ paddingHorizontal: 20, marginBottom: 20, alignItems: 'center' }}>
+                <TouchableOpacity
+                    style={{ backgroundColor: 'white', paddingVertical: 12, borderRadius: 10, ...styles.shadow, width: width*0.9, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'center' }}
+                    onPress={() => goToDialpad(order?.kitchen.paytmNo)}
+                >
+                    <Ionicons name="call" size={24} color="#FC6D3F" />
+                    <Text style={{ fontFamily: "System", fontSize: 16, color: "#FC6D3F", alignSelf: 'center', marginLeft: 10 }}>CALL KITCHEN</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={{ backgroundColor: 'white', paddingVertical: 12, borderRadius: 10, ...styles.shadow, width: width*0.9, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}
+                    onPress={() => goToMaps(order?.kitchen.latitude, order?.kitchen.longitude, order?.kitchen.kitName)}
+                >
+                    <MaterialCommunityIcons name="map-marker-path" size={26} color="#FC6D3F" />
+                    <Text style={{ fontFamily: "System", fontSize: 16, color: "#FC6D3F", alignSelf: 'center', marginLeft: 10 }}>OPEN DIRECTIONS</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -376,6 +418,7 @@ const OrderDetails = ({ route, navigation }) => {
                 {renderCartItems()}
                 {renderGap()}
                 {trackOrder ? currentOrderStatus() : renderDates()}
+                {trackOrder ? renderContactInfo() : null}
                 {renderGap()}
                 {renderAddress()}
                 {renderGap()}
