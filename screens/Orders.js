@@ -122,7 +122,7 @@ const Orders = ({ route, navigation }) => {
             else if (status=="Rejected" || status=="Cancelled") {
                 return "red"
             }
-            else if (status=="Waiting" || status=="Placed" || status=="Payment" || status=="Preparing" || status=="Packed" || status=="Dispatched") {
+            else if (status=="Waiting" || status=="Placed" || status=="Payment" || status=="Preparing" || status=="Ready" || status=="Dispatched") {
                 return "#FFCC00"
             }
         }

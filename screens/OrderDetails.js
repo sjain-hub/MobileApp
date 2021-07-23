@@ -76,7 +76,7 @@ const OrderDetails = ({ route, navigation }) => {
         else if (status == "Rejected" || status == "Cancelled") {
             return "red"
         }
-        else if (status == "Waiting" || status == "Placed" || status == "Payment" || status == "Preparing" || status == "Packed" || status == "Dispatched") {
+        else if (status == "Waiting" || status == "Placed" || status == "Payment" || status == "Preparing" || status == "Ready" || status == "Dispatched") {
             return "#FFCC00"
         }
     }
@@ -327,9 +327,9 @@ const OrderDetails = ({ route, navigation }) => {
 
         const getLabels = () => {
             if (order.mode == "Delivery") {
-                labels = ["Placed", "Preparing", "Packed", "Dispatched", "Delivered"]
+                labels = ["Placed", "Preparing", "Ready", "Dispatched"]
             } else {
-                labels = ["Placed", "Preparing", "Packed", "Picked"]
+                labels = ["Placed", "Preparing", "Ready"]
             }
             // if (order.paymentOption == "Advance Payment") {
             //     labels = ["Payment", ...labels]
@@ -354,7 +354,7 @@ const OrderDetails = ({ route, navigation }) => {
                         <MaterialCommunityIcons name="coffee-maker" size={220} color="lightgray" />
                     </View>
                 )
-            } else if (order.status == "Packed") {
+            } else if (order.status == "Ready") {
                 return (
                     <View style={{justifyContent: 'center', alignItems: 'center', width: width*0.56}}>
                         <Octicons name="package" size={220} color="lightgray" />
