@@ -593,7 +593,7 @@ const Cart = ({ route, navigation }) => {
 
     function renderCouponModal() {
         const renderItem = ({ item }) => (
-            <View style={{ marginTop: 10 }}>
+            <View style={{ marginTop: 10, width: width*0.74 }}>
                 <View style={{ flexDirection: 'row' }}>
                     <View style={{ width: '83%', justifyContent: 'center', height: 30 }}>
                         <View
@@ -623,8 +623,10 @@ const Cart = ({ route, navigation }) => {
                 <View style={{ flexDirection: 'row', marginTop: 10 }}>
                     <Text style={{ fontFamily: "System", fontSize: 14 }}>Get</Text>
                     <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}> {item.discount}%</Text>
-                    <Text style={{ fontFamily: "System", fontSize: 14 }}> off upto {'\u20B9'}{item.maxDiscount},</Text>
-                    <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}> Valid Till : </Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14 }}> off upto {'\u20B9'}{item.maxDiscount}</Text>
+                </View>
+                <View style={{ flexDirection: 'row', marginBottom: 5 }}>
+                    <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}>Valid Till : </Text>
                     <Text style={{ fontFamily: "System", fontSize: 14 }}>{getDate(item.validTill)}</Text>
                 </View>
                 {item.description == "" ?
@@ -666,6 +668,7 @@ const Cart = ({ route, navigation }) => {
                         renderItem={renderItem}
                         contentContainerStyle={{
                             paddingHorizontal: 10,
+                            width: width*0.8
                         }}
                     />
                 </View>

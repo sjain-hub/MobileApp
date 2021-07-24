@@ -30,6 +30,7 @@ import search from "../assets/icons/search.png";
 import config from '../config.json';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntIcon from 'react-native-vector-icons/AntDesign';
+import FAIcon from 'react-native-vector-icons/FontAwesome5';
 
 
 const kitchens = ({ route, navigation }) => {
@@ -289,9 +290,9 @@ const kitchens = ({ route, navigation }) => {
                     <View style={{ alignItems: "center", justifyContent: "center" }}>
                         <Text
                             style={{
-                                marginTop: 10,
+                                marginTop: 5,
                                 color: (selectedCategory?.id == item.id) ? "white" : "#1E1F20",
-                                fontFamily: "System", fontSize: 12, lineHeight: 22
+                                fontFamily: "System", fontSize: 12
                             }}
                         >
                             {item.name}
@@ -303,7 +304,7 @@ const kitchens = ({ route, navigation }) => {
         }
 
         return (
-            <View style={{ marginBottom: 10, paddingLeft: 20, paddingRight: 20 }}>
+            <View style={{ marginBottom: 0, paddingLeft: 20, paddingRight: 20 }}>
                 <FlatList
                     data={categories}
                     horizontal
@@ -326,6 +327,7 @@ const kitchens = ({ route, navigation }) => {
     function renderRestaurantList() {
         const renderItem = ({ item }) => (
             <TouchableOpacity
+                // disabled={item.status == "Closed" ? true : false}
                 style={{  flexDirection: 'row', width: width, marginVertical: 14, paddingHorizontal: 20 }}
                 onPress={() => navigation.navigate("Menu", {
                     "kitId": item.id,
@@ -338,9 +340,29 @@ const kitchens = ({ route, navigation }) => {
                         width: width*0.26,
                         height: 120,
                         borderRadius: 10,
-                        marginRight: 20
+                        marginRight: 20,
+                        opacity: item.status == 'Closed' ? 0.5 : 1
                     }}
                 />
+
+                {item.status == 'Closed' ?
+                    <View
+                        style={{
+                            position: 'absolute',
+                            top: 45,
+                            height: 30,
+                            width: width * 0.26,
+                            backgroundColor: 'white',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginLeft: 20,
+                            ...styles.shadow
+                        }}>
+                        <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold' }}>CLOSED</Text>
+                    </View>
+                    :
+                    null
+                }
 
                 {item.maxDiscount > 0 && <View
                     style={{
@@ -372,7 +394,6 @@ const kitchens = ({ route, navigation }) => {
                     <View
                         style={{
                             flexDirection: 'row',
-                            marginBottom: 5
                         }}
                     >
                         {item.avgrating ?
@@ -395,20 +416,39 @@ const kitchens = ({ route, navigation }) => {
                         <Text style={{ fontFamily: "System", fontSize: 13 }}>{item.mode} ({item.deliveryTime} min)</Text>
                     </View>
 
+                    {item.acceptAdvcOrders || item.pureVeg || item.mode == "PickUp" ?
+                        <View
+                            style={{
+                                marginTop: 5,
+                                borderBottomColor: '#F5F5F6',
+                                borderBottomWidth: 1,
+                            }}
+                        />
+                        :
+                        null
+                    }
+                    
                     {item.acceptAdvcOrders ?
-                        <View>
-                            <View
-                                style={{
-                                    marginTop: 5,
-                                    marginBottom: 5,
-                                    borderBottomColor: '#F5F5F6',
-                                    borderBottomWidth: 1,
-                                }}
-                            />
-                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}><Entypo name="info-with-circle" size={12} color="skyblue" /> Accepts Advance Orders upto 2 Days.</Text>
+                        <View style={{marginTop: 5}}>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}><Entypo name="info-with-circle" size={12} color="skyblue" />  Accepts Advance Orders upto 2 Days.</Text>
                         </View>
                     : null}
 
+                    {item.pureVeg?
+                        <View style={{marginTop: 5}}>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}><FAIcon name="leaf" size={12} color="green" />  Pure Veg</Text>
+                        </View>
+                        :
+                        null
+                    }
+
+                    {item.mode == "PickUp" ?
+                        <View style={{marginTop: 5}}>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}><Entypo name="warning" size={12} color="red" />  Delivery Not available</Text>
+                        </View>
+                        :
+                        null
+                    }
                 </View>
             </TouchableOpacity>
         )
@@ -418,7 +458,7 @@ const kitchens = ({ route, navigation }) => {
                 data={filteredKitchens}
                 keyExtractor={item => `${item.id}`}
                 renderItem={renderItem}
-                ListHeaderComponent={renderMainCategories}
+                // ListHeaderComponent={renderMainCategories}
                 contentContainerStyle={{
                     paddingBottom: activeOrders?.length > 0 ? 120 : 80
                 }}
@@ -470,6 +510,7 @@ const kitchens = ({ route, navigation }) => {
                 renderLoader()
                 :
                 <View style={{ flex: 1 }}>
+                    {renderMainCategories()}
                     {renderRestaurantList()}
                     {activeOrders?.length > 0 ?
                         renderActiveOrders()

@@ -840,37 +840,16 @@ const Menu = ({ route, navigation }) => {
 
                 </View>
                 <View style={{ height: 130, alignItems: 'center', justifyContent: 'center' }}>
-                    {item.out_of_stock ?
-                        <View>
-                            <Image source={{ uri: config.url + item.image }}
-                                resizeMode="cover"
-                                style={{
-                                    tintColor: 'gray',
-                                    width: 120,
-                                    height: 120,
-                                    borderRadius: 100,
-                                }} />
-                            <Image source={{ uri: config.url + item.image }}
-                                resizeMode="cover"
-                                style={{
-                                    position: 'absolute',
-                                    opacity: 0.2,
-                                    width: 120,
-                                    height: 120,
-                                    borderRadius: 100,
-                                }} />
-                        </View>
-                        :
-                        <Image
-                            source={{ uri: config.url + item.image }}
-                            resizeMode="cover"
-                            style={{
-                                width: 120,
-                                height: 120,
-                                borderRadius: 100,
-                            }}
-                        />
-                    }
+                    <Image
+                        source={{ uri: config.url + item.image }}
+                        resizeMode="cover"
+                        style={{
+                            width: 120,
+                            height: 120,
+                            borderRadius: 100,
+                            opacity: kitchen.status == 'Closed' || item.out_of_stock ? 0.4 : 1
+                        }}
+                    />
                     <View
                         style={{
                             position: 'absolute',
@@ -893,10 +872,10 @@ const Menu = ({ route, navigation }) => {
                                 borderBottomLeftRadius: 25,
                             }}
                             activeOpacity={0.9}
-                            disabled={item.out_of_stock || getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id) == 0}
+                            disabled={kitchen.status == 'Closed' || item.out_of_stock || getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id) == 0}
                             onPress={() => checkCart("-", item.id)}
                         >
-                            <Entypo name="minus" size={16} color={item.out_of_stock ? 'gray' : 'green'} />
+                            <Entypo name="minus" size={16} color={kitchen.status == 'Closed' || item.out_of_stock ? 'gray' : 'green'} />
                         </TouchableOpacity>
 
                         <View
@@ -906,7 +885,7 @@ const Menu = ({ route, navigation }) => {
                                 justifyContent: 'center',
                             }}
                         >
-                            <Text style={{ fontFamily: "System", fontSize: 14, lineHeight: 25, color: item.out_of_stock ? 'gray' : 'green' }}>{getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id)}</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 14, lineHeight: 25, color: kitchen.status == 'Closed' || item.out_of_stock ? 'gray' : 'green' }}>{getOrderQty(item.subitems.length > 0 ? item.id + '-' : item.id)}</Text>
                         </View>
 
                         <TouchableOpacity
@@ -918,10 +897,10 @@ const Menu = ({ route, navigation }) => {
                                 borderBottomRightRadius: 25,
                             }}
                             activeOpacity={0.9}
-                            disabled={item.out_of_stock}
+                            disabled={kitchen.status == 'Closed' || item.out_of_stock}
                             onPress={() => checkCart("+", item.id)}
                         >
-                            <Entypo name="plus" size={16} color={item.out_of_stock ? 'gray' : 'green'} />
+                            <Entypo name="plus" size={16} color={kitchen.status == 'Closed' || item.out_of_stock ? 'gray' : 'green'} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -1256,6 +1235,20 @@ const Menu = ({ route, navigation }) => {
         )
     }
 
+    function renderKitchenClosedTag() {
+        return (
+            totalCartItems > 0 ?
+                <View style={{ top: '90%', alignSelf: 'center', position: 'absolute' }}>
+                    <View
+                        style={{ width: width * 0.4, height: 50, borderRadius: 30, backgroundColor: 'lightgray', ...styles.shadow, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                        <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold' }}>CLOSED</Text>
+                    </View>
+                </View>
+                : null
+        )
+    }
+
     function renderLoader() {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -1276,7 +1269,7 @@ const Menu = ({ route, navigation }) => {
                         {renderKitSwitchModal()}
                         {renderSubItemsModal()}
                         {renderCategoryModal()}
-                        {renderCart()}
+                        {kitchen.status == 'Closed' ? renderKitchenClosedTag() : renderCart()}
                     </View>
             }
         </SafeAreaView>

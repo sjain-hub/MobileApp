@@ -265,7 +265,7 @@ const Home = ({ route, navigation }) => {
             <View
                 style={{
                     position: 'absolute',
-                    bottom: Platform.OS == "ios" ? 70 : 30,
+                    bottom: Platform.OS == "ios" ? 50 : 30,
                     left: 0,
                     right: 0,
                     alignItems: 'center',
@@ -274,15 +274,15 @@ const Home = ({ route, navigation }) => {
             >
                 <View
                     style={{
-                        width: '100%'
+                        width: '100%',
+                        alignItems: 'center'
                     }}
                 >
                     <TouchableOpacity
                         style={{
                             flex: 1,
                             height: 50,
-                            marginRight: 40,
-                            marginLeft: 40,
+                            width: width*0.7,
                             backgroundColor: '#FC6D3F',
                             alignItems: 'center',
                             justifyContent: 'center',
