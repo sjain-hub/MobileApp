@@ -815,10 +815,10 @@ const Menu = ({ route, navigation }) => {
                             }}
                         />}
 
-                    <Text style={{ fontFamily: "System", fontSize: 14, color: "#C0C0C0" }}>{item.desc}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14, color: "gray" }}>{item.desc}</Text>
 
                     {item.minOrder > 0 ?
-                        <Text style={{ fontFamily: "System", fontSize: 14, color: "#C0C0C0" }}>Minimum Order: {item.minOrder}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, color: "gray" }}>Minimum Order: {item.minOrder}</Text>
                         : null}
 
                     {item.condition ?
@@ -834,9 +834,9 @@ const Menu = ({ route, navigation }) => {
                         : <Text style={{ fontFamily: "System", fontSize: 16, marginTop: 10 }}>{'\u20B9'} {item.price}</Text>
                     }
 
-                    {item.out_of_stock ?
+                    {/* {item.out_of_stock ?
                         <Text style={{ fontFamily: "System", fontSize: 16, color: "gray", fontWeight: 'bold' }}>OUT OF STOCK</Text>
-                        : null}
+                        : null} */}
 
                 </View>
                 <View style={{ height: 130, alignItems: 'center', justifyContent: 'center' }}>
@@ -847,9 +847,28 @@ const Menu = ({ route, navigation }) => {
                             width: 120,
                             height: 120,
                             borderRadius: 100,
-                            opacity: kitchen.status == 'Closed' || item.out_of_stock ? 0.4 : 1
+                            opacity: kitchen.status == 'Closed' || item.out_of_stock ? 0.5 : 1
                         }}
                     />
+                    {item.out_of_stock ?
+                        <View
+                            style={{
+                                position: 'absolute',
+                                top: 45,
+                                height: 30,
+                                width: 120,
+                                borderRadius: 2,
+                                backgroundColor: 'white',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginLeft: 20,
+                                ...styles.shadow
+                            }}>
+                            <Text style={{ fontFamily: "System", fontSize: 12, fontWeight: 'bold', color: 'gray' }}>OUT OF STOCK</Text>
+                        </View>
+                        :
+                        null
+                    }
                     <View
                         style={{
                             position: 'absolute',

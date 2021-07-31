@@ -11,10 +11,13 @@ import {
     Dimensions,
     FlatList,
     ScrollView,
+    Pressable,
     ActivityIndicator
 } from "react-native";
+import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geocoder from 'react-native-geocoding';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
 import UserPin from '../assets/icons/map-pin.png';
 import Star from '../assets/icons/star.png';
 import NorthIndian from '../assets/icons/nindian.png';
@@ -31,6 +34,7 @@ import config from '../config.json';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import FAIcon from 'react-native-vector-icons/FontAwesome5';
+import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 
 const kitchens = ({ route, navigation }) => {
@@ -89,13 +93,31 @@ const kitchens = ({ route, navigation }) => {
     const [selectedCategory, setSelectedCategory] = React.useState({ "icon": 18, "id": 1, "name": "All" })
     const [kitchensData, setKitchensData] = React.useState([])
     const [filteredKitchens, setFilteredKitchens] = React.useState([])
+    const [finalKitchens, setFinalKitchens] = React.useState([])
     const [loading, setLoading] = React.useState(true)
     const [activeOrders, setActiveOrders] = React.useState();
+    const [filtersModal, setFiltersModal] = React.useState(false)
+    const [sliderValue, setSliderValue] = React.useState([10]);
+    const [filterAdvOrders, setFilterAdvOrders] = React.useState(false)
+    const [filterPureVeg, setFilterPureVeg] = React.useState(false)
+    const [filterHomeDel, setFilterHomeDel] = React.useState(false)
+    const [filterRatings, setFilterRatings] = React.useState(false)
+    const [filterOffers, setFilterOffers] = React.useState(false)
+
+    const [tempSliderValue, setTempSliderValue] = React.useState([10]);
+    const [tempFilterAdvOrders, setTempFilterAdvOrders] = React.useState(false)
+    const [tempFilterPureVeg, setTempFilterPureVeg] = React.useState(false)
+    const [tempFilterHomeDel, setTempFilterHomeDel] = React.useState(false)
+    const [tempFilterRatings, setTempFilterRatings] = React.useState(false)
+    const [tempFilterOffers, setTempFilterOffers] = React.useState(false)
+    
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
             fetchNearbyKitchens()
             fetchActiveOrders()
+            applyFilters()
+            resetTempFilters()
         });
         return unsubscribe;
     }, [navigation])
@@ -118,6 +140,7 @@ const kitchens = ({ route, navigation }) => {
                 .then((json) => {
                     setLoading(false)
                     setFilteredKitchens(json.kit_object)
+                    setFinalKitchens(json.kit_object)
                     setKitchensData(json.kit_object)
                 }).catch((error) => {
                      if(error == 'TypeError: Network request failed') {
@@ -165,23 +188,24 @@ const kitchens = ({ route, navigation }) => {
             .catch(error => console.warn(error));
     }
 
-    function onSelectCategory(category) {
+    function onSelectCategory(category, kitchens) {
         if (category.name == "All") {
-            setFilteredKitchens(kitchensData)
+            setFinalKitchens(kitchens)
             setSelectedCategory(category)
         } else if (category.name == "Desserts & Cakes") {
-            let kitchensList = kitchensData.filter(a => 
+            let kitchensList = kitchens.filter(a => 
                 a.catdesc.toLowerCase().split(', ').includes('cakes') || a.catdesc.toLowerCase().split(', ').includes('desserts')
             )
-            setFilteredKitchens(kitchensList)
+            setFinalKitchens(kitchensList)
             setSelectedCategory(category)
         } else {
-            let kitchensList = kitchensData.filter(a => 
+            let kitchensList = kitchens.filter(a => 
                 a.catdesc.toLowerCase().split(', ').includes(category.name.toLowerCase())
             )
-            setFilteredKitchens(kitchensList)
+            setFinalKitchens(kitchensList)
             setSelectedCategory(category)
         }
+        setLoading(false)
     }
 
     function renderHeader() {
@@ -219,36 +243,195 @@ const kitchens = ({ route, navigation }) => {
                         })}
                         style={{
                             height: 40,
-                            width: width*0.8,
+                            width: width-100,
                             alignItems: 'flex-start',
                             justifyContent: 'center',
-                            paddingHorizontal: 10,
+                            paddingHorizontal: 20,
                             borderRadius: 30,
                             backgroundColor: "#EFEFF1"
                         }}
                     >
-                        <Text numberOfLines={1} style={{ fontFamily: "System", fontSize: 16, lineHeight: 22 }}>{userLocation}</Text>
+                        <Text numberOfLines={1} style={{ fontFamily: "System", fontSize: 16 }}>{userLocation}</Text>
                     </TouchableOpacity>
                 </View>
 
-                {/* <TouchableOpacity
+                <TouchableOpacity
                     style={{
                         width: 50,
-                        paddingRight: 20,
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        alignItems: 'center'
                     }}
+                    onPress={() => setFiltersModal(true)}
                 >
-                    <Image
-                        source={search}
-                        resizeMode="contain"
-                        style={{
-                            width: 20,
-                            height: 20
-                        }}
-                    />
-                </TouchableOpacity> */}
+                    <AntIcon name="filter" size={28} color= {'gray'} />
+                </TouchableOpacity>
             </View>
         )
+    }
+
+    function renderFiltersModal() {
+        const sliderValuesChange = (value) => {
+            setTempSliderValue(value)
+        }
+
+        return (
+            <Modal
+                isVisible={filtersModal}
+                onBackdropPress={() => {
+                    setFiltersModal(false)
+                    resetTempFilters()
+                }}
+                style={{
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+            >
+                <View style={{
+                    backgroundColor: "white",
+                    alignItems: "flex-start",
+                    borderRadius: 10,
+                    height: 550,
+                    width: width * 0.9,
+                    paddingVertical: 20,
+                    paddingHorizontal: 20,
+                }}>
+                    <View style={{ flexDirection: 'row', marginBottom: 20 }}>
+                        <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', width: '84%' }}>FILTERS</Text>
+                    </View>
+                    <View style={{ flexDirection: 'row', marginVertical: 12 }}>
+                        <View style={{width: '80%', marginRight: '10%'}}>
+                            <Text style={{ fontFamily: "System", fontSize: 16 }}>Advance Orders</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>The Order can be Scheduled according to your Convenience</Text>
+                        </View>
+                        <BouncyCheckbox
+                            size={20}
+                            isChecked={filterAdvOrders}
+                            fillColor="green"
+                            unfillColor="#FFFFFF"
+                            iconStyle={{ borderColor: "green" }}
+                            onPress={() => setTempFilterAdvOrders(!filterAdvOrders)}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', marginVertical: 12 }}>
+                        <View style={{width: '80%', marginRight: '10%'}}>
+                            <Text style={{ fontFamily: "System", fontSize: 16 }}>Pure Veg</Text>
+                        </View>
+                        <BouncyCheckbox
+                            size={20}
+                            isChecked={filterPureVeg}
+                            fillColor="green"
+                            unfillColor="#FFFFFF"
+                            iconStyle={{ borderColor: "green" }}
+                            onPress={() => setTempFilterPureVeg(!filterPureVeg)}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', marginVertical: 12 }}>
+                        <View style={{width: '80%', marginRight: '10%'}}>
+                            <Text style={{ fontFamily: "System", fontSize: 16 }}>Home Delivery</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>Food will be Delivered at your doorstep</Text>
+                        </View>
+                        <BouncyCheckbox
+                            size={20}
+                            isChecked={filterHomeDel}
+                            fillColor="green"
+                            unfillColor="#FFFFFF"
+                            iconStyle={{ borderColor: "green" }}
+                            onPress={() => setTempFilterHomeDel(!filterHomeDel)}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', marginVertical: 12 }}>
+                        <View style={{width: '80%', marginRight: '10%'}}>
+                            <Text style={{ fontFamily: "System", fontSize: 16 }}>High Rated</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>Kitchens rated more than 3</Text>
+                        </View>
+                        <BouncyCheckbox
+                            size={20}
+                            isChecked={filterRatings}
+                            fillColor="green"
+                            unfillColor="#FFFFFF"
+                            iconStyle={{ borderColor: "green" }}
+                            onPress={() => setTempFilterRatings(!filterRatings)}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', marginVertical: 12 }}>
+                        <View style={{width: '80%', marginRight: '10%'}}>
+                            <Text style={{ fontFamily: "System", fontSize: 16 }}>Offers</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>Kitchens offering discounts</Text>
+                        </View>
+                        <BouncyCheckbox
+                            size={20}
+                            isChecked={filterOffers}
+                            fillColor="green"
+                            unfillColor="#FFFFFF"
+                            iconStyle={{ borderColor: "green" }}
+                            onPress={() => setTempFilterOffers(!filterOffers)}
+                        />
+                    </View>
+                    <View style={{ flexDirection: 'row', marginTop: 12 }}>
+                        <View style={{ width: '70%', marginRight: '10%' }}>
+                            <Text style={{ fontFamily: "System", fontSize: 16 }}>Distance</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>Select the range of distance</Text>
+                        </View>
+                        <Text style={{ fontFamily: "System", fontSize: 16, color: 'green' }}>0 - {tempSliderValue} km</Text>
+                    </View>
+                    <View style={{alignItems: 'center', width: '100%', marginBottom: 20}}>
+                        <MultiSlider
+                            values={sliderValue}
+                            sliderLength={width*0.7}
+                            onValuesChange={sliderValuesChange}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        style={{ backgroundColor: '#ff0033', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 5, ...styles.shadow, alignSelf: 'center' }}
+                        onPress={() => {
+                            applyFilters(selectedCategory)
+                            setFiltersModal(false)
+                        }}
+                    >
+                        <Text style={{ fontFamily: "System", fontWeight: 'bold', color: 'white', fontSize: 16 }}>APPLY FILTERS</Text>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
+        )
+    }
+
+    function applyFilters() {
+        console.log(tempFilterAdvOrders, tempFilterPureVeg, tempFilterHomeDel, tempFilterRatings, tempFilterOffers, tempSliderValue);
+        setLoading(true)
+        setFilterAdvOrders(tempFilterAdvOrders)
+        setFilterPureVeg(tempFilterPureVeg)
+        setFilterHomeDel(tempFilterHomeDel)
+        setFilterRatings(tempFilterRatings)
+        setFilterOffers(tempFilterOffers)
+        setSliderValue(tempSliderValue)
+
+        let kitchensList = kitchensData.filter(a => {
+            var selected = true
+            if (tempFilterAdvOrders && a.acceptAdvcOrders != tempFilterAdvOrders) {
+                selected = false
+            }
+            if (tempFilterPureVeg && a.pureVeg != tempFilterPureVeg) {
+                selected = false
+            }
+            if (tempFilterHomeDel && a.mode != "Delivery") {
+                selected = false
+            }
+            if (tempFilterRatings && (a.avgrating == null || a.avgrating <= 3)) {
+                selected = false
+            }
+            if (tempFilterOffers && a.maxDiscount == 0) {
+                selected = false
+            }
+            if (a.dist > tempSliderValue) {
+                selected = false
+            }
+
+            return selected;
+        })
+        
+        setFilteredKitchens(kitchensList)
+        setSelectedCategory({ "icon": 18, "id": 1, "name": "All" })
+        onSelectCategory({ "icon": 18, "id": 1, "name": "All" }, kitchensList)
     }
 
     function renderMainCategories() {
@@ -265,7 +448,7 @@ const kitchens = ({ route, navigation }) => {
                         alignItems: "center",
                         ...styles.shadow
                     }}
-                    onPress={() => onSelectCategory(item)}
+                    onPress={() => onSelectCategory(item, filteredKitchens)}
                 >
                     <View
                         style={{
@@ -455,7 +638,7 @@ const kitchens = ({ route, navigation }) => {
 
         return (
             <FlatList
-                data={filteredKitchens}
+                data={finalKitchens}
                 keyExtractor={item => `${item.id}`}
                 renderItem={renderItem}
                 // ListHeaderComponent={renderMainCategories}
@@ -503,6 +686,15 @@ const kitchens = ({ route, navigation }) => {
         )
     }
 
+    function resetTempFilters() {
+        setTempSliderValue(sliderValue)
+        setTempFilterAdvOrders(filterAdvOrders)
+        setTempFilterPureVeg(filterPureVeg)
+        setTempFilterHomeDel(filterHomeDel)
+        setTempFilterRatings(filterRatings)
+        setTempFilterOffers(filterOffers)
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
@@ -519,6 +711,7 @@ const kitchens = ({ route, navigation }) => {
                     }
                 </View>
             }
+            {renderFiltersModal()}
         </SafeAreaView>
     )
 

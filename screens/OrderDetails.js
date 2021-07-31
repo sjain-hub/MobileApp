@@ -239,7 +239,7 @@ const OrderDetails = ({ route, navigation }) => {
         return (
             <View style={{ paddingHorizontal: 20 }}>
                 <View style={{ marginVertical: 10 }}>
-                    <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>Address</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>Your Address</Text>
                     <Text style={{ fontFamily: "System", fontSize: 14 }}>{order?.delivery_addr}</Text>
                 </View>
                 <View style={{ marginVertical: 10 }}>

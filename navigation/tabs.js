@@ -71,6 +71,7 @@ const TabBarCustomButton = ({ accessibilityState, children, onPress }) => {
                 onPress={onPress}
             >
                 {children}
+                {/* <Text style={{fontSize: 12, alignSelf: 'center', marginBottom: 10}}>dskjfhi</Text> */}
             </TouchableOpacity>
         )
     }
@@ -163,7 +164,7 @@ const Tabs = ({ route, navigation }) => {
                             {...props}
                         />
                     ),
-                    unmountOnBlur: true
+                    unmountOnBlur: () => { true }
                 }}
             />
 
@@ -181,21 +182,6 @@ const Tabs = ({ route, navigation }) => {
                     )
                 }}
             />
-
-            {/* <Tab.Screen
-                name="Searc"
-                component={Search}
-                options={{
-                    tabBarIcon: ({ focused }) => (
-                        <Ionicons name="search" size={28} color={focused ? '#FC6D3F' : 'gray'} />
-                    ),
-                    tabBarButton: (props) => (
-                        <TabBarCustomButton
-                            {...props}
-                        />
-                    )
-                }}
-            /> */}
 
             <Tab.Screen
                 name="Cart"
