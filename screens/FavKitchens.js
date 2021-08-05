@@ -17,7 +17,6 @@ import config from '../config.json';
 const { width, height } = Dimensions.get("window");
 import back from "../assets/icons/back.png";
 import Star from '../assets/icons/star.png';
-import FAIcon5 from 'react-native-vector-icons/FontAwesome5';
 
 
 const FavKitchens = ({ route, navigation }) => {
@@ -186,7 +185,8 @@ const FavKitchens = ({ route, navigation }) => {
                 keyExtractor={item => `${item.id}`}
                 renderItem={renderItem}
                 contentContainerStyle={{
-                    paddingVertical: 40
+                    paddingBottom: 40,
+                    paddingTop: 10
                 }}
             />
         )

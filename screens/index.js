@@ -17,6 +17,7 @@ import OrderDetails from'./OrderDetails'
 import NoInternet from './NoInternet'
 import Payment from './Payment'
 import LatestUpdates from './LatestUpdates'
+import Help from './Help'
 
 export {
     Home,
@@ -37,5 +38,6 @@ export {
     NoInternet,
     Payment,
     LatestUpdates,
+    Help,
     Test
 }

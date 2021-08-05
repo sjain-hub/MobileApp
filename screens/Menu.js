@@ -19,18 +19,16 @@ import {
 // import { TouchableOpacity} from 'react-native-gesture-handler'
 import Modal from 'react-native-modal';
 const { width, height } = Dimensions.get("window");
-import { isIphoneX } from 'react-native-iphone-x-helper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import back from "../assets/icons/back.png";
-import list from "../assets/icons/list.png";
 import veg from "../assets/icons/veg.png";
 import nonveg from "../assets/icons/nonveg.png";
 import config from '../config.json';
-import Star from '../assets/icons/star.png';
-import search from "../assets/icons/search.png";
 import AntIcon from 'react-native-vector-icons/AntDesign';
-import FAIcon from 'react-native-vector-icons/FontAwesome5';
+import FAIcon from 'react-native-vector-icons/FontAwesome';
+import FAIcon5 from 'react-native-vector-icons/FontAwesome5';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 const Menu = ({ route, navigation }) => {
@@ -368,14 +366,7 @@ const Menu = ({ route, navigation }) => {
                         }}
                         onPress={() => setSearchPressed(true)}
                     >
-                        <Image
-                            source={search}
-                            resizeMode="contain"
-                            style={{
-                                width: 15,
-                                height: 15
-                            }}
-                        />
+                        <Ionicons name="search" size={20} />
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -538,7 +529,8 @@ const Menu = ({ route, navigation }) => {
                                 {kitchen?.avgrating ?
                                     <TouchableOpacity
                                         style={{
-                                            flexDirection: 'row'
+                                            flexDirection: 'row',
+                                            alignItems: 'center'
                                         }}
                                         onPress={() => navigation.navigate("KitchenDetails", {
                                             kitchen: kitchen,
@@ -546,15 +538,7 @@ const Menu = ({ route, navigation }) => {
                                             scrollToReviews: true
                                         })}
                                     >
-                                        <Image
-                                            source={Star}
-                                            style={{
-                                                marginTop: 2,
-                                                height: 14,
-                                                width: 14,
-                                                tintColor: (kitchen?.avgrating >= 4) ? "green" : (kitchen?.avgrating >= 3) ? "gold" : "red",
-                                            }}
-                                        />
+                                        <FAIcon name="star" size={16} color={(kitchen?.avgrating >= 4) ? "green" : (kitchen?.avgrating >= 3) ? "gold" : "red"} />
                                         <Text style={{ fontFamily: "System", fontSize: 14 }}> {kitchen?.avgrating} <Text style={{ fontFamily: "System", fontSize: 14 }}>({reviews?.length} Reviews)<AntIcon name="right" size={12} /></Text> | </Text>
                                     </TouchableOpacity>
                                     : null}
@@ -579,7 +563,7 @@ const Menu = ({ route, navigation }) => {
                                 :
                                 <View style={{ flexDirection: 'row' }}>
                                     <Text style={{ fontFamily: "System", fontSize: 15, marginRight: 5 }}>Pure Veg</Text>
-                                    <FAIcon name="leaf" size={18} color="green" />
+                                    <FAIcon5 name="leaf" size={18} color="green" />
                                 </View>
                             }
                         </View>
@@ -611,14 +595,7 @@ const Menu = ({ route, navigation }) => {
                             }}
                             onPress={() => setSearchPressed(true)}
                         >
-                            <Image
-                                source={search}
-                                resizeMode="contain"
-                                style={{
-                                    width: 15,
-                                    height: 15
-                                }}
-                            />
+                            <Ionicons name="search" size={20} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -747,7 +724,7 @@ const Menu = ({ route, navigation }) => {
                 //                 :
                 //                 <View style={{ flexDirection: 'row' }}>
                 //                     <Text style={{ fontFamily: "System", fontSize: 15, marginRight: 5 }}>Pure Veg</Text>
-                //                     <FAIcon name="leaf" size={18} color="green" />
+                //                     <FAIcon5 name="leaf" size={18} color="green" />
                 //                 </View>
                 //             }
                 //         </View>
@@ -1244,7 +1221,7 @@ const Menu = ({ route, navigation }) => {
                             raiseButton: false
                         })}
                     >
-                        <FAIcon name="shopping-cart" size={22} color="green" />
+                        <FAIcon5 name="shopping-cart" size={22} color="green" />
                         <View style={{ width: 22, height: 22, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center', justifyContent: 'center' }}>
                             <Text style={{ color: 'white' }}>{totalCartItems}</Text>
                         </View>

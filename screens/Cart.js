@@ -681,25 +681,41 @@ const Cart = ({ route, navigation }) => {
             kitchen?.mode == "Delivery" ?
                 <View style={{ marginHorizontal: 20, marginVertical: 20 }}>
                     <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold' }}>Select Mode</Text>
-                    <View style={{flexDirection: 'row', marginTop: 10, alignItems: 'center'}}>
-                        <RadioButton
-                            value="PickUp"
-                            status={mode === 'PickUp' ? 'checked' : 'unchecked'}
+                    <View style={{ flexDirection: 'row', marginTop: 10, alignItems: 'center' }}>
+                        <TouchableOpacity 
+                            style={{flexDirection: 'row', alignItems: 'center'}}
                             onPress={() => {
                                 setMode('PickUp')
                                 calcBill(cartItems, ASItems, couponApplied, 'PickUp')
                             }}
-                        />
-                        <Text style={{ fontFamily: "System", fontSize: 14, marginRight: 50, marginLeft: 10 }}>Pick Up</Text>
-                        <RadioButton
-                            value="Delivery"
-                            status={mode === 'Delivery' ? 'checked' : 'unchecked'}
+                        >
+                            <RadioButton
+                                value="PickUp"
+                                status={mode === 'PickUp' ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setMode('PickUp')
+                                    calcBill(cartItems, ASItems, couponApplied, 'PickUp')
+                                }}
+                            />
+                            <Text style={{ fontFamily: "System", fontSize: 14, marginRight: 50, marginLeft: 10 }}>Pick Up</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            style={{flexDirection: 'row', alignItems: 'center'}}
                             onPress={() => {
                                 setMode('Delivery')
                                 calcBill(cartItems, ASItems, couponApplied, 'Delivery')
                             }}
-                        />
-                        <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10 }}>Delivery</Text>
+                        >
+                            <RadioButton
+                                value="Delivery"
+                                status={mode === 'Delivery' ? 'checked' : 'unchecked'}
+                                onPress={() => {
+                                    setMode('Delivery')
+                                    calcBill(cartItems, ASItems, couponApplied, 'Delivery')
+                                }}
+                            />
+                            <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10 }}>Delivery</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
                 :
@@ -771,7 +787,13 @@ const Cart = ({ route, navigation }) => {
                 <View style={{ marginTop: 10 }}>
                     {addresses?.map((add) => {
                         return (
-                            <View style={{ flexDirection: 'row', marginVertical: 10 }} key={add.id}>
+                            <TouchableOpacity 
+                                style={{ flexDirection: 'row', marginVertical: 10 }}
+                                key={add.id}
+                                onPress={() => {
+                                    setSelectedAddress(add)
+                                }}
+                            >
                                 <RadioButton
                                     color={'red'}
                                     value={add.place}
@@ -784,7 +806,7 @@ const Cart = ({ route, navigation }) => {
                                     <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10 }}>{add.place}</Text>
                                     <Text style={{ fontFamily: "System", fontSize: 14, marginLeft: 10, color: 'gray' }}>{add.address}, Floor No: {add.floorNo}</Text>
                                 </View>
-                            </View>
+                            </TouchableOpacity>
                         )
                     })}
                 </View>

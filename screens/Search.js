@@ -17,11 +17,9 @@ import {
 const { width, height } = Dimensions.get("window");
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import config from '../config.json';
-import back from "../assets/icons/back.png";
-import Star from '../assets/icons/star.png';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { RNCamera } from 'react-native-camera';
-
+import FAIcon from 'react-native-vector-icons/FontAwesome';
 
 
 const Search = ({ route, navigation }) => {
@@ -116,7 +114,7 @@ const Search = ({ route, navigation }) => {
 
     function renderSearchBox() {
         return (
-            <View style={{ alignItems: 'center', paddingVertical: 20 }}>
+            <View style={{ alignItems: 'center', paddingTop: 20 }}>
                 <TextInput
                     placeholder={"Search Kitchen"}
                     value={searchText}
@@ -167,17 +165,10 @@ const Search = ({ route, navigation }) => {
                     >
                         {item.avgrating ?
                             <View style={{
-                                flexDirection: 'row'
+                                flexDirection: 'row',
+                                alignItems: 'center'
                             }}>
-                                <Image
-                                    source={Star}
-                                    style={{
-                                        marginTop: 2,
-                                        height: 12,
-                                        width: 12,
-                                        tintColor: (item.avgrating >= 4) ? "green" : (item.avgrating >= 3) ? "gold" : "red",
-                                    }}
-                                />
+                                <FAIcon name="star" size={14} color={(item.avgrating >= 4) ? "green" : (item.avgrating >= 3) ? "gold" : "red"} />
                                 <Text style={{ fontFamily: "System", fontSize: 12 }}> {item.avgrating}  |  </Text>
                             </View>
                         : null}
@@ -229,7 +220,7 @@ const Search = ({ route, navigation }) => {
         )
 
         return (
-            <View style={Platform.OS == "ios" ? {paddingHorizontal: 20} : {paddingHorizontal: 20, height: 200}}>
+            <View style={Platform.OS == "ios" ? {paddingHorizontal: 20} : {paddingHorizontal: 20, paddingVertical: 20}}>
                 <Text style={{ fontFamily: "System", fontSize: 14 }}>Recents</Text>
                 <FlatList
                     data={recentSearchedKitchens}
@@ -246,14 +237,14 @@ const Search = ({ route, navigation }) => {
     function renderScanner() {
         const renderQRText = () => {
             return (
-                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, top: '88%'}}>
+                <View style={{ borderRadius: 50, backgroundColor: '#FC6D3F', alignSelf: 'center', position: 'absolute', zIndex: 1, top: '90%'}}>
                     <Text style={{ fontFamily: "System", fontSize: 14, color: 'white', paddingVertical: 4, fontStyle: 'italic', paddingHorizontal: 30 }}>Scan Kitchen's QR Code</Text>
                 </View>
             )
         }
 
         return (
-            <View style={{marginBottom: 80}}>
+            <View>
                 <QRCodeScanner
                     onRead={onSuccess}
                     reactivate={true}
@@ -271,7 +262,7 @@ const Search = ({ route, navigation }) => {
             {renderSearchBox()}
             {showRecentSearches ? renderRecentSearches() : null}
             {showSearchResults ? renderSearchResults() : null}
-            <ScrollView style={{marginTop: 20}}>
+            <ScrollView>
                 {showScanner ? renderScanner() : null}
             </ScrollView>
         </SafeAreaView>

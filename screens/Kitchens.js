@@ -19,7 +19,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Geocoder from 'react-native-geocoding';
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import UserPin from '../assets/icons/map-pin.png';
-import Star from '../assets/icons/star.png';
 import NorthIndian from '../assets/icons/nindian.png';
 import noodle from '../assets/icons/noodle.png';
 import hamburger from '../assets/icons/hamburger.png';
@@ -29,11 +28,11 @@ import donut from '../assets/icons/donut.png';
 import drink from '../assets/icons/drink.png';
 import sindian from '../assets/icons/sindian.png';
 import all from '../assets/icons/all.png';
-import search from "../assets/icons/search.png";
 import config from '../config.json';
 import Entypo from 'react-native-vector-icons/Entypo';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-import FAIcon from 'react-native-vector-icons/FontAwesome5';
+import FAIcon from 'react-native-vector-icons/FontAwesome';
+import FAIcon5 from 'react-native-vector-icons/FontAwesome5';
 import MultiSlider from '@ptomasroos/react-native-multi-slider';
 
 
@@ -263,7 +262,8 @@ const kitchens = ({ route, navigation }) => {
                     }}
                     onPress={() => setFiltersModal(true)}
                 >
-                    <AntIcon name="filter" size={28} color= {'gray'} />
+                    <AntIcon name="filter" size={24} color= {'gray'} />
+                    <Text style={{ fontFamily: "System", fontSize: 11 }}>Filters</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -342,7 +342,7 @@ const kitchens = ({ route, navigation }) => {
                     <View style={{ flexDirection: 'row', marginVertical: 12 }}>
                         <View style={{width: '80%', marginRight: '10%'}}>
                             <Text style={{ fontFamily: "System", fontSize: 16 }}>High Rated</Text>
-                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>Kitchens rated more than 3</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>More than 3 star ratings</Text>
                         </View>
                         <BouncyCheckbox
                             size={20}
@@ -356,7 +356,7 @@ const kitchens = ({ route, navigation }) => {
                     <View style={{ flexDirection: 'row', marginVertical: 12 }}>
                         <View style={{width: '80%', marginRight: '10%'}}>
                             <Text style={{ fontFamily: "System", fontSize: 16 }}>Offers</Text>
-                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>Kitchens offering discounts</Text>
+                            {/* <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}>Kitchens offering discounts</Text> */}
                         </View>
                         <BouncyCheckbox
                             size={20}
@@ -396,7 +396,6 @@ const kitchens = ({ route, navigation }) => {
     }
 
     function applyFilters() {
-        console.log(tempFilterAdvOrders, tempFilterPureVeg, tempFilterHomeDel, tempFilterRatings, tempFilterOffers, tempSliderValue);
         setLoading(true)
         setFilterAdvOrders(tempFilterAdvOrders)
         setFilterPureVeg(tempFilterPureVeg)
@@ -581,17 +580,10 @@ const kitchens = ({ route, navigation }) => {
                     >
                         {item.avgrating ?
                             <View style={{
-                                flexDirection: 'row'
+                                flexDirection: 'row',
+                                alignItems: 'center'
                             }}>
-                                <Image
-                                    source={Star}
-                                    style={{
-                                        marginTop: 2,
-                                        height: 13,
-                                        width: 13,
-                                        tintColor: (item.avgrating >= 4) ? "green" : (item.avgrating >= 3) ? "gold" : "red",
-                                    }}
-                                />
+                                <FAIcon name="star" size={13} color={(item.avgrating >= 4) ? "green" : (item.avgrating >= 3) ? "gold" : "red"} />
                                 <Text style={{ fontFamily: "System", fontSize: 13 }}> {item.avgrating}  |  </Text>
                             </View>
                         : null}
@@ -599,7 +591,7 @@ const kitchens = ({ route, navigation }) => {
                         <Text style={{ fontFamily: "System", fontSize: 13 }}>{item.mode} ({item.deliveryTime} min)</Text>
                     </View>
 
-                    {item.acceptAdvcOrders || item.pureVeg || item.mode == "PickUp" ?
+                    {item.acceptAdvcOrders || item.pureVeg || item.mode == "PickUp" || item.dist > item.deliveryRadius ?
                         <View
                             style={{
                                 marginTop: 5,
@@ -619,18 +611,24 @@ const kitchens = ({ route, navigation }) => {
 
                     {item.pureVeg?
                         <View style={{marginTop: 5}}>
-                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}><FAIcon name="leaf" size={12} color="green" />  Pure Veg</Text>
+                            <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}><FAIcon5 name="leaf" size={12} color="green" />  Pure Veg</Text>
                         </View>
                         :
                         null
                     }
 
                     {item.mode == "PickUp" ?
-                        <View style={{marginTop: 5}}>
+                        <View style={{ marginTop: 5 }}>
                             <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}><Entypo name="warning" size={12} color="red" />  Delivery Not available</Text>
                         </View>
                         :
-                        null
+                        item.dist > item.deliveryRadius ?
+                            <View style={{ marginTop: 5 }}>
+                                <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray' }}><Entypo name="warning" size={12} color="red" />  Does Not deliver in your area</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray', marginLeft: 12 }}>  (Delivers only upto {item.deliveryRadius} km)</Text>
+                            </View>
+                            :
+                            null
                     }
                 </View>
             </TouchableOpacity>

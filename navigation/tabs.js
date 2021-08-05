@@ -71,7 +71,6 @@ const TabBarCustomButton = ({ accessibilityState, children, onPress }) => {
                 onPress={onPress}
             >
                 {children}
-                {/* <Text style={{fontSize: 12, alignSelf: 'center', marginBottom: 10}}>dskjfhi</Text> */}
             </TouchableOpacity>
         )
     }
@@ -157,7 +156,10 @@ const Tabs = ({ route, navigation }) => {
                 component={Kitchens}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <MaterialIcons name="fastfood" size={28} color={focused ? '#FC6D3F' : 'gray'} />
+                        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                            <MaterialIcons name="fastfood" size={26} color={focused ? '#FC6D3F' : 'gray'} />
+                            {!focused && <Text style={{ fontFamily: "System", fontSize: 11, color: 'gray' }}>Kitchens</Text>}
+                        </View> 
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
@@ -173,7 +175,10 @@ const Tabs = ({ route, navigation }) => {
                 component={Search}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Ionicons name="search" size={28} color={focused ? '#FC6D3F' : 'gray'} />
+                        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                            <Ionicons name="search" size={26} color={focused ? '#FC6D3F' : 'gray'} />
+                            {!focused && <Text style={{ fontFamily: "System", fontSize: 11, color: 'gray' }}>Search</Text>}
+                        </View>
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton
@@ -189,15 +194,18 @@ const Tabs = ({ route, navigation }) => {
                 initialParams={{ raiseButton: true }}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <View style={{ flexDirection: 'row' }}>
-                            <Entypo name="shopping-cart" size={22} color={focused ? '#FC6D3F' : 'gray'} />
-                            {totalCartItems > 0 && !focused ?
-                                <View style={{ width: 18, height: 18, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center', justifyContent: 'center', marginLeft: -5, marginTop: -5 }}>
-                                    <Text style={{ color: 'white', fontSize: 12 }}>{totalCartItems}</Text>
-                                </View>
-                                :
-                                null}
+                        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Entypo name="shopping-cart" size={22} color={focused ? '#FC6D3F' : 'gray'} />
+                                {totalCartItems > 0 && !focused ?
+                                    <View style={{ width: 18, height: 18, borderRadius: 50, backgroundColor: '#FC6D3F', alignItems: 'center', justifyContent: 'center', marginLeft: -5, marginTop: -5 }}>
+                                        <Text style={{ color: 'white', fontSize: 12 }}>{totalCartItems}</Text>
+                                    </View>
+                                    :
+                                    null}
 
+                            </View>
+                            {!focused && <Text style={{ fontFamily: "System", fontSize: 11, color: 'gray' }}>Cart</Text>}
                         </View>
                     ),
                     tabBarButton: (props) => (
@@ -210,12 +218,15 @@ const Tabs = ({ route, navigation }) => {
             />
 
             <Tab.Screen
-                name="User"
+                name="Account"
                 component={Account}
                 initialParams={{ cameFromCart: false }}
                 options={{
                     tabBarIcon: ({ focused }) => (
-                        <Entypo name="user" size={22} color={focused ? '#FC6D3F' : 'gray'} />
+                        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                            <Entypo name="user" size={22} color={focused ? '#FC6D3F' : 'gray'} />
+                            {!focused && <Text style={{ fontFamily: "System", fontSize: 11, color: 'gray' }}>Account</Text>}
+                        </View>
                     ),
                     tabBarButton: (props) => (
                         <TabBarCustomButton

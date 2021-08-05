@@ -153,13 +153,17 @@ const SearchAddress = ({ route, navigation }) => {
         )
 
         const listHeader = () => (
-            <View style={{
-                borderStyle: 'solid',
-                borderWidth: 5,
-                borderColor: '#F5F5F6',
-                width: width,
-                alignSelf: 'center'
-            }}></View>
+            <View>
+                <View style={{
+                    borderStyle: 'solid',
+                    borderWidth: 5,
+                    borderColor: '#F5F5F6',
+                    width: width,
+                    alignSelf: 'center'
+                }}>
+                </View>
+                <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 20, marginVertical: 10, color: 'gray' }}>Saved Locations</Text>
+            </View>
         )
 
         const renderItem = ({ item }) => (

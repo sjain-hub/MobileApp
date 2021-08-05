@@ -161,7 +161,7 @@ const AddNewAddresses = ({ route, navigation }) => {
 
     function renderBottomPart() {
         return (
-            <View style={{ position: 'absolute', bottom: 0, backgroundColor: 'white', height: height * 0.33 }}>
+            <View style={{ position: 'absolute', bottom: 10, backgroundColor: 'white', height: height * 0.33 }}>
                 {renderSearchBox()}
                 {renderAddressForm()}
                 {renderAddButton()}

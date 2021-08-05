@@ -16,7 +16,6 @@ import Modal from 'react-native-modal';
 const { width, height } = Dimensions.get("window");
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import config from '../config.json';
-import back from "../assets/icons/back.png";
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
 // import messaging from '@react-native-firebase/messaging';
@@ -558,7 +557,7 @@ const Account = ({ route, navigation }) => {
         return (
             <TouchableOpacity
                 style={{ flexDirection: 'row', marginHorizontal: 10, paddingVertical: 20, justifyContent: 'center' }}
-            // onPress={() => }
+                onPress={() => navigation.navigate("Help")}
             >
                 <View style={{ width: width * 0.8, alignItems: 'flex-start', justifyContent: 'center' }}>
                     <Text style={{ fontFamily: "System", fontSize: 16 }}>Help?</Text>
