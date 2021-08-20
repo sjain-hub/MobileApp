@@ -25,6 +25,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Octicons from 'react-native-vector-icons/Octicons';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as Progress from 'react-native-progress';
+import LoadingDots from "react-native-loading-dots";
+import Modal from 'react-native-modal';
 
 
 const OrderDetails = ({ route, navigation }) => {
@@ -32,6 +35,11 @@ const OrderDetails = ({ route, navigation }) => {
     const [order, setOrder] = React.useState();
     const [trackOrder, setTrackOrder] = React.useState(false);
     const [currentPosition, setCurrentPosition] = React.useState(3);
+    const [counter, setCounter] = React.useState(180);
+    const [waitingTime, setWaitingTime] = React.useState(180);
+    const [timer, setTimer] = React.useState(null);
+    const [cancelOrderModal, setCancelOrderModal] = React.useState(false);
+    const [msgtokit, setMsgtokit] = React.useState("");
     var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
     const customStyles = {
         stepIndicatorSize: 22,
@@ -60,14 +68,106 @@ const OrderDetails = ({ route, navigation }) => {
 
     React.useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-            let { order } = route.params;
-            setOrder(order)
-            if (getColor(order.status) == '#FFCC00') {
-                setTrackOrder(true)
-            }
+            let { orderid } = route.params;
+            fetchOrder(orderid)
         });
         return unsubscribe;
     }, [navigation])
+
+    React.useEffect(() => {
+        navigation.addListener('beforeRemove', (e) => {
+            if (order?.status == "Waiting") {
+                e.preventDefault();
+            } else {
+                return;
+            }
+        });
+    }, [order])
+
+    function fetchOrder(id) {
+        fetch(config.url + '/userapi/appfetchOrder', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "orderid": id
+            })
+        }).then((response) => response.json())
+            .then((json) => {
+                setOrder(json.order)
+                if (json.order.status == "Payment") {
+                    navigation.navigate("Payment", {
+                        order: json.order
+                    })
+                }
+                else if (getColor(json.order.status) == '#FFCC00') {
+                    setTrackOrder(true)
+                }
+                else {
+                    setTrackOrder(false)
+                }
+
+                if (json.order.status == "Waiting") {
+                    startTimer(id)
+                }
+            }).catch((error) => {
+                if (error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")
+                } else {
+                    console.error(error)
+                }
+            });
+    }
+
+    function startTimer(orderid) {
+        let timer = setInterval(() => {
+            manageTimer(timer, orderid)
+        }, 1000);
+        setTimer(timer)
+    }
+
+    function manageTimer(timer, orderid) {
+        setCounter(counter => {
+            if (counter == 0) {
+                clearInterval(timer)
+                cancelOrder("cancelFromKitSide", orderid)
+                return counter
+            } else {
+                return counter - 1
+            }
+        })
+    }
+
+    function cancelOrder(action, orderid) {
+        fetch(config.url + '/userapi/appcancelOrder', {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "orderid": orderid,
+                "action": action,
+                "message": msgtokit
+            })
+        }).then((response) => response.json())
+            .then((json) => {
+                if (json.response == "Order cancelled Successfully") {
+                    fetchOrder(orderid)
+                }
+                else {
+                    alert(json.response)
+                }
+            }).catch((error) => {
+                if (error == 'TypeError: Network request failed') {
+                    navigation.navigate("NoInternet")
+                } else {
+                    console.error(error)
+                }
+            });
+    }
 
     const getColor = (status) => {
         if (status == "Delivered" || status == "Picked") {
@@ -76,7 +176,7 @@ const OrderDetails = ({ route, navigation }) => {
         else if (status == "Rejected" || status == "Cancelled") {
             return "red"
         }
-        else if (status == "Waiting" || status == "Placed" || status == "Payment" || status == "Preparing" || status == "Ready" || status == "Dispatched") {
+        else if (status == "Waiting" || status == "Placed" || status == "Preparing" || status == "Ready" || status == "Dispatched") {
             return "#FFCC00"
         }
     }
@@ -84,31 +184,33 @@ const OrderDetails = ({ route, navigation }) => {
     function renderHeader() {
         return (
             <View style={{ flexDirection: 'row', height: 50 }}>
-                <TouchableOpacity
-                    style={{
-                        width: 50,
-                        paddingLeft: 20,
-                        justifyContent: 'center'
-                    }}
-                    onPress={() => navigation.goBack()}
-                >
-                    <Image
-                        source={back}
-                        resizeMode="contain"
+                {order?.status != "Waiting" &&
+                    <TouchableOpacity
                         style={{
-                            width: 20,
-                            height: 20
+                            width: 50,
+                            justifyContent: 'center',
+                            alignItems: 'center',
                         }}
-                    />
-                </TouchableOpacity>
+                        onPress={() => navigation.goBack()}
+                    >
+                        <Image
+                            source={back}
+                            resizeMode="contain"
+                            style={{
+                                width: 20,
+                                height: 20
+                            }}
+                        />
+                    </TouchableOpacity>
+                }
                 <View
                     style={{
                         alignItems: 'flex-start',
                         justifyContent: 'center',
-                        width: width * 0.6
+                        width: width * 0.6-50
                     }}
                 >
-                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>{trackOrder ? "ORDER STATUS" : "ORDER DETAILS"}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginLeft: 10, fontWeight: 'bold' }}>ORDER  #{order?.id}</Text>
                 </View>
                 {trackOrder ?
                     null
@@ -117,10 +219,12 @@ const OrderDetails = ({ route, navigation }) => {
                         style={{
                             alignItems: 'flex-end',
                             justifyContent: 'center',
+                            width: width * 0.36
                         }}
                     >
-                        <Text style={{ fontFamily: "System", fontSize: 18, marginLeft: 10, color: getColor(order?.status), fontWeight: 'bold' }}>{order?.status}</Text>
-                    </View>}
+                        <Text style={{ fontFamily: "System", fontSize: 18, marginLeft: 10, color: getColor(order?.status), fontWeight: 'bold' }}>{order?.status.toUpperCase()}</Text>
+                    </View>
+                }
             </View>
         )
     }
@@ -163,9 +267,9 @@ const OrderDetails = ({ route, navigation }) => {
     function renderContactInfo() {
         const goToDialpad = (phoneno) => {
             if (Platform.OS == "android") {
-                Linking.openURL('tel:${'+phoneno+'}')
+                Linking.openURL('tel:${' + phoneno + '}')
             } else {
-                Linking.openURL('telprompt:${'+phoneno+'}')
+                Linking.openURL('telprompt:${' + phoneno + '}')
             }
         }
 
@@ -183,14 +287,14 @@ const OrderDetails = ({ route, navigation }) => {
         return (
             <View style={{ paddingHorizontal: 20, marginBottom: 20, alignItems: 'center' }}>
                 <TouchableOpacity
-                    style={{ backgroundColor: 'white', paddingVertical: 12, borderRadius: 10, ...styles.shadow, width: width*0.9, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'center' }}
+                    style={{ backgroundColor: 'white', paddingVertical: 12, borderRadius: 10, ...styles.shadow, width: width * 0.9, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'center' }}
                     onPress={() => goToDialpad(order?.kitchen.paytmNo)}
                 >
                     <Ionicons name="call" size={24} color="#FC6D3F" />
                     <Text style={{ fontFamily: "System", fontSize: 16, color: "#FC6D3F", alignSelf: 'center', marginLeft: 10 }}>CALL KITCHEN</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={{ backgroundColor: 'white', paddingVertical: 12, borderRadius: 10, ...styles.shadow, width: width*0.9, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}
+                    style={{ backgroundColor: 'white', paddingVertical: 12, borderRadius: 10, ...styles.shadow, width: width * 0.9, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}
                     onPress={() => goToMaps(order?.kitchen.latitude, order?.kitchen.longitude, order?.kitchen.kitName)}
                 >
                     <MaterialCommunityIcons name="map-marker-path" size={26} color="#FC6D3F" />
@@ -240,7 +344,7 @@ const OrderDetails = ({ route, navigation }) => {
             <View style={{ paddingHorizontal: 20 }}>
                 <View style={{ marginVertical: 10 }}>
                     <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>Your Address</Text>
-                    <Text style={{ fontFamily: "System", fontSize: 14 }}>{order?.delivery_addr}</Text>
+                    <Text style={{ fontFamily: "System", fontSize: 14 }}>{order?.delivery_addr.address}, Floor No: {order?.delivery_addr.floorNo}</Text>
                 </View>
                 <View style={{ marginVertical: 10 }}>
                     <Text style={{ fontFamily: "System", fontSize: 16, fontWeight: 'bold', marginBottom: 10 }}>Mode</Text>
@@ -301,13 +405,25 @@ const OrderDetails = ({ route, navigation }) => {
                         />
                     </View>
                     :
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate("Payment", {
-                            order: order
-                        })}
-                    >
-                        <Text style={{ fontFamily: "System", fontSize: 16, marginTop: 20, color: '#FC6D3F' }}>Pay Online now?</Text>
-                    </TouchableOpacity>
+                    <View>
+                        {order?.amount_paid != order?.total_amount && order?.amount_paid > 0 &&<View style={{ flexDirection: 'row', marginTop: 20 }}>
+                            <View style={{ width: width * 0.76 }}>
+                                <Text style={{ fontFamily: "System", fontSize: 14 }}>Paid</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}>Balance</Text>
+                            </View>
+                            <View style={{ alignItems: 'flex-end' }}>
+                                <Text style={{ fontFamily: "System", fontSize: 14 }}>- {'\u20B9'}{order?.amount_paid}</Text>
+                                <Text style={{ fontFamily: "System", fontSize: 14, fontWeight: 'bold' }}>{'\u20B9'}{order?.balance}.00</Text>
+                            </View>
+                        </View>}
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate("Payment", {
+                                order: order
+                            })}
+                        >
+                            <Text style={{ fontFamily: "System", fontSize: 16, marginTop: 20, color: '#FC6D3F' }}>Pay Online now?</Text>
+                        </TouchableOpacity>
+                    </View>
                 }
             </View>
         )
@@ -344,25 +460,25 @@ const OrderDetails = ({ route, navigation }) => {
         const renderStatusData = () => {
             if (order.status == "Placed") {
                 return (
-                    <View style={{justifyContent: 'center', alignItems: 'center', width: width*0.56}}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: width * 0.56 }}>
                         <Foundation name="clipboard-pencil" size={220} color="lightgray" />
                     </View>
                 )
             } else if (order.status == "Preparing") {
                 return (
-                    <View style={{justifyContent: 'center', alignItems: 'center', width: width*0.56}}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: width * 0.56 }}>
                         <MaterialCommunityIcons name="coffee-maker" size={220} color="lightgray" />
                     </View>
                 )
             } else if (order.status == "Ready") {
                 return (
-                    <View style={{justifyContent: 'center', alignItems: 'center', width: width*0.56}}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: width * 0.56 }}>
                         <Octicons name="package" size={220} color="lightgray" />
                     </View>
                 )
             } else if (order.status == "Dispatched") {
                 return (
-                    <View style={{justifyContent: 'center', alignItems: 'center', width: width*0.56}}>
+                    <View style={{ justifyContent: 'center', alignItems: 'center', width: width * 0.56 }}>
                         <MaterialCommunityIcons name="scooter" size={220} color="lightgray" />
                     </View>
                 )
@@ -371,7 +487,7 @@ const OrderDetails = ({ route, navigation }) => {
 
         const renderStepIndicator = () => (
             <AntDesign name="check" size={16} color="white" />
-          );
+        );
 
         return (
             <View style={{ marginVertical: 20, marginHorizontal: 20 }}>
@@ -397,6 +513,7 @@ const OrderDetails = ({ route, navigation }) => {
             <View style={{ paddingHorizontal: 20, backgroundColor: '#F5F5F6', paddingVertical: 20 }}>
                 <TouchableOpacity
                     style={{ backgroundColor: '#ff0033', paddingVertical: 12, borderRadius: 10, ...styles.shadow, alignItems: 'center' }}
+                    onPress={() => setCancelOrderModal(true)}
                 >
                     <Text style={{ fontFamily: "System", fontWeight: 'bold', color: 'white', fontSize: 16 }}>CANCEL ORDER</Text>
                 </TouchableOpacity>
@@ -410,29 +527,123 @@ const OrderDetails = ({ route, navigation }) => {
         )
     }
 
+    function renderWaiting() {
+        return (
+            <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                <View style={{alignItems: 'center', justifyContent: 'center', marginHorizontal: 20, marginBottom: 50}}>
+                    <Text style={{ fontFamily: "System", fontSize: 16, color: 'gray' }}>Please do not Refresh or press Back button.</Text>
+                </View>
+                <View style={{width: width*0.5, height: width*0.5, borderRadius: 200, backgroundColor: 'white', ...styles.shadowfortimer, alignItems: 'center', justifyContent: 'center'}}>
+                    <Progress.Circle size={width * 0.3} progress={(1 / waitingTime) * counter} color={'#FC6D3F'} borderColor={'white'} showsText={true} unfilledColor={'white'} thickness={4} direction={'counter-clockwise'} textStyle={{ color: '#FC6D3F' }}
+                        formatText={() => { return `${counter}s` }}
+                    />
+                </View>
+                <View style={{alignItems: 'center', justifyContent: 'center', marginHorizontal: 20, marginTop: 50}}>
+                    <Text style={{ fontFamily: "System", fontSize: 18, color: 'gray', marginBottom: 40 }}>Waiting for the Kitchen to respond</Text>
+                    <LoadingDots />
+                </View>
+                <TouchableOpacity
+                    style={{ backgroundColor: '#ff0033', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, marginTop: height*0.16, ...styles.shadow }}
+                    onPress={() => setCancelOrderModal(true)}
+                >
+                    <Text style={{ fontFamily: "System", fontWeight: 'bold', color: 'white', fontSize: 16 }}>CANCEL ORDER</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+
+    function renderCancelOrderModal() {
+        return (
+            <Modal
+            onBackdropPress={() => setCancelOrderModal(!cancelOrderModal)}
+                isVisible={cancelOrderModal}
+                style={{
+                    alignItems: "center",
+                    justifyContent: "center"
+                }}
+            >
+                <View style={{
+                    justifyContent: "center",
+                    alignItems: "center",
+                    backgroundColor: "white",
+                    borderRadius: 20,
+                    padding: 20,
+                    width: width*0.9
+                }}>
+                    <Text style={{ fontFamily: "System", fontSize: 16, marginBottom: 20 }}>Do you wish to Cancel the Order?</Text>
+                    <View
+                        style={{
+                            width: '100%',
+                            alignItems: 'flex-start',
+                            justifyContent: 'center',
+                            paddingHorizontal: 10,
+                            backgroundColor: '#F5F5F6',
+                        }}
+                    >
+                        <TextInput
+                            autoFocus
+                            style={{ fontFamily: "System", fontSize: 16, width: '100%' }}
+                            onChangeText={(text) => {
+                                setMsgtokit(text)
+                            }}
+                            placeholder="Any Message/Feedback/Suggestions or is there any Reson to Cancel your Order?"
+                            multiline={true}
+                            textAlignVertical={"top"}
+                            maxLength={200}
+                        >
+                        </TextInput>
+                    </View>
+                    <View style={{ flexDirection: 'row', marginTop: 20 }}>
+                        <Pressable
+                            style={{ width: '40%' }}
+                            onPress={() => {
+                                setCancelOrderModal(!cancelOrderModal)
+                            }}
+                        >
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>No</Text>
+                        </Pressable>
+                        <Pressable
+                            onPress={() => {
+                                setCancelOrderModal(!cancelOrderModal)
+                                cancelOrder("cancelFromCustSide", order?.id)
+                            }}
+                        >
+                            <Text style={{ fontFamily: "System", fontSize: 18, color: '#FC6D3F' }}>Yes</Text>
+                        </Pressable>
+                    </View>
+                </View>
+            </Modal>
+        )
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             {renderHeader()}
-            {renderGap()}
-            <ScrollView>
-                {renderCartItems()}
-                {renderGap()}
-                {trackOrder ? currentOrderStatus() : renderDates()}
-                {trackOrder ? renderContactInfo() : null}
-                {renderGap()}
-                {renderAddress()}
-                {renderGap()}
-                {renderBillingDetails()}
-                {renderGap()}
-                {order?.msgtocust ?
-                    renderKitchensMessage()
-                    :
-                    null
-                }
-                {order?.status == "Placed" ? renderCancelButton() : null}
-                {renderGap()}
-                {renderFooter()}
-            </ScrollView>
+            {order?.status == "Waiting" ?
+                renderWaiting()
+                :
+                <ScrollView>
+                    {renderGap()}
+                    {renderCartItems()}
+                    {renderGap()}
+                    {trackOrder ? currentOrderStatus() : renderDates()}
+                    {trackOrder ? renderContactInfo() : null}
+                    {renderGap()}
+                    {renderAddress()}
+                    {renderGap()}
+                    {renderBillingDetails()}
+                    {renderGap()}
+                    {order?.msgtocust ?
+                        renderKitchensMessage()
+                        :
+                        null
+                    }
+                    {order?.status == "Placed" ? renderCancelButton() : null}
+                    {renderGap()}
+                    {renderFooter()}
+                </ScrollView>
+            }
+            {renderCancelOrderModal()}
         </SafeAreaView>
     )
 }
@@ -449,8 +660,18 @@ const styles = StyleSheet.create({
             height: 3,
         },
         shadowOpacity: 0.25,
-        shadowRadius: 4,
+        shadowRadius: 2,
         elevation: 5,
+    },
+    shadowfortimer: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 3,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 2,
+        elevation: 20,
     }
 })
 

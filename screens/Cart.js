@@ -38,7 +38,7 @@ const Cart = ({ route, navigation }) => {
     const [coupons, setCoupons] = React.useState(null);
     const [removeItemModal, setRemoveItemModal] = React.useState(false);
     const [tempSelectedItem, setTempSelectedItem] = React.useState();
-    const [msgToKitchen, setMsgToKitchen] = React.useState();
+    const [msgToKitchen, setMsgToKitchen] = React.useState("");
     const [couponModal, setCouponModal] = React.useState(false);
     const [couponApplied, setCouponApplied] = React.useState();
     const [subTotal, setSubTotal] = React.useState(0);
@@ -163,6 +163,14 @@ const Cart = ({ route, navigation }) => {
         asitems?.map(item => {
             let cartitem = cartitems?.filter(a => a.id == item.itemId)[0]
             if (cartitem) {
+                if (item.qty == 0) {
+                    let index = cartitems?.indexOf(cartitem)
+                    cartitems.splice(index, 1);
+                }
+                else {
+                    cartitem.qty = item.qty
+                }
+                setCartItems(cartitems)
                 subtotal = subtotal + (cartitem.price * item.qty)
                 kitdiscount = kitdiscount + ((cartitem.offer / 100 * cartitem.price) * item.qty)
                 totalItems = totalItems + item.qty
@@ -213,62 +221,6 @@ const Cart = ({ route, navigation }) => {
                         />
                     </TouchableOpacity>
                 }
-            </View>
-        )
-    }
-
-    function renderOrderButton() {
-        return (
-            <View
-                style={{
-                    position: 'absolute',
-                    height: 120,
-                    bottom: orderButtonRaise ? 10 : 0,
-                    left: 0,
-                    right: 0,
-                    alignItems: 'center',
-                    borderColor: 'lightgray',
-                    borderTopWidth: 0.5,
-                    backgroundColor: 'white'
-                }}
-            >
-                {loggedIn ?
-                    <TouchableOpacity
-                        style={{
-                            height: 50,
-                            width: width * 0.9,
-                            backgroundColor: '#FC6D3F',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderRadius: 10,
-                            marginVertical: 10
-                        }}
-                        onPress={() => navigation.goBack()}
-                    >
-                        <Text style={{ color: 'white', fontSize: 16 }}>Proceed To Pay</Text>
-                    </TouchableOpacity>
-                    :
-                    <TouchableOpacity
-                        style={{
-                            height: 50,
-                            width: width * 0.9,
-                            backgroundColor: '#FC6D3F',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderRadius: 10,
-                            marginVertical: 10
-                        }}
-                        onPress={() => {
-                            setCouponApplied()
-                            navigation.navigate("Account", {
-                                cameFrom: true
-                            })
-                        }}
-                    >
-                        <Text style={{ color: 'white', fontSize: 16 }}>Login</Text>
-                    </TouchableOpacity>
-                }
-
             </View>
         )
     }
@@ -817,13 +769,12 @@ const Cart = ({ route, navigation }) => {
     function renderAdvanceOrderCheckbox() {
         const onChange = (event, selecteddate) => {
             const d = selecteddate || selectedDate;
-            console.log(d)
             if(d < new Date()){
                 alert('Incorrect Time selected')
             } else {
-                setDateTimePicker(false);
                 setSelectedDate(d);
             }
+            setDateTimePicker(false);
         };
 
         const showDatepicker = () => {
@@ -838,7 +789,7 @@ const Cart = ({ route, navigation }) => {
 
         return (
             <View style={{ marginHorizontal: 30, marginVertical: 20 }}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <BouncyCheckbox
                         size={25}
                         fillColor="green"
@@ -886,6 +837,109 @@ const Cart = ({ route, navigation }) => {
         return (
             <View style={{ borderStyle: 'solid', borderWidth: 90, borderColor: '#F5F5F6', width: width }}></View>
         )
+    }
+
+    function renderOrderButton() {
+        return (
+            <View
+                style={{
+                    position: 'absolute',
+                    height: 120,
+                    bottom: orderButtonRaise ? 10 : 0,
+                    left: 0,
+                    right: 0,
+                    alignItems: 'center',
+                    borderColor: 'lightgray',
+                    borderTopWidth: 0.5,
+                    backgroundColor: 'white'
+                }}
+            >
+                {loggedIn ?
+                    <TouchableOpacity
+                        style={{
+                            height: 50,
+                            width: width * 0.9,
+                            backgroundColor: '#FC6D3F',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 10,
+                            marginVertical: 10
+                        }}
+                        onPress={() => placeOrder()}
+                    >
+                        <Text style={{ color: 'white', fontSize: 16 }}>Place Order</Text>
+                    </TouchableOpacity>
+                    :
+                    <TouchableOpacity
+                        style={{
+                            height: 50,
+                            width: width * 0.9,
+                            backgroundColor: '#FC6D3F',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 10,
+                            marginVertical: 10
+                        }}
+                        onPress={() => {
+                            setCouponApplied()
+                            navigation.navigate("Account", {
+                                cameFrom: true
+                            })
+                        }}
+                    >
+                        <Text style={{ color: 'white', fontSize: 16 }}>Login</Text>
+                    </TouchableOpacity>
+                }
+
+            </View>
+        )
+    }
+
+    function placeOrder() {
+        const date = selectedDate;
+        date.setMinutes(date.getMinutes() - (date.getTimezoneOffset()))
+        AsyncStorage.getItem("authToken").then((token) => {
+            if (token) {
+                fetch(config.url + '/userapi/appplaceOrder', {
+                    method: 'POST',
+                    headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                        Authorization: 'Token ' + token
+                    },
+                    body: JSON.stringify({
+                        "subTotal": subTotal,
+                        "total": toPay,
+                        "coupDiscount": couponDiscount,
+                        "kitDiscount": kitDiscount,
+                        "couponId": couponApplied ? couponApplied.id : null,
+                        "mode": mode,
+                        "deliveryCharge": kitchen.deliveryCharge,
+                        "cartItems": cartItems,
+                        "add": selectedAddress.id,
+                        "msg": msgToKitchen,
+                        "scheduledDate": date,
+                        "kit": kitchen.id
+                    })
+                }).then((response) => response.json())
+                    .then((json) => {
+                        if (json.response == "Order placed Successfully") {
+                            navigation.navigate("OrderDetails", {
+                                orderid: json.orderid
+                            })
+                        }
+                        else {
+                            alert(json.response)
+                        }
+                    }).catch((error) => {
+                        if (error == 'TypeError: Network request failed') {
+                            navigation.navigate("NoInternet")
+                        } else {
+                            console.error(error)
+                        }
+                    });
+            }
+        });
     }
 
     function renderEmptyCart() {

@@ -28,10 +28,10 @@ const Payment = ({ route, navigation }) => {
         let { order } = route.params;
         setOrder(order)
         navigation.addListener('beforeRemove', (e) => {
-            if (order.paymentOption != "Advance Payment") {
-                return;
-            } else {
+            if (order?.kitchen.wantAdvancePayment && order?.balance != 0) {
                 e.preventDefault();
+            } else {
+                return;
             }
         });
     }, [navigation])
@@ -39,7 +39,7 @@ const Payment = ({ route, navigation }) => {
     function renderHeader() {
         return (
             <View style={{ flexDirection: 'row', height: 50, paddingLeft: 20, }}>
-                {order?.paymentOption == "Advance Payment" ?
+                {order?.kitchen.wantAdvancePayment && order?.balance != 0 ?
                     null :
                     <TouchableOpacity
                         style={{
@@ -56,7 +56,8 @@ const Payment = ({ route, navigation }) => {
                                 height: 20
                             }}
                         />
-                    </TouchableOpacity>}
+                    </TouchableOpacity>
+                }
                 <View
                     style={{
                         alignItems: 'flex-start',
@@ -91,7 +92,7 @@ const Payment = ({ route, navigation }) => {
                     onPress={() => Linking.openURL(order?.kitchen.paytmLink)}>
                     {order?.kitchen.paytmLink}
                 </Text>
-                {order?.paymentOption == "Advance Payment" ?
+                {order?.kitchen.wantAdvancePayment ?
                     <TouchableOpacity
                         style={{ backgroundColor: '#ff0033', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 10, marginTop: 120, ...styles.shadow }}
                     >

@@ -199,6 +199,7 @@ const Menu = ({ route, navigation }) => {
                     if (totalCartItems - orderitem[0].qty + newQty == 0) {
                         removeItemValue('orderItems')
                         removeItemValue('kitchen')
+                        setCartKitchenId(null)
                     }
                     orderitem[0].qty = newQty
                 }
@@ -810,11 +811,6 @@ const Menu = ({ route, navigation }) => {
                         </View>
                         : <Text style={{ fontFamily: "System", fontSize: 16, marginTop: 10 }}>{'\u20B9'} {item.price}</Text>
                     }
-
-                    {/* {item.out_of_stock ?
-                        <Text style={{ fontFamily: "System", fontSize: 16, color: "gray", fontWeight: 'bold' }}>OUT OF STOCK</Text>
-                        : null} */}
-
                 </View>
                 <View style={{ height: 130, alignItems: 'center', justifyContent: 'center' }}>
                     <Image

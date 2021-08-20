@@ -4,7 +4,9 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from '@react-navigation/native'
 import PushNotification from "react-native-push-notification";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {
+    StatusBar,
+} from "react-native";
 import { Home, Kitchens, Menu, KitchenDetails, VideoPlayer, Cart, Account, Profile, FavKitchens, Orders, Addresses, Search, AddNewAddress, SearchAddress, OrderDetails, NoInternet, Payment, LatestUpdates, Help, Test } from './screens'
 import Tabs from './navigation/tabs'
 
@@ -81,6 +83,7 @@ const App = () => {
 
     return (
         <NavigationContainer>
+            <StatusBar backgroundColor={'white'} barStyle="dark-content" />
             {allSet && <Stack.Navigator
                 screenOptions={{
                     headerShown: false

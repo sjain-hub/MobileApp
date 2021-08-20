@@ -161,8 +161,8 @@ const Orders = ({ route, navigation }) => {
         const renderItem = ({ item }) => (
             <TouchableOpacity
                 style={{width: width*0.9, paddingVertical: 20, paddingHorizontal: 20, borderRadius: 10, backgroundColor: 'white', marginVertical: 16, ...styles.shadow}}
-                onPress={() => navigation.navigate(item.status == "Payment"? "Payment" : "OrderDetails", {
-                    order: item
+                onPress={() => navigation.navigate("OrderDetails", {
+                    orderid: item.id
                 })}
             >
                 <View style={{flexDirection: 'row'}}>
@@ -173,7 +173,7 @@ const Orders = ({ route, navigation }) => {
                         <Text style={{ fontFamily: "System", fontSize: 12, color: 'gray', marginBottom: 10 }}>{getFormattedDate(item.scheduled_order)}</Text>
                     </View>
                     <View style={{alignItems: 'flex-end', width: '30%'}}>
-                        <Text style={{ fontFamily: "System", fontSize: 14, marginBottom: 10, color: getColor(item.status), fontWeight: 'bold' }}>{item.status}</Text>
+                        <Text style={{ fontFamily: "System", fontSize: 14, marginBottom: 10, color: getColor(item.status), fontWeight: 'bold' }}>{item.status.toUpperCase()}</Text>
                     </View>
                 </View>
                 {getColor(item.status) == "#FFCC00" ?
